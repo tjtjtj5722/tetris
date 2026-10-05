@@ -1455,9 +1455,9 @@
       <!-- 모바일 가상 터치 컨트롤러 -->
       <div class="mobile-touch-controller">
         <div class="touch-row">
-          <button class="touch-btn" id="t-btn-hold" onclick="handleHold()">📦 보관</button>
+          <button class="touch-btn" id="t-btn-hold" onclick="handleHold()">📦 킵(홀드)</button>
           <button class="touch-btn primary" id="t-btn-rotate" onclick="handleTouchRotate()">🔄 회전</button>
-          <button class="touch-btn accent" id="t-btn-hard" onclick="handleTouchHardDrop()">⚡ 즉시착지</button>
+          <button class="touch-btn accent" id="t-btn-hard" onclick="handleTouchHardDrop()">⚡ 쾅! 하드드롭</button>
         </div>
         <div class="touch-row">
           <button class="touch-btn" id="t-btn-left" onpointerdown="startContinuousMove(-1)" onpointerup="stopContinuousMove()" onpointerleave="stopContinuousMove()">◀ 좌</button>
@@ -1485,17 +1485,17 @@
 
       <div class="preview-dual-box">
         <div class="info-card preview-card">
-          <div class="card-label">NEXT</div>
+          <div class="card-label">NEXT (다음)</div>
           <canvas id="next-canvas" class="preview-canvas" width="70" height="70"></canvas>
         </div>
         <div class="info-card preview-card">
-          <div class="card-label">HOLD</div>
+          <div class="card-label" style="color: #00f2fe;">HOLD (C키 킵)</div>
           <canvas id="hold-canvas" class="preview-canvas" width="70" height="70"></canvas>
         </div>
       </div>
 
       <div class="info-card">
-        <div class="card-label">BEST HIGH SCORE</div>
+        <div class="card-label">🏆 BEST SCORE (영구 저장)</div>
         <div id="high-score" class="card-value gold">0</div>
       </div>
 
@@ -1560,10 +1560,11 @@
     <div class="key-badge"><span class="key">←</span> <span class="key">→</span> 좌우 이동</div>
     <div class="key-badge"><span class="key">↑</span> 회전</div>
     <div class="key-badge"><span class="key">↓</span> 빠른 낙하</div>
-    <div class="key-badge"><span class="key">Space</span> 즉시 착지</div>
-    <div class="key-badge"><span class="key">C / Shift</span> 블록 보관(HOLD)</div>
+    <div class="key-badge" style="border-color: rgba(255, 214, 0, 0.5);"><span class="key" style="background:#ffd600; color:#000; font-weight:800;">Space</span> ⚡ 1초만에 쾅! 즉시 착지 (하드 드롭)</div>
+    <div class="key-badge" style="border-color: rgba(0, 242, 254, 0.5);"><span class="key" style="background:#00f2fe; color:#000; font-weight:800;">C / ㅊ</span> 📦 블록 임시 보관 (홀드/킵)</div>
+    <div class="key-badge"><span class="key">🎵 BGM</span> 8비트 오락실 BGM (Web Audio)</div>
+    <div class="key-badge"><span class="key">🏆 기록</span> 껐다 켜도 최고기록 영구 저장</div>
     <div class="key-badge"><span class="key">P</span> 일시정지</div>
-    <div class="key-badge"><span class="key">M</span> 효과음</div>
   </div>
 
   <!-- 선물 모달 -->
@@ -1685,18 +1686,23 @@
       constructor() {
         this.ctx = null;
         this.muted = false;
-        this.bgmTheme = 2; // 2: 감성 카페/타로 라운지 앰비언트 (기본 은은한 볼륨으로 적막함 해소!)
+        this.bgmTheme = 1; // 1: 오리지널 레트로 8비트 오락실 테트리스 BGM (기본 활성화!)
         this.bgmPlaying = false;
         this.bgmTimer = null;
         this.bgmIndex = 0;
 
-        // 테마 1: 오리지널 레트로 테트리스
+        // 테마 1: 오리지널 레트로 8비트 테트리스 (코로베이니키 Korobeiniki 완전판)
         this.theme1 = [
           { n: 'E5', d: 2 }, { n: 'B4', d: 1 }, { n: 'C5', d: 1 }, { n: 'D5', d: 2 },
           { n: 'C5', d: 1 }, { n: 'B4', d: 1 }, { n: 'A4', d: 2 }, { n: 'A4', d: 1 },
           { n: 'C5', d: 1 }, { n: 'E5', d: 2 }, { n: 'D5', d: 1 }, { n: 'C5', d: 1 },
           { n: 'B4', d: 3 }, { n: 'C5', d: 1 }, { n: 'D5', d: 2 }, { n: 'E5', d: 2 },
-          { n: 'C5', d: 2 }, { n: 'A4', d: 2 }, { n: 'A4', d: 3 }, { n: 'R', d: 2 }
+          { n: 'C5', d: 2 }, { n: 'A4', d: 2 }, { n: 'A4', d: 2 }, { n: 'R', d: 1 },
+          { n: 'D5', d: 2 }, { n: 'F5', d: 1 }, { n: 'A5', d: 2 }, { n: 'G5', d: 1 },
+          { n: 'F5', d: 1 }, { n: 'E5', d: 3 }, { n: 'C5', d: 1 }, { n: 'E5', d: 2 },
+          { n: 'D5', d: 1 }, { n: 'C5', d: 1 }, { n: 'B4', d: 2 }, { n: 'B4', d: 1 },
+          { n: 'C5', d: 1 }, { n: 'D5', d: 2 }, { n: 'E5', d: 2 }, { n: 'C5', d: 2 },
+          { n: 'A4', d: 2 }, { n: 'A4', d: 3 }, { n: 'R', d: 2 }
         ];
 
         // 테마 2: 편안하고 감미로운 카페/타로풍 캐논 멜로디 (초저음량 힐링 사운드)
@@ -1877,24 +1883,43 @@
       }
 
       /* 쾅-! 터지는 시원한 타격감 폭파 사운드 */
+      /* 💥 블록이 깨질 때 나는 경쾌한 8비트 오락실 팡! 효과음 (Web Audio API) */
       playExplosion(lines) {
         if (this.muted) return;
         this.init();
 
-        // 1. 저음 펀치
-        const osc = this.ctx.createOscillator();
-        const gain = this.ctx.createGain();
-        osc.type = 'triangle';
-        osc.frequency.setValueAtTime(160, this.ctx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(35, this.ctx.currentTime + 0.22);
-        gain.gain.setValueAtTime(0.28, this.ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.22);
-        osc.connect(gain);
-        gain.connect(this.ctx.destination);
-        osc.start();
-        osc.stop(this.ctx.currentTime + 0.22);
+        // 1. 8비트 칩튠 사각파 피치 스윕 팡! (8-bit Pitch Drop Pop)
+        const popOsc = this.ctx.createOscillator();
+        const popGain = this.ctx.createGain();
+        popOsc.type = 'square';
+        popOsc.frequency.setValueAtTime(880, this.ctx.currentTime);
+        popOsc.frequency.exponentialRampToValueAtTime(70, this.ctx.currentTime + 0.16);
+        popGain.gain.setValueAtTime(0.25, this.ctx.currentTime);
+        popGain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.16);
+        popOsc.connect(popGain);
+        popGain.connect(this.ctx.destination);
+        popOsc.start();
+        popOsc.stop(this.ctx.currentTime + 0.16);
 
-        // 2. 화려한 챠라랑 멜로디
+        // 2. 오락실 블록 크런치 파열음 (White Noise Crunch Burst)
+        try {
+          const bufferSize = this.ctx.sampleRate * 0.14;
+          const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+          const data = buffer.getChannelData(0);
+          for (let i = 0; i < bufferSize; i++) {
+            data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (this.ctx.sampleRate * 0.035));
+          }
+          const noise = this.ctx.createBufferSource();
+          noise.buffer = buffer;
+          const noiseGain = this.ctx.createGain();
+          noiseGain.gain.setValueAtTime(0.28, this.ctx.currentTime);
+          noiseGain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.14);
+          noise.connect(noiseGain);
+          noiseGain.connect(this.ctx.destination);
+          noise.start();
+        } catch(e) {}
+
+        // 3. 줄 수에 따른 경쾌한 상승 챠라랑 멜로디 (Chime)
         const notes = (lines >= 4)
           ? [523.25, 659.25, 783.99, 1046.50, 1318.51]
           : [587.33, 739.99, 880.00, 1174.66];
@@ -1903,13 +1928,13 @@
           const mOsc = this.ctx.createOscillator();
           const mGain = this.ctx.createGain();
           mOsc.type = 'sine';
-          mOsc.frequency.setValueAtTime(freq, this.ctx.currentTime + i * 0.05);
-          mGain.gain.setValueAtTime(0.15, this.ctx.currentTime + i * 0.05);
-          mGain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + i * 0.05 + 0.2);
+          mOsc.frequency.setValueAtTime(freq, this.ctx.currentTime + i * 0.04);
+          mGain.gain.setValueAtTime(0.14, this.ctx.currentTime + i * 0.04);
+          mGain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + i * 0.04 + 0.18);
           mOsc.connect(mGain);
           mGain.connect(this.ctx.destination);
-          mOsc.start(this.ctx.currentTime + i * 0.05);
-          mOsc.stop(this.ctx.currentTime + i * 0.05 + 0.2);
+          mOsc.start(this.ctx.currentTime + i * 0.04);
+          mOsc.stop(this.ctx.currentTime + i * 0.04 + 0.18);
         });
       }
 
@@ -2042,7 +2067,9 @@
         if (!this.bgmPlaying || this.bgmTheme === 0) return;
 
         let currentMelody = this.theme1;
-        let tempo = 135;
+        let tempo = 130;
+        let is8Bit = (this.bgmTheme === 1);
+
         if (this.bgmTheme === 2) {
           currentMelody = this.theme2;
           tempo = 150;
@@ -2058,10 +2085,25 @@
         if (freq > 0 && this.ctx && this.ctx.state === 'running') {
           const osc = this.ctx.createOscillator();
           const gain = this.ctx.createGain();
-          osc.type = (this.bgmTheme === 2) ? 'sine' : 'square';
-          osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
-          gain.gain.setValueAtTime(0.016, this.ctx.currentTime); // 귀가 편안한 볼륨
-          gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + (durMs / 1000) * 0.9);
+
+          if (is8Bit) {
+            // 🎮 8비트 오락실 칩튠 정통 사각파 (Web Audio API 코드로 실시간 합성!)
+            osc.type = 'square';
+            osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+            gain.gain.setValueAtTime(0.038, this.ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + (durMs / 1000) * 0.88);
+          } else if (this.bgmTheme === 2) {
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+            gain.gain.setValueAtTime(0.022, this.ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + (durMs / 1000) * 0.9);
+          } else {
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+            gain.gain.setValueAtTime(0.045, this.ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + (durMs / 1000) * 0.9);
+          }
+
           osc.connect(gain);
           gain.connect(this.ctx.destination);
           osc.start();
@@ -2101,7 +2143,7 @@
       }
     }
 
-    /* BGM 테마 순환 (기본 OFF -> 테마 1 -> 테마 2 -> 테마 3 -> OFF) */
+    /* BGM 테마 순환 (기본 8비트 오락실 -> 감성 카페 -> 경쾌 팝 -> OFF) */
     function cycleBGM() {
       sound.bgmTheme = (sound.bgmTheme + 1) % 4;
       const icon = document.getElementById('bgm-icon');
@@ -2116,9 +2158,9 @@
         sound.stopBGM();
         sound.startBGM();
         if (icon) icon.innerText = '🎵';
-        if (text) text.innerText = `BGM ${sound.bgmTheme}`;
-        const themeNames = ['', '아케이드', '감성 카페', '경쾌 팝'];
-        showFloatingText(`🎵 음악 변경: ${themeNames[sound.bgmTheme]}`, '#00f2fe');
+        const themeNames = ['', '8비트 오락실', '감성 카페', '경쾌 팝'];
+        if (text) text.innerText = themeNames[sound.bgmTheme];
+        showFloatingText(`🎵 BGM 테마: ${themeNames[sound.bgmTheme]}`, '#00f2fe');
       }
     }
 
@@ -3563,10 +3605,12 @@
         } else if (event.key === 'ArrowUp' || event.key === 'w' || event.key === 'W') {
           event.preventDefault();
           playerRotate(1); draw();
-        } else if (event.key === ' ') {
+        } else if (event.key === ' ' || event.code === 'Space') {
+          // ⚡ 하드 드롭: 성격 급한 플레이어를 위해 스페이스바 누르면 즉시 쾅!
           event.preventDefault();
           playerHardDrop(); draw();
-        } else if (event.key === 'c' || event.key === 'C' || event.key === 'Shift') {
+        } else if (event.key === 'c' || event.key === 'C' || event.key === 'ㅊ' || event.code === 'KeyC' || event.key === 'Shift') {
+          // 📦 블록 홀드: 당장 쓰기 싫은 블록 C 버튼으로 임시 보관(킵)
           event.preventDefault();
           handleHold(); draw();
         }
