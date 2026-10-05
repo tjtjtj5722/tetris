@@ -1015,12 +1015,297 @@
       border-radius: 10px; font-size: 11px; cursor: pointer;
       display: flex; align-items: center; justify-content: center; gap: 6px;
     }
+  
+    /* ========================================================
+       💥 듀얼 모드 스위처 및 네온 블록 블라스트 (NEW)
+       ======================================================== */
+    .mode-switch-wrapper {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 12px;
+      width: 100%;
+      max-width: 360px;
+    }
+
+    .mode-pill-btn {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 9px 12px;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1.5px solid rgba(0, 242, 254, 0.25);
+      border-radius: 12px;
+      color: #94a3b8;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+      position: relative;
+    }
+
+    .mode-pill-btn:hover {
+      border-color: rgba(0, 242, 254, 0.6);
+      color: #fff;
+    }
+
+    .mode-pill-btn.active {
+      background: linear-gradient(135deg, rgba(0, 242, 254, 0.25) 0%, rgba(37, 117, 252, 0.3) 100%);
+      border-color: #00f2fe;
+      color: #fff;
+      box-shadow: 0 0 16px rgba(0, 242, 254, 0.35);
+    }
+
+    .mode-pill-btn.blast-tab.active {
+      background: linear-gradient(135deg, rgba(255, 42, 109, 0.25) 0%, rgba(255, 214, 0, 0.25) 100%);
+      border-color: #ff2a6d;
+      color: #fff;
+      box-shadow: 0 0 18px rgba(255, 42, 109, 0.4);
+    }
+
+    .hot-badge {
+      background: linear-gradient(90deg, #ff2a6d, #ffd600);
+      color: #000;
+      font-size: 9px;
+      font-weight: 900;
+      padding: 1px 5px;
+      border-radius: 6px;
+      letter-spacing: 0.5px;
+      animation: pulseBadge 1.4s infinite alternate;
+    }
+
+    @keyframes pulseBadge {
+      0% { transform: scale(0.95); opacity: 0.85; }
+      100% { transform: scale(1.1); opacity: 1; }
+    }
+
+    /* 블록 블라스트 전용 영역 */
+    #blast-game-area {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      max-width: 340px;
+    }
+
+    .blast-summary-bar {
+      display: flex;
+      width: 100%;
+      justify-content: space-between;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+
+    .blast-sum-card {
+      flex: 1;
+      background: var(--card-bg);
+      border: 1px solid rgba(255, 42, 109, 0.35);
+      border-radius: 10px;
+      padding: 5px 6px;
+      text-align: center;
+    }
+
+    .blast-sum-card .label { font-size: 9px; color: var(--text-dim); font-weight: 800; }
+    .blast-sum-card .val { font-size: 15px; color: #fff; font-weight: 900; }
+
+    .blast-combo-banner {
+      width: 100%;
+      padding: 5px 8px;
+      background: linear-gradient(90deg, rgba(255, 42, 109, 0.15), rgba(255, 214, 0, 0.15));
+      border: 1px dashed rgba(255, 214, 0, 0.4);
+      border-radius: 8px;
+      margin-bottom: 8px;
+      text-align: center;
+      font-size: 12px;
+      font-weight: 800;
+      color: #ffd600;
+      min-height: 26px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+    }
+
+    .blast-combo-banner.highlight {
+      background: linear-gradient(90deg, rgba(255, 42, 109, 0.45), rgba(255, 214, 0, 0.45));
+      border-color: #ffd600;
+      color: #fff;
+      transform: scale(1.02);
+      box-shadow: 0 0 14px rgba(255, 214, 0, 0.5);
+    }
+
+    .blast-board-wrapper {
+      position: relative;
+      width: 324px;
+      height: 324px;
+      background: #030508;
+      border: 2px solid #ff2a6d;
+      border-radius: 16px;
+      box-shadow: 0 0 25px rgba(255, 42, 109, 0.35),
+                  inset 0 0 20px rgba(255, 42, 109, 0.12);
+      overflow: hidden;
+      touch-action: none;
+    }
+
+    #blast-canvas {
+      display: block;
+      width: 320px;
+      height: 320px;
+      border-radius: 14px;
+    }
+
+    /* 하단 3개 블록 트레이 */
+    .blast-tray-container {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      margin-top: 12px;
+      padding: 10px;
+      background: rgba(14, 20, 36, 0.85);
+      border: 1.5px solid rgba(0, 242, 254, 0.25);
+      border-radius: 16px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+    }
+
+    .blast-slot {
+      flex: 1;
+      height: 90px;
+      background: rgba(5, 7, 13, 0.6);
+      border: 1.5px dashed rgba(255, 255, 255, 0.15);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: grab;
+      position: relative;
+      transition: all 0.2s ease;
+      touch-action: none;
+    }
+
+    .blast-slot:active { cursor: grabbing; }
+
+    .blast-slot.selected {
+      border-color: #ffd600;
+      background: rgba(255, 214, 0, 0.12);
+      box-shadow: 0 0 15px rgba(255, 214, 0, 0.4);
+      transform: translateY(-2px);
+    }
+
+    .blast-slot-canvas {
+      pointer-events: none;
+      max-width: 80px;
+      max-height: 80px;
+    }
+
+    .blast-controls-row {
+      display: flex;
+      width: 100%;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .blast-btn {
+      flex: 1;
+      height: 38px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      background: rgba(255, 255, 255, 0.06);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .blast-btn:hover {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: #00f2fe;
+    }
+
+    .blast-btn.primary {
+      background: linear-gradient(135deg, rgba(255, 42, 109, 0.25), rgba(255, 214, 0, 0.25));
+      border-color: #ff2a6d;
+      color: #ffd600;
+    }
+
+    /* 플로팅 드래그 고스트 */
+    #blast-drag-ghost {
+      position: fixed;
+      pointer-events: none;
+      z-index: 99999;
+      display: none;
+      transform: translate(-50%, -100%);
+      filter: drop-shadow(0 10px 25px rgba(0, 0, 0, 0.8)) drop-shadow(0 0 15px currentColor);
+    }
+
+    /* 웰컴 모달 모드 선택 버튼 */
+    .welcome-mode-select {
+      display: flex;
+      gap: 8px;
+      margin: 10px auto 14px;
+      max-width: 320px;
+    }
+
+    .welcome-mode-pill {
+      flex: 1;
+      padding: 9px 8px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1.5px solid rgba(255, 255, 255, 0.15);
+      color: #94a3b8;
+      font-size: 11px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+    }
+
+    .welcome-mode-pill.active {
+      border-color: #ffd600;
+      background: rgba(255, 214, 0, 0.15);
+      color: #ffd600;
+      box-shadow: 0 0 12px rgba(255, 214, 0, 0.3);
+    }
+
+  
+    @media (max-width: 360px) {
+      .blast-board-wrapper {
+        width: 294px;
+        height: 294px;
+      }
+      #blast-canvas {
+        width: 290px;
+        height: 290px;
+      }
+      .blast-slot {
+        height: 80px;
+      }
+    }
+
   </style>
 </head>
 <body>
 
   <div class="header">
     <div class="title">TETRIS</div>
+
+  <!-- 🌟 모드 전환 탭 (클래식 테트리스 vs 블록 블라스트) -->
+  <div class="mode-switch-wrapper">
+    <button id="mode-tab-classic" class="mode-pill-btn active" onclick="switchGameMode('classic')">
+      <span>🕹️</span> <span>클래식 테트리스</span>
+    </button>
+    <button id="mode-tab-blast" class="mode-pill-btn blast-tab" onclick="switchGameMode('blast')">
+      <span>💥</span> <span>블록 블라스트</span> <span class="hot-badge">대세</span>
+    </button>
+  </div>
     <div class="subtitle">Ultimate Mobile & Web Edition</div>
   </div>
 
@@ -1097,7 +1382,9 @@
         </div>
       </div>
 
-      <div class="mobile-summary-bar">
+      <!-- 🕹️ 모드 1: 클래식 테트리스 영역 -->
+      <div id="classic-game-area" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
+        <div class="mobile-summary-bar">
         <div class="mobile-sum-card">
           <div class="label">SCORE</div>
           <div id="m-score" class="val">0</div>
@@ -1151,6 +1438,69 @@
           <button class="touch-btn" id="m-btn-sound" style="height:38px; font-size:12px; background:rgba(0,242,254,0.12); border-color:rgba(0,242,254,0.4); color:#00f2fe;" onclick="toggleSound()">🔊 효과음 ON</button>
           <button class="touch-btn" style="height:38px; font-size:12px; background:rgba(255,255,255,0.06);" onclick="handlePause()">⏸ 일시정지</button>
           <button class="touch-btn" style="height:38px; font-size:12px; background:rgba(255,42,109,0.15); color:#ff5c9d; border-color:rgba(255,42,109,0.4);" onclick="handleEndGame()">⏹ 게임종료</button>
+        </div>
+      </div>
+      </div>
+
+      <!-- 💥 모드 2: 네온 블록 블라스트 영역 (NEW) -->
+      <div id="blast-game-area">
+        <div class="blast-summary-bar">
+          <div class="blast-sum-card">
+            <div class="label">BLAST SCORE</div>
+            <div id="blast-score" class="val">0</div>
+          </div>
+          <div class="blast-sum-card">
+            <div class="label" style="color:#ffd600;">BEST</div>
+            <div id="blast-best" class="val" style="color:#ffd600;">0</div>
+          </div>
+          <div class="blast-sum-card">
+            <div class="label" style="color:#00ff88;">STREAK</div>
+            <div id="blast-streak" class="val" style="color:#00ff88;">0</div>
+          </div>
+        </div>
+
+        <div id="blast-combo-banner" class="blast-combo-banner">
+          ✨ 원하는 블록을 끌어다 판을 채워 팡팡 터뜨리세요!
+        </div>
+
+        <div class="blast-board-wrapper" id="blast-board-box">
+          <canvas id="blast-canvas" width="320" height="320"></canvas>
+          <div id="blast-floating-layer" class="floating-text-layer"></div>
+
+          <!-- 블록 블라스트 게임 오버 오버레이 -->
+          <div id="blast-overlay" class="board-overlay hidden">
+            <div id="blast-overlay-title" class="overlay-title gameover">더 이상 둘 곳이 없어요!</div>
+            <div id="blast-overlay-desc" class="overlay-desc">블록을 놓을 수 있는 빈자리가 부족합니다.<br>새로운 판에서 대기록에 도전하세요!</div>
+            
+            <div class="final-score-box" style="display: flex;">
+              <div class="final-score-main">최종 점수: <span id="blast-final-score">0</span>점</div>
+              <div class="final-score-sub">(최대 콤보: <span id="blast-final-combo">0</span>연속 폭발)</div>
+            </div>
+
+            <button class="game-btn btn-start" onclick="blastGame.reset()">
+              <span>🔄</span> 새 판 시작하기
+            </button>
+          </div>
+        </div>
+
+        <!-- 하단 3개 블록 선택 트레이 -->
+        <div class="blast-tray-container" id="blast-tray">
+          <div class="blast-slot" id="blast-slot-0">
+            <canvas class="blast-slot-canvas" id="slot-canvas-0" width="80" height="80"></canvas>
+          </div>
+          <div class="blast-slot" id="blast-slot-1">
+            <canvas class="blast-slot-canvas" id="slot-canvas-1" width="80" height="80"></canvas>
+          </div>
+          <div class="blast-slot" id="blast-slot-2">
+            <canvas class="blast-slot-canvas" id="slot-canvas-2" width="80" height="80"></canvas>
+          </div>
+        </div>
+
+        <!-- 하단 조작 바 -->
+        <div class="blast-controls-row">
+          <button class="blast-btn primary" onclick="blastGame.reset()"><span>🔄</span> 새 게임</button>
+          <button class="blast-btn" onclick="toggleSound()"><span>🔊</span> 효과음</button>
+          <button class="blast-btn" onclick="openGiftModal('coffee')"><span>☕</span> 커피 선물함</button>
         </div>
       </div>
     </div>
@@ -1321,6 +1671,18 @@
         <div class="partner-tab active" id="tab-duo" onclick="selectPartner('duo')">
           🃏 Ⅹ. 운명 듀오
         </div>
+
+      <div style="font-size: 11px; color: #cbd5e1; margin-top: 12px; margin-bottom: 6px; font-weight: 700;">
+        시작할 게임 모드를 선택하세요:
+      </div>
+      <div class="welcome-mode-select">
+        <div class="welcome-mode-pill active" id="w-mode-classic" onclick="setWelcomeMode('classic')">
+          🕹️ 클래식 테트리스
+        </div>
+        <div class="welcome-mode-pill" id="w-mode-blast" onclick="setWelcomeMode('blast')">
+          💥 블록 블라스트 <span class="hot-badge" style="font-size:8px;">HOT</span>
+        </div>
+      </div>
         <div class="partner-tab" id="tab-louis" onclick="selectPartner('louis')">
           👑 Ⅳ. 황제 루이
         </div>
@@ -1589,6 +1951,69 @@
           osc.start(startTime);
           osc.stop(startTime + duration);
         });
+      }
+
+      
+      /* 💥 블록 블라스트 가로/세로 동시 폭발 & 콤보 사운드 */
+      playBlast(combo = 1) {
+        if (this.muted) return;
+        this.init();
+
+        // 1. 묵직한 베이스 폭발음
+        const boomOsc = this.ctx.createOscillator();
+        const boomGain = this.ctx.createGain();
+        boomOsc.type = 'triangle';
+        boomOsc.frequency.setValueAtTime(140, this.ctx.currentTime);
+        boomOsc.frequency.exponentialRampToValueAtTime(30, this.ctx.currentTime + 0.25);
+        boomGain.gain.setValueAtTime(0.35, this.ctx.currentTime);
+        boomGain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.25);
+        boomOsc.connect(boomGain);
+        boomGain.connect(this.ctx.destination);
+        boomOsc.start();
+        boomOsc.stop(this.ctx.currentTime + 0.25);
+
+        // 2. 콤보가 올라갈수록 고음으로 치솟는 화려한 멜로디 아르페지오
+        const baseFrequencies = [523.25, 659.25, 783.99, 1046.5, 1318.5]; // C5, E5, G5, C6, E6
+        const pitchMultiplier = Math.min(2.0, 1.0 + (combo - 1) * 0.15);
+        const count = Math.min(5, 2 + combo);
+
+        for (let i = 0; i < count; i++) {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          const startTime = this.ctx.currentTime + 0.03 + (i * 0.04);
+          const freq = (baseFrequencies[i % baseFrequencies.length]) * pitchMultiplier;
+          osc.frequency.setValueAtTime(freq, startTime);
+          gain.gain.setValueAtTime(0.18, startTime);
+          gain.gain.exponentialRampToValueAtTime(0.0001, startTime + 0.3);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(startTime);
+          osc.stop(startTime + 0.3);
+        }
+      }
+
+      /* 뾱! 블록 슬롯을 집어들 때 */
+      playPick() {
+        if (this.muted) return;
+        this.init();
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(380, this.ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(620, this.ctx.currentTime + 0.05);
+        gain.gain.setValueAtTime(0.12, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.05);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(this.ctx.currentTime + 0.05);
+      }
+
+      /* 척! 보드에 안착하는 스냅 사운드 */
+      playSnap() {
+        if (this.muted) return;
+        this.playLock();
       }
 
       playGameOver() {
@@ -2837,6 +3262,697 @@
     updateUI();
     draw();
     drawHold();
+  
+    /* ========================================================
+       🌟 듀얼 모드 전환 관리자 (Classic Tetris <-> Block Blast)
+       ======================================================== */
+    let currentMode = 'classic'; // 'classic' or 'blast'
+    let welcomeChosenMode = 'classic';
+
+    function setWelcomeMode(mode) {
+      welcomeChosenMode = mode;
+      document.getElementById('w-mode-classic').classList.toggle('active', mode === 'classic');
+      document.getElementById('w-mode-blast').classList.toggle('active', mode === 'blast');
+      sound.playClick();
+    }
+
+    function switchGameMode(mode) {
+      if (currentMode === mode) return;
+      currentMode = mode;
+      sound.playClick();
+
+      const tabClassic = document.getElementById('mode-tab-classic');
+      const tabBlast = document.getElementById('mode-tab-blast');
+      const classicArea = document.getElementById('classic-game-area');
+      const blastArea = document.getElementById('blast-game-area');
+
+      // PC 가이드 카드 갱신
+      const guideCardTitle = document.querySelector('.guide-card .card-title');
+      const guideCardList = document.querySelector('.guide-card .guide-list');
+
+      if (mode === 'classic') {
+        tabClassic.classList.add('active');
+        tabBlast.classList.remove('active');
+        classicArea.style.display = 'flex';
+        blastArea.style.display = 'none';
+
+        if (guideCardTitle && guideCardList) {
+          guideCardTitle.innerHTML = '📖 클래식 테트리스 꿀팁';
+          guideCardList.innerHTML = `
+            <li><strong>게임 목적:</strong> 가로 한 줄을 채우면 <strong>줄이 팡! 터지며 점수</strong>를 얻습니다.</li>
+            <li><strong>진짜 선물:</strong> <strong>3,000점 달성 시 스타벅스 커피 선물</strong>이 즉시 열립니다!</li>
+            <li><strong>📦 HOLD (보관):</strong> 'C' 키(모바일 [보관])로 필요 없는 블록을 창고에 넣을 수 있습니다.</li>
+            <li><strong>낙하 가이드:</strong> 네온 점선 윤곽선을 보고 원하는 위치에 즉시 착지시키세요!</li>
+          `;
+        }
+
+        // PC 우측 대시보드 최고기록
+        const highScoreEl = document.getElementById('high-score');
+        if (highScoreEl) highScoreEl.innerText = highScore.toLocaleString();
+
+        setPartnerQuote('"정통 클래식 테트리스 모드입니다! 손가락 빠르고 민첩하게 내려보세요! 🚀"', true);
+      } else {
+        tabClassic.classList.remove('active');
+        tabBlast.classList.add('active');
+        classicArea.style.display = 'none';
+        blastArea.style.display = 'flex';
+
+        if (guideCardTitle && guideCardList) {
+          guideCardTitle.innerHTML = '💥 블록 블라스트 꿀팁';
+          guideCardList.innerHTML = `
+            <li><strong>가로·세로 동시 폭발:</strong> 가로뿐만 아니라 <strong>세로 한 줄</strong>이 다 차도 시원하게 터집니다!</li>
+            <li><strong>시간 제한 없음:</strong> 위에서 떨어지지 않으니 <strong>느긋하게 생각하고</strong> 배치하세요.</li>
+            <li><strong>연속 콤보:</strong> 줄을 연속으로 터뜨릴수록 <strong>엄청난 콤보 점수</strong>가 쏟아집니다!</li>
+            <li><strong>☕ 커피 챌린지:</strong> 블록 블라스트에서도 <strong>3,000점 달성 시 스타벅스 쿠폰</strong> 증정!</li>
+          `;
+        }
+
+        if (gameState === STATE.PLAYING) {
+          handlePause();
+        }
+
+        if (window.blastGame) {
+          window.blastGame.render();
+          const highScoreEl = document.getElementById('high-score');
+          if (highScoreEl) highScoreEl.innerText = window.blastGame.bestScore.toLocaleString();
+        }
+        setPartnerQuote('"요즘 최고 대세 블록 블라스트! 시간제한 없이 가로·세로 팡팡 터뜨려봐요! 💥"', true);
+      }
+    }
+
+    const originalHandleWelcomeEnter = window.handleWelcomeEnter;
+    window.handleWelcomeEnter = function() {
+      if (originalHandleWelcomeEnter) {
+        originalHandleWelcomeEnter();
+      }
+      if (welcomeChosenMode === 'blast') {
+        switchGameMode('blast');
+      }
+    };
+
+    /* ========================================================
+       💥 네온 블록 블라스트(Block Blast) 정밀 엔진
+       ======================================================== */
+    class BlockBlastEngine {
+      constructor() {
+        this.boardSize = 8;
+        this.grid = Array.from({ length: 8 }, () => Array(8).fill(null));
+        this.score = 0;
+        this.bestScore = parseInt(localStorage.getItem('blockblast_best_score') || '0', 10);
+        this.streak = 0;
+        this.maxCombo = 0;
+
+        this.canvas = document.getElementById('blast-canvas');
+        this.ctx = this.canvas.getContext('2d');
+        this.cellSize = 40; // 320 / 8
+
+        this.traySlots = [null, null, null];
+        this.selectedSlotIndex = -1;
+        this.isDragging = false;
+        this.dragSlotIndex = -1;
+        this.dragBlock = null;
+        this.dragPointerPos = { x: 0, y: 0 };
+        this.hoverGridPos = null;
+
+        this.particles = [];
+        this.animating = false;
+
+        this.ghostCanvas = document.getElementById('blast-drag-ghost');
+        this.ghostCtx = this.ghostCanvas ? this.ghostCanvas.getContext('2d') : null;
+
+        this.shapes = [
+          { id: 'dot', matrix: [[1]], color: '#00f2fe' },
+          { id: 'h2', matrix: [[1, 1]], color: '#ffd600' },
+          { id: 'v2', matrix: [[1], [1]], color: '#ffd600' },
+          { id: 'h3', matrix: [[1, 1, 1]], color: '#ff2a6d' },
+          { id: 'v3', matrix: [[1], [1], [1]], color: '#ff2a6d' },
+          { id: 'h4', matrix: [[1, 1, 1, 1]], color: '#00e676' },
+          { id: 'v4', matrix: [[1], [1], [1], [1]], color: '#00e676' },
+          { id: 'sq2', matrix: [[1, 1], [1, 1]], color: '#ff9100' },
+          { id: 'sq3', matrix: [[1, 1, 1], [1, 1, 1], [1, 1, 1]], color: '#a855f7' },
+          { id: 'c1', matrix: [[1, 1], [1, 0]], color: '#00f2fe' },
+          { id: 'c2', matrix: [[1, 1], [0, 1]], color: '#00f2fe' },
+          { id: 'c3', matrix: [[1, 0], [1, 1]], color: '#00f2fe' },
+          { id: 'c4', matrix: [[0, 1], [1, 1]], color: '#00f2fe' },
+          { id: 'L1', matrix: [[1, 0], [1, 0], [1, 1]], color: '#ffd600' },
+          { id: 'L2', matrix: [[0, 1], [0, 1], [1, 1]], color: '#ffd600' },
+          { id: 'T1', matrix: [[1, 1, 1], [0, 1, 0]], color: '#c084fc' },
+          { id: 'T2', matrix: [[0, 1, 0], [1, 1, 1]], color: '#c084fc' },
+          { id: 'plus', matrix: [[0, 1, 0], [1, 1, 1], [0, 1, 0]], color: '#00ff88' },
+          { id: 'z1', matrix: [[1, 1, 0], [0, 1, 1]], color: '#ff3d00' },
+          { id: 'z2', matrix: [[0, 1, 1], [1, 1, 0]], color: '#ff3d00' }
+        ];
+
+        this.init();
+      }
+
+      init() {
+        this.updateScoreUI();
+        this.refillTray();
+        this.setupEvents();
+        this.render();
+      }
+
+      reset() {
+        sound.playClick();
+        this.grid = Array.from({ length: 8 }, () => Array(8).fill(null));
+        this.score = 0;
+        this.streak = 0;
+        this.selectedSlotIndex = -1;
+        this.updateScoreUI();
+        this.refillTray();
+        document.getElementById('blast-overlay').classList.add('hidden');
+        this.setBanner("✨ 새로운 모험 시작! 가로·세로를 채워 콤보를 만들어보세요!");
+        this.render();
+      }
+
+      getRandomShape() {
+        const weights = [
+          8, 8, 8, 7, 7, 6, 6, 6, 2,
+          6, 6, 6, 6, 5, 5, 5, 5, 4, 4, 4
+        ];
+        const total = weights.reduce((a, b) => a + b, 0);
+        let rand = Math.random() * total;
+        for (let i = 0; i < weights.length; i++) {
+          if (rand < weights[i]) return this.shapes[i];
+          rand -= weights[i];
+        }
+        return this.shapes[0];
+      }
+
+      refillTray() {
+        for (let i = 0; i < 3; i++) {
+          this.traySlots[i] = this.getRandomShape();
+        }
+        this.renderTray();
+        this.checkGameOver();
+      }
+
+      renderTray() {
+        for (let i = 0; i < 3; i++) {
+          const slotEl = document.getElementById(`blast-slot-${i}`);
+          const canvas = document.getElementById(`slot-canvas-${i}`);
+          const ctx = canvas.getContext('2d');
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+          const block = this.traySlots[i];
+          if (!block) {
+            slotEl.style.opacity = '0.2';
+            slotEl.classList.remove('selected');
+            continue;
+          }
+
+          slotEl.style.opacity = '1';
+          slotEl.classList.toggle('selected', this.selectedSlotIndex === i);
+
+          const m = block.matrix;
+          const rows = m.length;
+          const cols = m[0].length;
+          const slotCell = Math.min(20, Math.floor(68 / Math.max(rows, cols)));
+          const offX = Math.floor((canvas.width - cols * slotCell) / 2);
+          const offY = Math.floor((canvas.height - rows * slotCell) / 2);
+
+          for (let r = 0; r < rows; r++) {
+            for (let c = 0; c < cols; c++) {
+              if (m[r][c]) {
+                this.drawCell(ctx, offX + c * slotCell, offY + r * slotCell, slotCell, block.color);
+              }
+            }
+          }
+        }
+      }
+
+      drawCell(ctx, x, y, size, color, isGhost = false) {
+        const p = 1.5;
+        const radius = 5;
+        const w = size - p * 2;
+        const h = size - p * 2;
+
+        ctx.save();
+        if (isGhost) {
+          ctx.fillStyle = color;
+          ctx.globalAlpha = 0.45;
+          this.roundRect(ctx, x + p, y + p, w, h, radius);
+          ctx.fill();
+          ctx.strokeStyle = color;
+          ctx.lineWidth = 1.5;
+          ctx.setLineDash([3, 3]);
+          ctx.stroke();
+        } else {
+          const grad = ctx.createLinearGradient(x, y, x, y + size);
+          grad.addColorStop(0, color);
+          grad.addColorStop(1, this.shadeColor(color, -25));
+          ctx.fillStyle = grad;
+          this.roundRect(ctx, x + p, y + p, w, h, radius);
+          ctx.fill();
+
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.35)';
+          this.roundRect(ctx, x + p + 2, y + p + 2, w - 4, Math.floor(h * 0.35), 3);
+          ctx.fill();
+
+          ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+          ctx.lineWidth = 1;
+          this.roundRect(ctx, x + p, y + p, w, h, radius);
+          ctx.stroke();
+        }
+        ctx.restore();
+      }
+
+      roundRect(ctx, x, y, w, h, r) {
+        if (w < 2 * r) r = w / 2;
+        if (h < 2 * r) r = h / 2;
+        ctx.beginPath();
+        ctx.moveTo(x + r, y);
+        ctx.arcTo(x + w, y, x + w, y + h, r);
+        ctx.arcTo(x + w, y + h, x, y + h, r);
+        ctx.arcTo(x, y + h, x, y, r);
+        ctx.arcTo(x, y + x, y, r);
+        ctx.closePath();
+      }
+
+      shadeColor(color, percent) {
+        let R = parseInt(color.substring(1, 3), 16);
+        let G = parseInt(color.substring(3, 5), 16);
+        let B = parseInt(color.substring(5, 7), 16);
+        R = parseInt(R * (100 + percent) / 100);
+        G = parseInt(G * (100 + percent) / 100);
+        B = parseInt(B * (100 + percent) / 100);
+        R = (R < 255) ? R : 255;
+        G = (G < 255) ? G : 255;
+        B = (B < 255) ? B : 255;
+        const RR = ((R.toString(16).length === 1) ? "0" + R.toString(16) : R.toString(16));
+        const GG = ((G.toString(16).length === 1) ? "0" + G.toString(16) : G.toString(16));
+        const BB = ((B.toString(16).length === 1) ? "0" + B.toString(16) : B.toString(16));
+        return "#" + RR + GG + BB;
+      }
+
+      render() {
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+        for (let r = 0; r < 8; r++) {
+          for (let c = 0; c < 8; c++) {
+            const x = c * this.cellSize;
+            const y = r * this.cellSize;
+            this.ctx.fillStyle = 'rgba(14, 20, 36, 0.75)';
+            this.roundRect(this.ctx, x + 1.5, y + 1.5, this.cellSize - 3, this.cellSize - 3, 5);
+            this.ctx.fill();
+            this.ctx.strokeStyle = 'rgba(0, 242, 254, 0.12)';
+            this.ctx.lineWidth = 1;
+            this.ctx.stroke();
+
+            const cellColor = this.grid[r][c];
+            if (cellColor) {
+              this.drawCell(this.ctx, x, y, this.cellSize, cellColor);
+            }
+          }
+        }
+
+        let activeBlock = null;
+        if (this.isDragging && this.dragBlock) {
+          activeBlock = this.dragBlock;
+        } else if (this.selectedSlotIndex >= 0) {
+          activeBlock = this.traySlots[this.selectedSlotIndex];
+        }
+
+        if (activeBlock && this.hoverGridPos) {
+          const { r: startR, c: startC } = this.hoverGridPos;
+          if (this.canPlace(activeBlock, startR, startC)) {
+            const m = activeBlock.matrix;
+            for (let r = 0; r < m.length; r++) {
+              for (let c = 0; c < m[0].length; c++) {
+                if (m[r][c]) {
+                  const x = (startC + c) * this.cellSize;
+                  const y = (startR + r) * this.cellSize;
+                  this.drawCell(this.ctx, x, y, this.cellSize, activeBlock.color, true);
+                }
+              }
+            }
+          }
+        }
+
+        if (this.particles.length > 0) {
+          for (let i = this.particles.length - 1; i >= 0; i--) {
+            const p = this.particles[i];
+            p.x += p.vx;
+            p.y += p.vy;
+            p.vy += 0.15;
+            p.alpha -= 0.03;
+            if (p.alpha <= 0) {
+              this.particles.splice(i, 1);
+            } else {
+              this.ctx.save();
+              this.ctx.globalAlpha = p.alpha;
+              this.ctx.fillStyle = p.color;
+              this.ctx.beginPath();
+              this.ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+              this.ctx.fill();
+              this.ctx.restore();
+            }
+          }
+          requestAnimationFrame(() => this.render());
+        }
+      }
+
+      canPlace(block, startR, startC) {
+        if (!block) return false;
+        const m = block.matrix;
+        const rows = m.length;
+        const cols = m[0].length;
+        if (startR < 0 || startC < 0 || startR + rows > 8 || startC + cols > 8) {
+          return false;
+        }
+        for (let r = 0; r < rows; r++) {
+          for (let c = 0; c < cols; c++) {
+            if (m[r][c] && this.grid[startR + r][startC + c] !== null) {
+              return false;
+            }
+          }
+        }
+        return true;
+      }
+
+      placeBlock(slotIndex, startR, startC) {
+        const block = this.traySlots[slotIndex];
+        if (!block || !this.canPlace(block, startR, startC)) return false;
+
+        const m = block.matrix;
+        let placedCellCount = 0;
+        for (let r = 0; r < m.length; r++) {
+          for (let c = 0; c < m[0].length; c++) {
+            if (m[r][c]) {
+              this.grid[startR + r][startC + c] = block.color;
+              placedCellCount++;
+            }
+          }
+        }
+
+        this.traySlots[slotIndex] = null;
+        this.selectedSlotIndex = -1;
+        this.hoverGridPos = null;
+
+        this.addScore(placedCellCount * 10);
+        sound.playSnap();
+        triggerHaptic(15);
+
+        this.checkClears();
+
+        if (this.traySlots.every(s => s === null)) {
+          this.refillTray();
+        } else {
+          this.renderTray();
+          this.checkGameOver();
+        }
+
+        this.render();
+        return true;
+      }
+
+      checkClears() {
+        const fullRows = [];
+        const fullCols = [];
+
+        for (let r = 0; r < 8; r++) {
+          if (this.grid[r].every(c => c !== null)) {
+            fullRows.push(r);
+          }
+        }
+
+        for (let c = 0; c < 8; c++) {
+          let full = true;
+          for (let r = 0; r < 8; r++) {
+            if (this.grid[r][c] === null) { full = false; break; }
+          }
+          if (full) fullCols.push(c);
+        }
+
+        const totalCleared = fullRows.length + fullCols.length;
+        if (totalCleared > 0) {
+          this.streak++;
+          if (this.streak > this.maxCombo) this.maxCombo = this.streak;
+
+          const wrapper = document.getElementById('blast-board-box');
+          wrapper.classList.remove('shake');
+          void wrapper.offsetWidth;
+          wrapper.classList.add('shake');
+
+          const clearedCoords = new Set();
+          fullRows.forEach(r => {
+            for (let c = 0; c < 8; c++) clearedCoords.add(`${r},${c}`);
+          });
+          fullCols.forEach(c => {
+            for (let r = 0; r < 8; r++) clearedCoords.add(`${r},${c}`);
+          });
+
+          clearedCoords.forEach(coord => {
+            const [r, c] = coord.split(',').map(Number);
+            const color = this.grid[r][c] || '#ffd600';
+            this.spawnParticles(c * this.cellSize + 20, r * this.cellSize + 20, color);
+            this.grid[r][c] = null;
+          });
+
+          const clearScore = (totalCleared * 120) * (this.streak > 1 ? this.streak * 1.5 : 1);
+          this.addScore(Math.round(clearScore));
+
+          sound.playBlast(this.streak);
+          triggerHaptic(40);
+
+          let comboText = `💥 ${totalCleared}줄 동시 폭발!`;
+          if (this.streak > 1) {
+            comboText = `🔥 COMBO x${this.streak}! (${totalCleared}줄 클리어)`;
+            this.setBanner(`🔥 콤보 폭발 중! 연속 ${this.streak}회 성공! (+${Math.round(clearScore)}점)`, true);
+          } else {
+            this.setBanner(`💥 멋진 한 방! +${Math.round(clearScore)}점 획득!`, true);
+          }
+
+          this.showFloatingText(comboText, '#ffd600');
+
+          if (this.streak >= 3) {
+            setPartnerQuote(`"연속 ${this.streak}콤보 폭발! 손맛 완전 미쳤어요!! 🏆"`, true, true);
+          } else if (totalCleared >= 2) {
+            setPartnerQuote('"와! 가로 세로가 동시에 싹쓸이됐어요! 대단해요! 👏"', true, true);
+          } else {
+            setPartnerQuote('"시원하게 한 줄 팡! 기분 최고예요! ✨"', true);
+          }
+
+        } else {
+          this.streak = 0;
+          this.setBanner("블록을 빈자리에 알맞게 배치해 보세요!");
+        }
+
+        this.updateScoreUI();
+      }
+
+      spawnParticles(x, y, color) {
+        for (let i = 0; i < 8; i++) {
+          const angle = Math.random() * Math.PI * 2;
+          const speed = Math.random() * 5 + 2;
+          this.particles.push({
+            x: x,
+            y: y,
+            vx: Math.cos(angle) * speed,
+            vy: Math.sin(angle) * speed,
+            size: Math.random() * 3.5 + 1.5,
+            color: color,
+            alpha: 1.0
+          });
+        }
+      }
+
+      showFloatingText(text, color) {
+        const layer = document.getElementById('blast-floating-layer');
+        if (!layer) return;
+        const msg = document.createElement('div');
+        msg.className = 'floating-msg';
+        msg.style.color = color || '#ffd600';
+        msg.style.top = '45%';
+        msg.innerText = text;
+        layer.appendChild(msg);
+        setTimeout(() => msg.remove(), 1300);
+      }
+
+      setBanner(text, highlight = false) {
+        const b = document.getElementById('blast-combo-banner');
+        if (!b) return;
+        b.innerText = text;
+        b.classList.toggle('highlight', highlight);
+      }
+
+      addScore(pts) {
+        const prev = this.score;
+        this.score += pts;
+        if (this.score > this.bestScore) {
+          this.bestScore = this.score;
+          localStorage.setItem('blockblast_best_score', this.bestScore.toString());
+        }
+
+        if (prev < 3000 && this.score >= 3000) {
+          setTimeout(() => {
+            openGiftModal('coffee');
+          }, 600);
+        }
+
+        this.updateScoreUI();
+      }
+
+      updateScoreUI() {
+        document.getElementById('blast-score').innerText = this.score.toLocaleString();
+        document.getElementById('blast-best').innerText = this.bestScore.toLocaleString();
+        document.getElementById('blast-streak').innerText = this.streak;
+      }
+
+      checkGameOver() {
+        let hasValidMove = false;
+        for (let i = 0; i < 3; i++) {
+          const block = this.traySlots[i];
+          if (!block) continue;
+          for (let r = 0; r < 8; r++) {
+            for (let c = 0; c < 8; c++) {
+              if (this.canPlace(block, r, c)) {
+                hasValidMove = true;
+                break;
+              }
+            }
+            if (hasValidMove) break;
+          }
+          if (hasValidMove) break;
+        }
+
+        const hasBlocks = this.traySlots.some(s => s !== null);
+        if (hasBlocks && !hasValidMove) {
+          setTimeout(() => {
+            sound.playGameOver();
+            document.getElementById('blast-final-score').innerText = this.score.toLocaleString();
+            document.getElementById('blast-final-combo').innerText = this.maxCombo;
+            document.getElementById('blast-overlay').classList.remove('hidden');
+            setPartnerQuote('"아쉽게 둘 자리가 꽉 찼네요! 그래도 정말 멋진 실력이었어요. 다시 한 판 해볼까요? ✨"', true, true);
+          }, 350);
+        }
+      }
+
+      setupEvents() {
+        for (let i = 0; i < 3; i++) {
+          const slotEl = document.getElementById(`blast-slot-${i}`);
+          slotEl.addEventListener('pointerdown', (e) => {
+            if (!this.traySlots[i]) return;
+            sound.playPick();
+            triggerHaptic(10);
+
+            this.isDragging = true;
+            this.dragSlotIndex = i;
+            this.dragBlock = this.traySlots[i];
+            this.selectedSlotIndex = i;
+            this.renderTray();
+
+            this.updateGhostCanvas(this.dragBlock);
+            this.moveGhost(e.clientX, e.clientY);
+            this.ghostCanvas.style.display = 'block';
+
+            slotEl.setPointerCapture(e.pointerId);
+          });
+
+          slotEl.addEventListener('pointermove', (e) => {
+            if (!this.isDragging) return;
+            this.moveGhost(e.clientX, e.clientY);
+            this.calcBoardHover(e.clientX, e.clientY);
+            this.render();
+          });
+
+          const handleRelease = (e) => {
+            if (!this.isDragging) return;
+            this.isDragging = false;
+            this.ghostCanvas.style.display = 'none';
+
+            if (this.hoverGridPos && this.dragBlock) {
+              const placed = this.placeBlock(this.dragSlotIndex, this.hoverGridPos.r, this.hoverGridPos.c);
+              if (!placed) {
+                this.hoverGridPos = null;
+                this.render();
+              }
+            } else {
+              this.hoverGridPos = null;
+              this.render();
+            }
+
+            this.dragBlock = null;
+            this.dragSlotIndex = -1;
+          };
+
+          slotEl.addEventListener('pointerup', handleRelease);
+          slotEl.addEventListener('pointercancel', handleRelease);
+        }
+
+        this.canvas.addEventListener('click', (e) => {
+          if (this.selectedSlotIndex < 0) return;
+          const rect = this.canvas.getBoundingClientRect();
+          const scaleX = this.canvas.width / rect.width;
+          const scaleY = this.canvas.height / rect.height;
+          const clickX = (e.clientX - rect.left) * scaleX;
+          const clickY = (e.clientY - rect.top) * scaleY;
+
+          const c = Math.floor(clickX / this.cellSize);
+          const r = Math.floor(clickY / this.cellSize);
+
+          const block = this.traySlots[this.selectedSlotIndex];
+          if (block && this.canPlace(block, r, c)) {
+            this.placeBlock(this.selectedSlotIndex, r, c);
+          }
+        });
+      }
+
+      updateGhostCanvas(block) {
+        if (!this.ghostCanvas || !this.ghostCtx) return;
+        const m = block.matrix;
+        const rows = m.length;
+        const cols = m[0].length;
+        const size = this.cellSize;
+        this.ghostCanvas.width = cols * size;
+        this.ghostCanvas.height = rows * size;
+        this.ghostCtx.clearRect(0, 0, this.ghostCanvas.width, this.ghostCanvas.height);
+
+        for (let r = 0; r < rows; r++) {
+          for (let c = 0; c < cols; c++) {
+            if (m[r][c]) {
+              this.drawCell(this.ghostCtx, c * size, r * size, size, block.color);
+            }
+          }
+        }
+      }
+
+      moveGhost(clientX, clientY) {
+        if (!this.ghostCanvas) return;
+        this.ghostCanvas.style.left = `${clientX}px`;
+        this.ghostCanvas.style.top = `${clientY - 65}px`;
+      }
+
+      calcBoardHover(clientX, clientY) {
+        const rect = this.canvas.getBoundingClientRect();
+        const targetX = clientX;
+        const targetY = clientY - 65;
+
+        if (
+          targetX >= rect.left && targetX <= rect.right &&
+          targetY >= rect.top && targetY <= rect.bottom
+        ) {
+          const scaleX = this.canvas.width / rect.width;
+          const scaleY = this.canvas.height / rect.height;
+          const bx = (targetX - rect.left) * scaleX;
+          const by = (targetY - rect.top) * scaleY;
+
+          const c = Math.floor(bx / this.cellSize);
+          const r = Math.floor(by / this.cellSize);
+          this.hoverGridPos = { r, c };
+        } else {
+          this.hoverGridPos = null;
+        }
+      }
+    }
+
+    // 엔진 인스턴스 생성
+    window.addEventListener('DOMContentLoaded', () => {
+      window.blastGame = new BlockBlastEngine();
+    });
+
   </script>
+<canvas id="blast-drag-ghost" width="160" height="160"></canvas>
 </body>
 </html>
