@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>TETRIS - 럭셔리 모바일 & 웹 에디션</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700;800;900&family=Pretendard:wght@400;500;600;700;800&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700;800;900&family=Pretendard:wght@400;500;600;700;800;900&display=swap');
 
     :root {
       --bg-color: #05070c;
@@ -137,9 +137,7 @@
       font-size: 9px;
     }
 
-    .guide-list strong {
-      color: #fff;
-    }
+    .guide-list strong { color: #fff; }
 
     .achievement-card {
       flex: 1;
@@ -178,25 +176,10 @@
       box-shadow: 0 0 12px rgba(255, 214, 0, 0.25);
     }
 
-    .trophy-icon {
-      font-size: 20px;
-    }
-
-    .trophy-info {
-      flex: 1;
-    }
-
-    .trophy-name {
-      font-size: 11px;
-      font-weight: 700;
-      color: #fff;
-    }
-
-    .trophy-condition {
-      font-size: 10px;
-      color: var(--text-dim);
-    }
-
+    .trophy-icon { font-size: 20px; }
+    .trophy-info { flex: 1; }
+    .trophy-name { font-size: 11px; font-weight: 700; color: #fff; }
+    .trophy-condition { font-size: 10px; color: var(--text-dim); }
     .trophy-badge {
       font-size: 9px;
       font-weight: 700;
@@ -205,7 +188,6 @@
       background: rgba(255, 255, 255, 0.1);
       color: #cbd5e1;
     }
-
     .trophy-item.unlocked .trophy-badge {
       background: #ffd600;
       color: #000;
@@ -213,12 +195,22 @@
     }
 
     /* ========================================================
-       중앙 패널: 게임 보드
+       중앙 패널: 게임 보드 & 타격감 화면 흔들림 연출
        ======================================================== */
     .center-section {
       display: flex;
       flex-direction: column;
       align-items: center;
+    }
+
+    /* 화면 타격감 흔들림 애니메이션 */
+    @keyframes screenShake {
+      0% { transform: translate(0, 0); }
+      20% { transform: translate(-5px, 4px); }
+      40% { transform: translate(4px, -4px); }
+      60% { transform: translate(-3px, -3px); }
+      80% { transform: translate(3px, 3px); }
+      100% { transform: translate(0, 0); }
     }
 
     .board-wrapper {
@@ -232,6 +224,11 @@
                   inset 0 0 15px rgba(0, 242, 254, 0.15);
       flex-shrink: 0;
       overflow: hidden;
+      transition: transform 0.05s;
+    }
+
+    .board-wrapper.shake {
+      animation: screenShake 0.22s ease-out;
     }
 
     #tetris {
@@ -240,6 +237,7 @@
       height: 560px;
     }
 
+    /* 칭찬 & 리액션 플로팅 텍스트 레이어 */
     .floating-text-layer {
       position: absolute;
       top: 0;
@@ -248,27 +246,28 @@
       height: 100%;
       pointer-events: none;
       overflow: hidden;
-      z-index: 8;
+      z-index: 15;
     }
 
     .floating-msg {
       position: absolute;
       left: 50%;
       transform: translate(-50%, -50%);
-      font-family: 'Orbitron', sans-serif;
-      font-size: 20px;
+      font-family: 'Pretendard', sans-serif;
+      font-size: 24px;
       font-weight: 900;
-      text-shadow: 0 0 15px currentColor;
-      animation: floatUp 1.2s ease-out forwards;
+      text-shadow: 0 0 20px currentColor, 0 3px 6px rgba(0,0,0,0.9);
+      animation: floatUp 1.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
       white-space: nowrap;
       text-align: center;
+      letter-spacing: -0.5px;
     }
 
     @keyframes floatUp {
-      0% { opacity: 0; transform: translate(-50%, 0) scale(0.6); }
-      20% { opacity: 1; transform: translate(-50%, -20px) scale(1.15); }
-      80% { opacity: 1; transform: translate(-50%, -40px) scale(1); }
-      100% { opacity: 0; transform: translate(-50%, -60px) scale(0.9); }
+      0% { opacity: 0; transform: translate(-50%, 10px) scale(0.6); }
+      20% { opacity: 1; transform: translate(-50%, -25px) scale(1.2); }
+      75% { opacity: 1; transform: translate(-50%, -50px) scale(1.05); }
+      100% { opacity: 0; transform: translate(-50%, -75px) scale(0.9); }
     }
 
     .board-overlay {
@@ -412,10 +411,7 @@
       text-shadow: 0 0 12px rgba(255, 214, 0, 0.5);
     }
 
-    .progress-box {
-      margin-top: 4px;
-    }
-
+    .progress-box { margin-top: 4px; }
     .progress-text {
       font-size: 9px;
       color: #93c5fd;
@@ -423,7 +419,6 @@
       justify-content: space-between;
       margin-bottom: 2px;
     }
-
     .progress-track {
       width: 100%;
       height: 5px;
@@ -431,7 +426,6 @@
       border-radius: 3px;
       overflow: hidden;
     }
-
     .progress-fill {
       width: 0%;
       height: 100%;
@@ -440,7 +434,6 @@
       transition: width 0.3s ease;
     }
 
-    /* NEXT & HOLD 듀얼 프리뷰 */
     .preview-dual-box {
       display: flex;
       gap: 8px;
@@ -515,7 +508,6 @@
       border: 1.5px solid rgba(255, 42, 109, 0.5);
     }
 
-    /* 하단 키보드 가이드 (PC용) */
     .controls-guide {
       margin-top: 14px;
       display: flex;
@@ -549,10 +541,10 @@
     }
 
     /* ========================================================
-       📱 모바일 전용 가상 터치 패드 컨트롤러 (스마트폰 최적화)
+       📱 모바일 가상 터치 컨트롤러
        ======================================================== */
     .mobile-touch-controller {
-      display: none; /* PC에서는 숨김 */
+      display: none;
       width: 100%;
       max-width: 380px;
       margin-top: 14px;
@@ -603,7 +595,6 @@
       color: #ffd600;
     }
 
-    /* 모바일 헤더 요약바 (스마트폰에서만 표시) */
     .mobile-summary-bar {
       display: none;
       width: 100%;
@@ -622,37 +613,13 @@
       text-align: center;
     }
 
-    .mobile-sum-card .label {
-      font-size: 9px;
-      color: var(--text-dim);
-      font-weight: 700;
-    }
+    .mobile-sum-card .label { font-size: 9px; color: var(--text-dim); font-weight: 700; }
+    .mobile-sum-card .val { font-size: 14px; color: #fff; font-weight: 800; font-variant-numeric: tabular-nums; }
 
-    .mobile-sum-card .val {
-      font-size: 14px;
-      color: #fff;
-      font-weight: 800;
-      font-variant-numeric: tabular-nums;
-    }
-
-    /* ========================================================
-       📱 모바일 반응형 미디어 쿼리 (스마트폰 세로 화면 최적화)
-       ======================================================== */
     @media (max-width: 820px) {
-      body {
-        padding: 8px 6px;
-        justify-content: flex-start;
-      }
-
-      .header {
-        margin-bottom: 8px;
-      }
-
-      .title {
-        font-size: 26px;
-        letter-spacing: 3px;
-      }
-
+      body { padding: 8px 6px; justify-content: flex-start; }
+      .header { margin-bottom: 8px; }
+      .title { font-size: 26px; letter-spacing: 3px; }
       .game-container {
         flex-direction: column;
         align-items: center;
@@ -661,41 +628,14 @@
         width: 100%;
         max-width: 380px;
       }
-
-      /* PC용 좌측/우측 패널 숨기고 모바일 요약바와 컨트롤러 활성화 */
-      .guide-panel {
-        display: none;
-      }
-
-      .side-panel {
-        display: none;
-      }
-
-      .controls-guide {
-        display: none;
-      }
-
-      .mobile-summary-bar {
-        display: flex;
-      }
-
-      .mobile-touch-controller {
-        display: block;
-      }
-
-      /* 스마트폰 화면에 맞춘 캔버스 스케일링 */
-      .board-wrapper {
-        width: 254px;
-        height: 504px;
-      }
-
-      #tetris {
-        width: 250px;
-        height: 500px;
-      }
+      .guide-panel, .side-panel, .controls-guide { display: none; }
+      .mobile-summary-bar { display: flex; }
+      .mobile-touch-controller { display: block; }
+      .board-wrapper { width: 254px; height: 504px; }
+      #tetris { width: 250px; height: 500px; }
     }
 
-    /* 🎁 진짜 선물 모달 */
+    /* 선물 모달 */
     .gift-modal {
       position: fixed;
       top: 0; left: 0;
@@ -709,11 +649,7 @@
       transition: opacity 0.3s ease;
     }
 
-    .gift-modal.hidden {
-      opacity: 0;
-      pointer-events: none;
-    }
-
+    .gift-modal.hidden { opacity: 0; pointer-events: none; }
     .gift-card-popup {
       background: linear-gradient(145deg, #161b2e 0%, #0d101d 100%);
       border: 2px solid rgba(255, 214, 0, 0.5);
@@ -810,10 +746,10 @@
       <div class="guide-card">
         <div class="card-title">📖 게임 가이드 & 꿀팁</div>
         <ul class="guide-list">
-          <li><strong>게임 목적:</strong> 가로 한 줄(10칸)을 채우면 <strong>줄이 팡! 터지며 점수</strong>를 얻습니다.</li>
+          <li><strong>게임 목적:</strong> 가로 한 줄을 채우면 <strong>줄이 팡! 터지며 쾌감 점수</strong>를 얻습니다.</li>
           <li><strong>진짜 선물:</strong> <strong>3,000점 달성 시 스타벅스 커피 선물</strong>이 즉시 열립니다!</li>
           <li><strong>📦 HOLD (보관):</strong> `C` 키(모바일은 [보관])로 필요 없는 블록을 창고에 넣을 수 있습니다.</li>
-          <li><strong>조작 팁:</strong> 1칸 보석(`■`)이나 3칸 일자는 깊은 구멍을 메꾸는 최고의 치트키입니다.</li>
+          <li><strong>틈새 마스터:</strong> 1칸 보석(`■`)이나 3칸 일자, 코너 블록으로 빈 곳을 쏙쏙 채우세요.</li>
         </ul>
       </div>
 
@@ -861,7 +797,6 @@
 
     <!-- 2. 중앙 패널: 게임 보드 & 모바일 요약바 -->
     <div class="center-section">
-      <!-- 📱 스마트폰 모바일 상단 요약 바 -->
       <div class="mobile-summary-bar">
         <div class="mobile-sum-card">
           <div class="label">SCORE</div>
@@ -881,13 +816,13 @@
         </div>
       </div>
 
-      <div class="board-wrapper">
+      <div class="board-wrapper" id="board-box">
         <canvas id="tetris" width="280" height="560"></canvas>
         <div id="floating-layer" class="floating-text-layer"></div>
 
         <div id="board-overlay" class="board-overlay">
           <div id="overlay-title" class="overlay-title ready">준비되셨나요?</div>
-          <div id="overlay-desc" class="overlay-desc">스마트폰 터치로도 시원하게 즐기는 테트리스!<br>3,000점을 넘겨 스타벅스 커피를 획득하세요!</div>
+          <div id="overlay-desc" class="overlay-desc">줄을 터뜨릴 때마다 화끈한 리액션과 타격감!<br>3,000점을 넘겨 스타벅스 커피를 획득하세요!</div>
           
           <div id="final-score" class="final-score-box" style="display: none;">
             <div class="final-score-main">최종 점수: <span id="final-score-val">0</span>점</div>
@@ -900,7 +835,7 @@
         </div>
       </div>
 
-      <!-- 📱 스마트폰 전용 가상 터치 컨트롤러 패드 -->
+      <!-- 모바일 가상 터치 컨트롤러 -->
       <div class="mobile-touch-controller">
         <div class="touch-row">
           <button class="touch-btn" id="t-btn-hold" onclick="handleHold()">📦 보관</button>
@@ -925,12 +860,11 @@
         <button id="btn-sound" class="btn-audio" onclick="toggleSound()">
           <span id="sound-icon">🔊</span> <span id="sound-text">효과음 ON</span>
         </button>
-        <button id="btn-bgm" class="btn-audio" onclick="toggleBGM()">
-          <span id="bgm-icon">🎵</span> <span id="bgm-text">BGM ON</span>
+        <button id="btn-bgm" class="btn-audio" onclick="cycleBGM()">
+          <span id="bgm-icon">🎵</span> <span id="bgm-text">BGM 1</span>
         </button>
       </div>
 
-      <!-- NEXT & HOLD 듀얼 창 -->
       <div class="preview-dual-box">
         <div class="info-card preview-card">
           <div class="card-label">NEXT</div>
@@ -942,7 +876,6 @@
         </div>
       </div>
 
-      <!-- 최고 점수 & 현재 점수 -->
       <div class="info-card">
         <div class="card-label">BEST HIGH SCORE</div>
         <div id="high-score" class="card-value gold">0</div>
@@ -992,7 +925,6 @@
     </div>
   </div>
 
-  <!-- 하단 키보드 가이드 -->
   <div class="controls-guide">
     <div class="key-badge"><span class="key">←</span> <span class="key">→</span> 좌우 이동</div>
     <div class="key-badge"><span class="key">↑</span> 회전</div>
@@ -1003,7 +935,7 @@
     <div class="key-badge"><span class="key">M</span> 효과음</div>
   </div>
 
-  <!-- 🎁 커피 선물 모달 -->
+  <!-- 선물 모달 -->
   <div id="gift-modal" class="gift-modal hidden">
     <div class="gift-card-popup">
       <button class="gift-close" onclick="closeGiftModal()">✕</button>
@@ -1046,33 +978,44 @@
   </div>
 
   <script>
-    /* 1. 사운드 및 8비트 레트로 BGM 엔진 */
+    /* ========================================================
+       1. 다채로운 3테마 BGM & 찰진 타격감 사운드 엔진
+       ======================================================== */
     class SoundEngine {
       constructor() {
         this.ctx = null;
         this.muted = false;
-        this.bgmMuted = false;
+        this.bgmTheme = 1; // 1: 레트로 아케이드, 2: 감성 카페 라벤더, 3: 신나는 팝, 0: 끔
         this.bgmPlaying = false;
         this.bgmTimer = null;
         this.bgmIndex = 0;
 
-        // 테트리스 Korobeiniki 8비트 멜로디
-        this.melody = [
+        // 테마 1: 오리지널 레트로 테트리스
+        this.theme1 = [
           { n: 'E5', d: 2 }, { n: 'B4', d: 1 }, { n: 'C5', d: 1 }, { n: 'D5', d: 2 },
           { n: 'C5', d: 1 }, { n: 'B4', d: 1 }, { n: 'A4', d: 2 }, { n: 'A4', d: 1 },
           { n: 'C5', d: 1 }, { n: 'E5', d: 2 }, { n: 'D5', d: 1 }, { n: 'C5', d: 1 },
           { n: 'B4', d: 3 }, { n: 'C5', d: 1 }, { n: 'D5', d: 2 }, { n: 'E5', d: 2 },
-          { n: 'C5', d: 2 }, { n: 'A4', d: 2 }, { n: 'A4', d: 3 }, { n: 'R', d: 1 },
-          { n: 'D5', d: 3 }, { n: 'F5', d: 1 }, { n: 'A5', d: 2 }, { n: 'G5', d: 1 },
-          { n: 'F5', d: 1 }, { n: 'E5', d: 3 }, { n: 'C5', d: 1 }, { n: 'E5', d: 2 },
-          { n: 'D5', d: 1 }, { n: 'C5', d: 1 }, { n: 'B4', d: 2 }, { n: 'B4', d: 1 },
-          { n: 'C5', d: 1 }, { n: 'D5', d: 2 }, { n: 'E5', d: 2 }, { n: 'C5', d: 2 },
-          { n: 'A4', d: 2 }, { n: 'A4', d: 3 }, { n: 'R', d: 1 }
+          { n: 'C5', d: 2 }, { n: 'A4', d: 2 }, { n: 'A4', d: 3 }, { n: 'R', d: 2 }
+        ];
+
+        // 테마 2: 편안하고 감미로운 카페풍 캐논 멜로디
+        this.theme2 = [
+          { n: 'C5', d: 3 }, { n: 'G4', d: 3 }, { n: 'A4', d: 3 }, { n: 'E4', d: 3 },
+          { n: 'F4', d: 3 }, { n: 'C4', d: 3 }, { n: 'F4', d: 2 }, { n: 'G4', d: 2 },
+          { n: 'C5', d: 4 }, { n: 'R', d: 2 }
+        ];
+
+        // 테마 3: 흥겹고 경쾌한 리듬 팝
+        this.theme3 = [
+          { n: 'E5', d: 1 }, { n: 'G5', d: 1 }, { n: 'A5', d: 2 }, { n: 'G5', d: 1 },
+          { n: 'E5', d: 2 }, { n: 'D5', d: 1 }, { n: 'C5', d: 2 }, { n: 'D5', d: 1 },
+          { n: 'E5', d: 3 }, { n: 'D5', d: 1 }, { n: 'C5', d: 3 }, { n: 'R', d: 2 }
         ];
 
         this.freqs = {
-          'A4': 440.00, 'B4': 493.88, 'C5': 523.25, 'D5': 587.33,
-          'E5': 659.25, 'F5': 698.46, 'G5': 783.99, 'A5': 880.00, 'R': 0
+          'C4': 261.63, 'D4': 293.66, 'E4': 329.63, 'F4': 349.23, 'G4': 392.00, 'A4': 440.00, 'B4': 493.88,
+          'C5': 523.25, 'D5': 587.33, 'E5': 659.25, 'F5': 698.46, 'G5': 783.99, 'A5': 880.00, 'R': 0
         };
       }
 
@@ -1092,8 +1035,8 @@
         const osc = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
         osc.type = 'sine';
-        osc.frequency.setValueAtTime(420, this.ctx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(260, this.ctx.currentTime + 0.04);
+        osc.frequency.setValueAtTime(450, this.ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(280, this.ctx.currentTime + 0.04);
         gain.gain.setValueAtTime(0.08, this.ctx.currentTime);
         gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.04);
         osc.connect(gain);
@@ -1108,9 +1051,9 @@
         const osc = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
         osc.type = 'triangle';
-        osc.frequency.setValueAtTime(480, this.ctx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(860, this.ctx.currentTime + 0.08);
-        gain.gain.setValueAtTime(0.1, this.ctx.currentTime);
+        osc.frequency.setValueAtTime(500, this.ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(950, this.ctx.currentTime + 0.08);
+        gain.gain.setValueAtTime(0.12, this.ctx.currentTime);
         gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.08);
         osc.connect(gain);
         gain.connect(this.ctx.destination);
@@ -1126,7 +1069,7 @@
         osc.type = 'triangle';
         osc.frequency.setValueAtTime(180, this.ctx.currentTime);
         osc.frequency.exponentialRampToValueAtTime(60, this.ctx.currentTime + 0.09);
-        gain.gain.setValueAtTime(0.12, this.ctx.currentTime);
+        gain.gain.setValueAtTime(0.14, this.ctx.currentTime);
         gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.09);
         osc.connect(gain);
         gain.connect(this.ctx.destination);
@@ -1140,9 +1083,9 @@
         const osc = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
         osc.type = 'square';
-        osc.frequency.setValueAtTime(280, this.ctx.currentTime);
+        osc.frequency.setValueAtTime(290, this.ctx.currentTime);
         osc.frequency.exponentialRampToValueAtTime(45, this.ctx.currentTime + 0.12);
-        gain.gain.setValueAtTime(0.16, this.ctx.currentTime);
+        gain.gain.setValueAtTime(0.18, this.ctx.currentTime);
         gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.12);
         osc.connect(gain);
         gain.connect(this.ctx.destination);
@@ -1150,21 +1093,40 @@
         osc.stop(this.ctx.currentTime + 0.12);
       }
 
-      playClear(lineCount) {
+      /* 쾅-! 터지는 시원한 타격감 폭파 사운드 */
+      playExplosion(lines) {
         if (this.muted) return;
         this.init();
-        const notes = (lineCount >= 4) ? [523.25, 659.25, 783.99, 1046.50, 1318.51] : [587.33, 739.99, 880.00, 1174.66];
+
+        // 1. 저음 펀치
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(160, this.ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(35, this.ctx.currentTime + 0.22);
+        gain.gain.setValueAtTime(0.28, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.22);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(this.ctx.currentTime + 0.22);
+
+        // 2. 화려한 챠라랑 멜로디
+        const notes = (lines >= 4)
+          ? [523.25, 659.25, 783.99, 1046.50, 1318.51]
+          : [587.33, 739.99, 880.00, 1174.66];
+
         notes.forEach((freq, i) => {
-          const osc = this.ctx.createOscillator();
-          const gain = this.ctx.createGain();
-          osc.type = 'sine';
-          osc.frequency.setValueAtTime(freq, this.ctx.currentTime + i * 0.06);
-          gain.gain.setValueAtTime(0.14, this.ctx.currentTime + i * 0.06);
-          gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + i * 0.06 + 0.22);
-          osc.connect(gain);
-          gain.connect(this.ctx.destination);
-          osc.start(this.ctx.currentTime + i * 0.06);
-          osc.stop(this.ctx.currentTime + i * 0.06 + 0.22);
+          const mOsc = this.ctx.createOscillator();
+          const mGain = this.ctx.createGain();
+          mOsc.type = 'sine';
+          mOsc.frequency.setValueAtTime(freq, this.ctx.currentTime + i * 0.05);
+          mGain.gain.setValueAtTime(0.15, this.ctx.currentTime + i * 0.05);
+          mGain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + i * 0.05 + 0.2);
+          mOsc.connect(mGain);
+          mGain.connect(this.ctx.destination);
+          mOsc.start(this.ctx.currentTime + i * 0.05);
+          mOsc.stop(this.ctx.currentTime + i * 0.05 + 0.2);
         });
       }
 
@@ -1179,7 +1141,7 @@
           const startTime = this.ctx.currentTime + i * 0.08;
           const duration = (i === melody.length - 1) ? 0.4 : 0.08;
           osc.frequency.setValueAtTime(freq, startTime);
-          gain.gain.setValueAtTime(0.18, startTime);
+          gain.gain.setValueAtTime(0.2, startTime);
           gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
           osc.connect(gain);
           gain.connect(this.ctx.destination);
@@ -1224,7 +1186,7 @@
 
       /* BGM 제어 */
       startBGM() {
-        if (this.bgmMuted || this.bgmPlaying) return;
+        if (this.bgmTheme === 0 || this.bgmPlaying) return;
         this.init();
         this.bgmPlaying = true;
         this.bgmIndex = 0;
@@ -1237,18 +1199,28 @@
       }
 
       playBGMNote() {
-        if (!this.bgmPlaying || this.bgmMuted) return;
-        const item = this.melody[this.bgmIndex];
+        if (!this.bgmPlaying || this.bgmTheme === 0) return;
+
+        let currentMelody = this.theme1;
+        let tempo = 135;
+        if (this.bgmTheme === 2) {
+          currentMelody = this.theme2;
+          tempo = 150;
+        } else if (this.bgmTheme === 3) {
+          currentMelody = this.theme3;
+          tempo = 125;
+        }
+
+        const item = currentMelody[this.bgmIndex];
         const freq = this.freqs[item.n];
-        const tempo = 135;
         const durMs = item.d * tempo;
 
         if (freq > 0 && this.ctx && this.ctx.state === 'running') {
           const osc = this.ctx.createOscillator();
           const gain = this.ctx.createGain();
-          osc.type = 'square';
+          osc.type = (this.bgmTheme === 2) ? 'sine' : 'square';
           osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
-          gain.gain.setValueAtTime(0.018, this.ctx.currentTime); // 편안한 은은한 볼륨
+          gain.gain.setValueAtTime(0.016, this.ctx.currentTime); // 귀가 편안한 볼륨
           gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + (durMs / 1000) * 0.9);
           osc.connect(gain);
           gain.connect(this.ctx.destination);
@@ -1256,7 +1228,7 @@
           osc.stop(this.ctx.currentTime + (durMs / 1000) * 0.9);
         }
 
-        this.bgmIndex = (this.bgmIndex + 1) % this.melody.length;
+        this.bgmIndex = (this.bgmIndex + 1) % currentMelody.length;
         this.bgmTimer = setTimeout(() => this.playBGMNote(), durMs);
       }
     }
@@ -1277,22 +1249,44 @@
       }
     }
 
-    function toggleBGM() {
-      sound.bgmMuted = !sound.bgmMuted;
+    /* BGM 테마 순환 (테마 1 ➔ 테마 2 ➔ 테마 3 ➔ OFF) */
+    function cycleBGM() {
+      sound.bgmTheme = (sound.bgmTheme + 1) % 4;
       const icon = document.getElementById('bgm-icon');
       const text = document.getElementById('bgm-text');
-      if (sound.bgmMuted) {
+
+      if (sound.bgmTheme === 0) {
         sound.stopBGM();
         icon.innerText = '🔇';
         text.innerText = 'BGM OFF';
       } else {
+        sound.stopBGM();
         sound.startBGM();
         icon.innerText = '🎵';
-        text.innerText = 'BGM ON';
+        text.innerText = `BGM ${sound.bgmTheme}`;
+        const themeNames = ['', '아케이드', '감성 카페', '경쾌 팝'];
+        showFloatingText(`🎵 음악 변경: ${themeNames[sound.bgmTheme]}`, '#00f2fe');
       }
     }
 
-    /* 2. 15가지 컬러 팔레트 */
+    /* 한국어 음성 칭찬 추임새 */
+    function speakPraise(msg) {
+      if (sound.muted || !('speechSynthesis' in window)) return;
+      try {
+        const u = new SpeechSynthesisUtterance(msg);
+        u.lang = 'ko-KR';
+        u.rate = 1.35;
+        u.pitch = 1.25;
+        u.volume = 0.85;
+        window.speechSynthesis.cancel();
+        window.speechSynthesis.speak(u);
+      } catch(e) {}
+    }
+
+    /* ========================================================
+       2. 15가지 실용적인 틈새 해결 블록 라인업
+       (난해한 십자가는 빼고, 쏙 들어가는 효자 블록들 보강!)
+       ======================================================== */
     const COLORS = [
       null,
       { main: '#00e5ff', light: '#80f2ff', dark: '#009bb3' }, // 1: I
@@ -1305,26 +1299,85 @@
       { main: '#ffe600', light: '#ffffff', dark: '#c49b00' }, // 8: DOT (1칸 보석)
       { main: '#00f5d4', light: '#7bfff0', dark: '#00a38d' }, // 9: DOMINO (2칸 바)
       { main: '#ff2a85', light: '#ff80b3', dark: '#b3004b' }, // 10: I3 (3칸 일자)
-      { main: '#ff7b54', light: '#ffa387', dark: '#b84423' }, // 11: CORNER (3칸 ㄱ자)
-      { main: '#00ffff', light: '#a6ffff', dark: '#00b3b3' }, // 12: I5 (5칸 일자)
-      { main: '#b388ff', light: '#d1b3ff', dark: '#7c4dff' }, // 13: DIAG (2칸 대각선)
-      { main: '#ffab00', light: '#ffd54f', dark: '#c67c00' }, // 14: LCORNER (깊은 구석)
-      { main: '#76ff03', light: '#b0ff57', dark: '#52b202' }  // 15: CROSS (십자가)
+      { main: '#ff7b54', light: '#ffa387', dark: '#b84423' }, // 11: CORNER_L (3칸 좌코너)
+      { main: '#ff9f43', light: '#fed330', dark: '#ee5253' }, // 12: CORNER_R (3칸 우코너)
+      { main: '#00ffff', light: '#a6ffff', dark: '#00b3b3' }, // 13: I5 (5칸 슈퍼일자)
+      { main: '#b388ff', light: '#d1b3ff', dark: '#7c4dff' }, // 14: DIAG (대각선)
+      { main: '#e056fd', light: '#ff9ff3', dark: '#be2edd' }  // 15: DIAG_R (역대각선)
     ];
 
-    /* 3. 게임 엔진 */
+    const SHAPES = {
+      'I': [[0,0,0,0],[1,1,1,1],[0,0,0,0],[0,0,0,0]],
+      'J': [[2,0,0],[2,2,2],[0,0,0]],
+      'L': [[0,0,3],[3,3,3],[0,0,0]],
+      'O': [[4,4],[4,4]],
+      'S': [[0,5,5],[5,5,0],[0,0,0]],
+      'T': [[0,6,0],[6,6,6],[0,0,0]],
+      'Z': [[7,7,0],[0,7,7],[0,0,0]],
+      // ★ 빈틈 채우기 특급 해결사들
+      'DOT': [[8]],                      // 1칸 만능 보석
+      'DOMINO': [[0,0],[9,9]],           // 2칸 미니 바
+      'I3': [[0,0,0],[10,10,10],[0,0,0]],// 3칸 미니 일자
+      'CORNER_L': [[11,11],[11,0]],      // 3칸 좌측 코너
+      'CORNER_R': [[12,12],[0,12]],      // 3칸 우측 코너
+      'I5': [[0,0,0,0,0],[0,0,0,0,0],[13,13,13,13,13],[0,0,0,0,0],[0,0,0,0,0]], // 5칸 슈퍼일자
+      'DIAG': [[14,0],[0,14]],           // 2칸 대각선
+      'DIAG_R': [[0,15],[15,0]]          // 2칸 역대각선
+    };
+
+    // 가방 목록 (1칸 보석을 2개 넣어 자주 등장하게 만듦!)
+    const ALL_PIECES = [
+      'I', 'J', 'L', 'O', 'S', 'T', 'Z',
+      'DOT', 'DOT', 'DOMINO', 'I3',
+      'CORNER_L', 'CORNER_R', 'I5', 'DIAG', 'DIAG_R'
+    ];
+
+    const STATE = {
+      IDLE: 'IDLE',
+      PLAYING: 'PLAYING',
+      PAUSED: 'PAUSED',
+      GAMEOVER: 'GAMEOVER'
+    };
+
+    let gameState = STATE.IDLE;
+    let board = createMatrix(10, 20);
+    const COLS = 10;
+    const ROWS = 20;
+    const BLOCK_SIZE = 28;
+
+    let score = 0;
+    let highScore = parseInt(localStorage.getItem('tetris_high_score') || '0', 10);
+    let lines = 0;
+    let level = 1;
+
+    let currentPiece = null;
+    let nextPiece = null;
+    let holdPiece = null;
+    let canHold = true;
+
+    let dropCounter = 0;
+    let dropInterval = 1000;
+    let lastTime = 0;
+    let animationId = null;
+
+    let particles = [];
+
+    const TROPHIES = [
+      { id: 'trophy-1', targetScore: 500, name: '사탕 선물', type: 'candy', unlocked: false },
+      { id: 'trophy-2', targetScore: 1500, name: '탄산음료', type: 'soda', unlocked: false },
+      { id: 'trophy-3', targetScore: 3000, name: '스타벅스 커피 쿠폰', type: 'coffee', unlocked: false },
+      { id: 'trophy-4', targetScore: 5000, name: '케이크+커피 세트', type: 'cake', unlocked: false }
+    ];
+
+    // DOM 요소
     const canvas = document.getElementById('tetris');
     const ctx = canvas.getContext('2d');
+    const boardBox = document.getElementById('board-box');
     const nextCanvas = document.getElementById('next-canvas');
     const nextCtx = nextCanvas.getContext('2d');
     const holdCanvas = document.getElementById('hold-canvas');
     const holdCtx = holdCanvas.getContext('2d');
 
-    const BLOCK_SIZE = 28;
-    const COLS = 10;
-    const ROWS = 20;
-
-    // DOM 요소들 (PC & 모바일)
     const scoreVal = document.getElementById('score');
     const highScoreVal = document.getElementById('high-score');
     const levelVal = document.getElementById('level');
@@ -1357,64 +1410,6 @@
     const customGiftPreview = document.getElementById('custom-gift-preview');
     const customGiftImg = document.getElementById('custom-gift-img');
 
-    // 15종 블록 모양
-    const SHAPES = {
-      'I': [[0,0,0,0],[1,1,1,1],[0,0,0,0],[0,0,0,0]],
-      'J': [[2,0,0],[2,2,2],[0,0,0]],
-      'L': [[0,0,3],[3,3,3],[0,0,0]],
-      'O': [[4,4],[4,4]],
-      'S': [[0,5,5],[5,5,0],[0,0,0]],
-      'T': [[0,6,0],[6,6,6],[0,0,0]],
-      'Z': [[7,7,0],[0,7,7],[0,0,0]],
-      'DOT': [[8]],
-      'DOMINO': [[0,0],[9,9]],
-      'I3': [[0,0,0],[10,10,10],[0,0,0]],
-      'CORNER': [[11,11],[11,0]],
-      'I5': [[0,0,0,0,0],[0,0,0,0,0],[12,12,12,12,12],[0,0,0,0,0],[0,0,0,0,0]],
-      'DIAG': [[13,0],[0,13]],
-      'LCORNER': [[14,0,0],[14,0,0],[14,14,0]],
-      'CROSS': [[0,15,0],[15,15,15],[0,15,0]]
-    };
-
-    const ALL_PIECES = [
-      'I', 'J', 'L', 'O', 'S', 'T', 'Z',
-      'DOT', 'DOMINO', 'I3', 'CORNER',
-      'I5', 'DIAG', 'LCORNER', 'CROSS'
-    ];
-
-    const STATE = {
-      IDLE: 'IDLE',
-      PLAYING: 'PLAYING',
-      PAUSED: 'PAUSED',
-      GAMEOVER: 'GAMEOVER'
-    };
-
-    let gameState = STATE.IDLE;
-    let board = createMatrix(COLS, ROWS);
-    let score = 0;
-    let highScore = parseInt(localStorage.getItem('tetris_high_score') || '0', 10);
-    let lines = 0;
-    let level = 1;
-
-    let currentPiece = null;
-    let nextPiece = null;
-    let holdPiece = null;
-    let canHold = true; // 1턴당 1회 홀드 가능
-
-    let dropCounter = 0;
-    let dropInterval = 1000;
-    let lastTime = 0;
-    let animationId = null;
-
-    let particles = [];
-
-    const TROPHIES = [
-      { id: 'trophy-1', targetScore: 500, name: '사탕 선물', type: 'candy', unlocked: false },
-      { id: 'trophy-2', targetScore: 1500, name: '탄산음료', type: 'soda', unlocked: false },
-      { id: 'trophy-3', targetScore: 3000, name: '스타벅스 커피 쿠폰', type: 'coffee', unlocked: false },
-      { id: 'trophy-4', targetScore: 5000, name: '케이크+커피 세트', type: 'cake', unlocked: false }
-    ];
-
     function createMatrix(w, h) {
       const matrix = [];
       while (h--) matrix.push(new Array(w).fill(0));
@@ -1435,10 +1430,14 @@
     function getRandomPiece() {
       if (pieceBag.length === 0) fillBag();
       const type = pieceBag.pop();
+      const uniqueTypes = [
+        'I', 'J', 'L', 'O', 'S', 'T', 'Z',
+        'DOT', 'DOMINO', 'I3', 'CORNER_L', 'CORNER_R', 'I5', 'DIAG', 'DIAG_R'
+      ];
       return {
         type: type,
         matrix: SHAPES[type].map(row => [...row]),
-        colorIdx: ALL_PIECES.indexOf(type) + 1,
+        colorIdx: uniqueTypes.indexOf(type) + 1,
         pos: { x: 0, y: 0 }
       };
     }
@@ -1460,7 +1459,6 @@
       }
     }
 
-    /* 📦 블록 보관(HOLD) 기능 */
     function handleHold() {
       if (gameState !== STATE.PLAYING || !canHold) return;
       sound.playClick();
@@ -1608,25 +1606,32 @@
       el.style.top = '40%';
       el.innerText = text;
       floatingLayer.appendChild(el);
-      setTimeout(() => el.remove(), 1200);
+      setTimeout(() => el.remove(), 1300);
+    }
+
+    function triggerScreenShake() {
+      boardBox.classList.remove('shake');
+      void boardBox.offsetWidth; // 리플로우
+      boardBox.classList.add('shake');
     }
 
     function spawnParticles(lineY) {
-      const colors = ['#00f2fe', '#ffd600', '#ff2a85', '#00ff88', '#fff'];
-      for (let i = 0; i < 35; i++) {
+      const colors = ['#00f2fe', '#ffd600', '#ff2a85', '#00ff88', '#fff', '#b388ff'];
+      for (let i = 0; i < 45; i++) {
         particles.push({
           x: Math.random() * (COLS * BLOCK_SIZE),
           y: lineY * BLOCK_SIZE + BLOCK_SIZE / 2,
-          vx: (Math.random() - 0.5) * 8,
-          vy: (Math.random() - 0.7) * 7,
+          vx: (Math.random() - 0.5) * 10,
+          vy: (Math.random() - 0.7) * 9,
           color: colors[Math.floor(Math.random() * colors.length)],
-          size: Math.random() * 4 + 2,
+          size: Math.random() * 4 + 2.5,
           alpha: 1,
           decay: Math.random() * 0.02 + 0.015
         });
       }
     }
 
+    /* 통쾌한 줄 삭제 & 타격감 리액션 */
     function clearLines() {
       let linesCleared = 0;
       let lastClearedY = 0;
@@ -1643,7 +1648,8 @@
       }
 
       if (linesCleared > 0) {
-        sound.playClear(linesCleared);
+        sound.playExplosion(linesCleared);
+        triggerScreenShake(); // 화면 쿵 흔들림!
         spawnParticles(lastClearedY);
 
         const lineScores = [0, 100, 300, 600, 1000];
@@ -1656,16 +1662,26 @@
           localStorage.setItem('tetris_high_score', highScore.toString());
         }
 
-        if (linesCleared === 1) showFloatingText(`GOOD! +${earned}`, '#00f2fe');
-        else if (linesCleared === 2) showFloatingText(`DOUBLE! +${earned}`, '#00ff88');
-        else if (linesCleared === 3) showFloatingText(`TRIPLE! +${earned}`, '#ffd600');
-        else if (linesCleared >= 4) showFloatingText(`★ TETRIS! +${earned} ★`, '#ff2a85');
+        // 찰진 한국어 칭찬 리액션 & 음성
+        if (linesCleared === 1) {
+          showFloatingText(`👍 나이스! +${earned}`, '#00f2fe');
+          speakPraise('나이스!');
+        } else if (linesCleared === 2) {
+          showFloatingText(`🔥 와 짱이다! +${earned}`, '#00ff88');
+          speakPraise('와 짱!');
+        } else if (linesCleared === 3) {
+          showFloatingText(`⚡ 대박! 실력자! +${earned}`, '#ffd600');
+          speakPraise('대박!');
+        } else if (linesCleared >= 4) {
+          showFloatingText(`🎆 싹쓸이! 미쳤다! +${earned} 🎆`, '#ff2a85');
+          speakPraise('싹쓸이! 미쳤다!');
+        }
 
         const newLevel = Math.floor(lines / 5) + 1;
         if (newLevel > level) {
           level = newLevel;
           sound.playFanfare();
-          showFloatingText(`🎉 LEVEL ${level} 승급! 🎉`, '#ffd600');
+          showFloatingText(`🎉 LEVEL ${level} 승급! 축하해요! 🎉`, '#ffd600');
           dropInterval = Math.max(150, 1000 - (level - 1) * 80);
         }
 
@@ -1694,19 +1710,16 @@
     }
 
     function updateUI() {
-      // 점수 업데이트
       scoreVal.innerText = score.toLocaleString();
       highScoreVal.innerText = highScore.toLocaleString();
       levelVal.innerText = level;
       linesVal.innerText = lines;
 
-      // 모바일 요약바 동기화
       mScoreVal.innerText = score.toLocaleString();
       mBestVal.innerText = highScore.toLocaleString();
       mLevelVal.innerText = level;
       mLinesVal.innerText = lines;
 
-      // 진행도 바
       const currentLevelLines = lines % 5;
       const linesRemaining = 5 - currentLevelLines;
       const levelPercent = (currentLevelLines / 5) * 100;
@@ -1783,7 +1796,7 @@
         const p = particles[i];
         p.x += p.vx;
         p.y += p.vy;
-        p.vy += 0.2;
+        p.vy += 0.22;
         p.alpha -= p.decay;
 
         if (p.alpha <= 0) {
@@ -1829,7 +1842,6 @@
       updateParticles();
     }
 
-    /* 프리뷰 캔버스 렌더러 (NEXT & HOLD 공용) */
     function renderPreview(context, targetCanvas, piece) {
       context.fillStyle = '#030508';
       context.fillRect(0, 0, targetCanvas.width, targetCanvas.height);
@@ -1864,13 +1876,8 @@
       });
     }
 
-    function drawNext() {
-      renderPreview(nextCtx, nextCanvas, nextPiece);
-    }
-
-    function drawHold() {
-      renderPreview(holdCtx, holdCanvas, holdPiece);
-    }
+    function drawNext() { renderPreview(nextCtx, nextCanvas, nextPiece); }
+    function drawHold() { renderPreview(holdCtx, holdCanvas, holdPiece); }
 
     function update(time = 0) {
       if (gameState !== STATE.PLAYING) return;
@@ -2016,9 +2023,7 @@
       }
     }
 
-    function closeGiftModal() {
-      giftModal.classList.add('hidden');
-    }
+    function closeGiftModal() { giftModal.classList.add('hidden'); }
 
     function handleRealGiftClaim() {
       sound.playClick();
@@ -2040,84 +2045,55 @@
       }
     }
 
-    /* ========================================================
-       📱 모바일 터치 이벤트 핸들러 (연속 이동 및 제어)
-       ======================================================== */
+    /* 모바일 터치 이벤트 */
     let touchMoveTimer = null;
     let touchDropTimer = null;
 
-    function handleTouchRotate() {
-      playerRotate(1);
-      draw();
-    }
-
-    function handleTouchHardDrop() {
-      playerHardDrop();
-      draw();
-    }
+    function handleTouchRotate() { playerRotate(1); draw(); }
+    function handleTouchHardDrop() { playerHardDrop(); draw(); }
 
     function startContinuousMove(dir) {
       playerMove(dir);
       draw();
       clearInterval(touchMoveTimer);
-      touchMoveTimer = setInterval(() => {
-        playerMove(dir);
-        draw();
-      }, 100);
+      touchMoveTimer = setInterval(() => { playerMove(dir); draw(); }, 100);
     }
 
-    function stopContinuousMove() {
-      clearInterval(touchMoveTimer);
-    }
+    function stopContinuousMove() { clearInterval(touchMoveTimer); }
 
     function startContinuousDrop() {
       playerDrop();
       draw();
       clearInterval(touchDropTimer);
-      touchDropTimer = setInterval(() => {
-        playerDrop();
-        draw();
-      }, 70);
+      touchDropTimer = setInterval(() => { playerDrop(); draw(); }, 70);
     }
 
-    function stopContinuousDrop() {
-      clearInterval(touchDropTimer);
-    }
+    function stopContinuousDrop() { clearInterval(touchDropTimer); }
 
-    /* 키보드 이벤트 (PC용) */
+    /* 키보드 이벤트 */
     document.addEventListener('keydown', event => {
       if (gameState === STATE.PLAYING) {
         if (event.key === 'ArrowLeft') {
-          playerMove(-1);
-          draw();
+          playerMove(-1); draw();
         } else if (event.key === 'ArrowRight') {
-          playerMove(1);
-          draw();
+          playerMove(1); draw();
         } else if (event.key === 'ArrowDown') {
-          playerDrop();
-          draw();
+          playerDrop(); draw();
         } else if (event.key === 'ArrowUp') {
-          playerRotate(1);
-          draw();
+          playerRotate(1); draw();
         } else if (event.key === ' ') {
           event.preventDefault();
-          playerHardDrop();
-          draw();
+          playerHardDrop(); draw();
         } else if (event.key === 'c' || event.key === 'C' || event.key === 'Shift') {
-          handleHold();
-          draw();
+          handleHold(); draw();
         }
       }
 
       if (event.key === 'p' || event.key === 'P' || event.key === 'ㅔ') {
-        if (gameState === STATE.PLAYING || gameState === STATE.PAUSED) {
-          handlePause();
-        }
+        if (gameState === STATE.PLAYING || gameState === STATE.PAUSED) handlePause();
       }
 
-      if (event.key === 'm' || event.key === 'M' || event.key === 'ㅡ') {
-        toggleSound();
-      }
+      if (event.key === 'm' || event.key === 'M' || event.key === 'ㅡ') toggleSound();
     });
 
     updateUI();
