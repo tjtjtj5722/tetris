@@ -1211,9 +1211,12 @@
     <div class="gift-card-popup">
       <button class="gift-close" onclick="closeGiftModal()">✕</button>
       <div class="gift-header">
-        <span class="gift-badge">MISSION REWARD</span>
-        <h2>🎉 축하합니다! 진짜 커피 선물 획득!</h2>
-        <p>열심히 도전하여 <strong style="color: #ffd600;">스타벅스 카페 아메리카노 선물</strong>을 획득하셨습니다!</p>
+        <span class="gift-badge">🏆 3,000점 미션 대성공!</span>
+        <h2>🎉 축하합니다! 커피 획득 미션 달성!</h2>
+        <p style="margin-top: 6px; font-size: 13px; line-height: 1.5;">
+          와 최고입니다! 드디어 <strong>3,000점 고지</strong>를 넘어서셨습니다!<br>
+          <span style="color: #ffd600; font-weight: 800;">📸 지금 이 화면을 캡처(스크린샷)하세요!</span>
+        </p>
       </div>
 
       <div class="real-gift-voucher">
@@ -1221,7 +1224,7 @@
           <div class="coffee-icon">☕</div>
           <div class="voucher-details">
             <div class="coffee-name">스타벅스 카페 아메리카노 Tall</div>
-            <div class="voucher-sub">모바일 교환권 · 전국 스타벅스 매장 사용 가능</div>
+            <div class="voucher-sub">지인 친목 챌린지 · 3,000점 달성 인증 쿠폰</div>
           </div>
         </div>
 
@@ -1231,17 +1234,24 @@
         </div>
       </div>
 
+      <div style="background: rgba(0, 242, 254, 0.08); border: 1px dashed rgba(0, 242, 254, 0.4); border-radius: 12px; padding: 12px; margin-bottom: 14px; text-align: left; font-size: 12px; line-height: 1.6; color: #cbd5e1;">
+        <strong style="color: #00f2fe;">💡 커피 선물 받는 방법 (지인 친목 룰):</strong><br>
+        1. <strong>이 화면을 스마트폰으로 캡처(화면 캡처)</strong>하세요.<br>
+        2. 이 게임 링크를 보내준 <strong>친구(방장)에게 카카오톡으로 인증샷</strong>을 보내세요!<br>
+        3. <em>"나 3,000점 깼다! 커피 사줘~"</em> 하고 인증하면 친구가 시원한 커피를 쏩니다! 🎁
+      </div>
+
       <div id="custom-gift-preview" style="display: none; margin-bottom: 14px;">
-        <p style="font-size: 11px; color: #00ff88; margin-bottom: 5px; font-weight: 700;">✔ 내가 등록한 실제 기프티콘 쿠폰:</p>
+        <p style="font-size: 11px; color: #00ff88; margin-bottom: 5px; font-weight: 700;">✔ 방장이 등록해 둔 실제 모바일 쿠폰:</p>
         <img id="custom-gift-img" src="" alt="등록된 기프티콘" style="max-width: 100%; max-height: 200px; border-radius: 10px; border: 2px solid #ffd600;">
       </div>
 
       <div class="gift-actions">
         <button class="gift-btn primary" onclick="handleRealGiftClaim()">
-          <span>🎁</span> 선물 당첨 인증 & 저장하기
+          <span>📸</span> 인증샷 캡처 완료 & 확인
         </button>
         <label class="custom-gift-upload-btn">
-          <span>📷</span> 내가 소장한 실제 기프티콘 이미지 등록하기
+          <span>📷</span> (방장 전용) 내가 소장한 실제 기프티콘 이미지 등록하기
           <input type="file" id="custom-gift-input" accept="image/*" style="display:none;" onchange="handleCustomGiftUpload(event)">
         </label>
       </div>
@@ -2519,7 +2529,7 @@
 
     function handleRealGiftClaim() {
       sound.playClick();
-      alert('🎉 [스타벅스 카페 아메리카노 모바일 교환권] 당첨!\n\n쿠폰 번호: TETRIS-STARBUCKS-WINNER-2026\n\n화면을 캡처하여 매장에서 보여주시거나, 아래 [내 진짜 기프티콘 이미지 등록하기]를 통해 실제 보유하신 모바일 쿠폰 이미지를 등록해 두실 수 있습니다!');
+      alert('🎉 3,000점 달성 축하드립니다!\n\n지금 화면을 캡처하셨나요?\n이 캡처 화면을 게임 링크를 보내준 친구(방장)에게 카카오톡으로 보내보세요!\n\n"나 3,000점 달성했어! 약속한 커피 사줘~" 하고 인증하시면 친구가 기분 좋게 커피를 선물해 줄 거예요! ☕');
     }
 
     function handleCustomGiftUpload(event) {
