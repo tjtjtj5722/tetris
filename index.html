@@ -1691,35 +1691,36 @@
         this.bgmTimer = null;
         this.bgmIndex = 0;
 
-        // 테마 1: 오리지널 레트로 8비트 테트리스 (코로베이니키 Korobeiniki 완전판)
+        // 🎮 테마 1: 오리지널 레트로 8비트 오락실 테트리스 (코로베이니키 Korobeiniki 2채널 칩튠 멜로디+베이스 완전판)
         this.theme1 = [
-          { n: 'E5', d: 2 }, { n: 'B4', d: 1 }, { n: 'C5', d: 1 }, { n: 'D5', d: 2 },
-          { n: 'C5', d: 1 }, { n: 'B4', d: 1 }, { n: 'A4', d: 2 }, { n: 'A4', d: 1 },
-          { n: 'C5', d: 1 }, { n: 'E5', d: 2 }, { n: 'D5', d: 1 }, { n: 'C5', d: 1 },
-          { n: 'B4', d: 3 }, { n: 'C5', d: 1 }, { n: 'D5', d: 2 }, { n: 'E5', d: 2 },
-          { n: 'C5', d: 2 }, { n: 'A4', d: 2 }, { n: 'A4', d: 2 }, { n: 'R', d: 1 },
-          { n: 'D5', d: 2 }, { n: 'F5', d: 1 }, { n: 'A5', d: 2 }, { n: 'G5', d: 1 },
-          { n: 'F5', d: 1 }, { n: 'E5', d: 3 }, { n: 'C5', d: 1 }, { n: 'E5', d: 2 },
-          { n: 'D5', d: 1 }, { n: 'C5', d: 1 }, { n: 'B4', d: 2 }, { n: 'B4', d: 1 },
-          { n: 'C5', d: 1 }, { n: 'D5', d: 2 }, { n: 'E5', d: 2 }, { n: 'C5', d: 2 },
-          { n: 'A4', d: 2 }, { n: 'A4', d: 3 }, { n: 'R', d: 2 }
+          { n: 'E5', b: 'E3', d: 2 }, { n: 'B4', b: 'B3', d: 1 }, { n: 'C5', b: 'C3', d: 1 }, { n: 'D5', b: 'D3', d: 2 },
+          { n: 'C5', b: 'C3', d: 1 }, { n: 'B4', b: 'B3', d: 1 }, { n: 'A4', b: 'A3', d: 2 }, { n: 'A4', b: 'A3', d: 1 },
+          { n: 'C5', b: 'C3', d: 1 }, { n: 'E5', b: 'E3', d: 2 }, { n: 'D5', b: 'D3', d: 1 }, { n: 'C5', b: 'C3', d: 1 },
+          { n: 'B4', b: 'B3', d: 3 }, { n: 'C5', b: 'C3', d: 1 }, { n: 'D5', b: 'D3', d: 2 }, { n: 'E5', b: 'E3', d: 2 },
+          { n: 'C5', b: 'C3', d: 2 }, { n: 'A4', b: 'A3', d: 2 }, { n: 'A4', b: 'A3', d: 2 }, { n: 'R', b: 'R', d: 1 },
+          { n: 'D5', b: 'D3', d: 2 }, { n: 'F5', b: 'F3', d: 1 }, { n: 'A5', b: 'A3', d: 2 }, { n: 'G5', b: 'G3', d: 1 },
+          { n: 'F5', b: 'F3', d: 1 }, { n: 'E5', b: 'E3', d: 3 }, { n: 'C5', b: 'C3', d: 1 }, { n: 'E5', b: 'E3', d: 2 },
+          { n: 'D5', b: 'D3', d: 1 }, { n: 'C5', b: 'C3', d: 1 }, { n: 'B4', b: 'B3', d: 2 }, { n: 'B4', b: 'B3', d: 1 },
+          { n: 'C5', b: 'C3', d: 1 }, { n: 'D5', b: 'D3', d: 2 }, { n: 'E5', b: 'E3', d: 2 }, { n: 'C5', b: 'C3', d: 2 },
+          { n: 'A4', b: 'A3', d: 2 }, { n: 'A4', b: 'A3', d: 3 }, { n: 'R', b: 'R', d: 2 }
         ];
 
         // 테마 2: 편안하고 감미로운 카페/타로풍 캐논 멜로디 (초저음량 힐링 사운드)
         this.theme2 = [
-          { n: 'C5', d: 3 }, { n: 'G4', d: 3 }, { n: 'A4', d: 3 }, { n: 'E4', d: 3 },
-          { n: 'F4', d: 3 }, { n: 'C4', d: 3 }, { n: 'F4', d: 2 }, { n: 'G4', d: 2 },
-          { n: 'C5', d: 4 }, { n: 'R', d: 2 }
+          { n: 'C5', b: 'C3', d: 3 }, { n: 'G4', b: 'G3', d: 3 }, { n: 'A4', b: 'A3', d: 3 }, { n: 'E4', b: 'E3', d: 3 },
+          { n: 'F4', b: 'F3', d: 3 }, { n: 'C4', b: 'C3', d: 3 }, { n: 'F4', b: 'F3', d: 2 }, { n: 'G4', b: 'G3', d: 2 },
+          { n: 'C5', b: 'C3', d: 4 }, { n: 'R', b: 'R', d: 2 }
         ];
 
         // 테마 3: 흥겹고 경쾌한 리듬 팝
         this.theme3 = [
-          { n: 'E5', d: 1 }, { n: 'G5', d: 1 }, { n: 'A5', d: 2 }, { n: 'G5', d: 1 },
-          { n: 'E5', d: 2 }, { n: 'D5', d: 1 }, { n: 'C5', d: 2 }, { n: 'D5', d: 1 },
-          { n: 'E5', d: 3 }, { n: 'D5', d: 1 }, { n: 'C5', d: 3 }, { n: 'R', d: 2 }
+          { n: 'E5', b: 'E3', d: 1 }, { n: 'G5', b: 'G3', d: 1 }, { n: 'A5', b: 'A3', d: 2 }, { n: 'G5', b: 'G3', d: 1 },
+          { n: 'E5', b: 'E3', d: 2 }, { n: 'D5', b: 'D3', d: 1 }, { n: 'C5', b: 'C3', d: 2 }, { n: 'D5', b: 'D3', d: 1 },
+          { n: 'E5', b: 'E3', d: 3 }, { n: 'D5', b: 'D3', d: 1 }, { n: 'C5', b: 'C3', d: 3 }, { n: 'R', b: 'R', d: 2 }
         ];
 
         this.freqs = {
+          'C3': 130.81, 'D3': 146.83, 'E3': 164.81, 'F3': 174.61, 'G3': 196.00, 'A3': 220.00, 'B3': 246.94,
           'C4': 261.63, 'D4': 293.66, 'E4': 329.63, 'F4': 349.23, 'G4': 392.00, 'A4': 440.00, 'B4': 493.88,
           'C5': 523.25, 'D5': 587.33, 'E5': 659.25, 'F5': 698.46, 'G5': 783.99, 'A5': 880.00, 'R': 0
         };
@@ -1730,8 +1731,8 @@
           const AudioContextClass = window.AudioContext || window.webkitAudioContext;
           this.ctx = new AudioContextClass();
         }
-        if (this.ctx.state === 'suspended') {
-          this.ctx.resume();
+        if (this.ctx && this.ctx.state === 'suspended') {
+          this.ctx.resume().catch(() => {});
         }
       }
 
@@ -2080,34 +2081,55 @@
 
         const item = currentMelody[this.bgmIndex];
         const freq = this.freqs[item.n];
+        const bassFreq = item.b ? this.freqs[item.b] : 0;
         const durMs = item.d * tempo;
 
-        if (freq > 0 && this.ctx && this.ctx.state === 'running') {
-          const osc = this.ctx.createOscillator();
-          const gain = this.ctx.createGain();
+        if (this.ctx && this.ctx.state === 'running') {
+          const t = this.ctx.currentTime;
+          const durSec = durMs / 1000;
 
-          if (is8Bit) {
-            // 🎮 8비트 오락실 칩튠 정통 사각파 (Web Audio API 코드로 실시간 합성!)
-            osc.type = 'square';
-            osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
-            gain.gain.setValueAtTime(0.038, this.ctx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + (durMs / 1000) * 0.88);
-          } else if (this.bgmTheme === 2) {
-            osc.type = 'sine';
-            osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
-            gain.gain.setValueAtTime(0.022, this.ctx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + (durMs / 1000) * 0.9);
-          } else {
-            osc.type = 'triangle';
-            osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
-            gain.gain.setValueAtTime(0.045, this.ctx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + (durMs / 1000) * 0.9);
+          // 1. 리드 멜로디 채널
+          if (freq > 0) {
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+
+            if (is8Bit) {
+              // 🎮 8비트 정통 오락실 사각파 (명확한 칩튠 볼륨)
+              osc.type = 'square';
+              osc.frequency.setValueAtTime(freq, t);
+              gain.gain.setValueAtTime(0.065, t);
+              gain.gain.exponentialRampToValueAtTime(0.001, t + durSec * 0.88);
+            } else if (this.bgmTheme === 2) {
+              osc.type = 'sine';
+              osc.frequency.setValueAtTime(freq, t);
+              gain.gain.setValueAtTime(0.035, t);
+              gain.gain.exponentialRampToValueAtTime(0.0001, t + durSec * 0.9);
+            } else {
+              osc.type = 'triangle';
+              osc.frequency.setValueAtTime(freq, t);
+              gain.gain.setValueAtTime(0.06, t);
+              gain.gain.exponentialRampToValueAtTime(0.001, t + durSec * 0.9);
+            }
+
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            osc.start(t);
+            osc.stop(t + durSec * 0.9);
           }
 
-          osc.connect(gain);
-          gain.connect(this.ctx.destination);
-          osc.start();
-          osc.stop(this.ctx.currentTime + (durMs / 1000) * 0.9);
+          // 2. 8비트 오락실 베이스 채널 (2채널 칩튠 쿵짝쿵짝 베이스 비트!)
+          if (is8Bit && bassFreq > 0) {
+            const bOsc = this.ctx.createOscillator();
+            const bGain = this.ctx.createGain();
+            bOsc.type = 'triangle';
+            bOsc.frequency.setValueAtTime(bassFreq, t);
+            bGain.gain.setValueAtTime(0.055, t);
+            bGain.gain.exponentialRampToValueAtTime(0.001, t + durSec * 0.85);
+            bOsc.connect(bGain);
+            bGain.connect(this.ctx.destination);
+            bOsc.start(t);
+            bOsc.stop(t + durSec * 0.85);
+          }
         }
 
         this.bgmIndex = (this.bgmIndex + 1) % currentMelody.length;
@@ -2116,6 +2138,17 @@
     }
 
     const sound = new SoundEngine();
+
+    // 🔊 브라우저 자동 재생 정책(Autoplay Policy) 완벽 대응: 첫 터치/클릭/키 입력 시 오디오 자동 언락!
+    function unlockAudioContext() {
+      sound.init();
+      if (sound.ctx && sound.ctx.state === 'suspended') {
+        sound.ctx.resume().catch(() => {});
+      }
+    }
+    ['click', 'touchstart', 'pointerdown', 'keydown'].forEach(evt => {
+      document.addEventListener(evt, unlockAudioContext, { passive: true });
+    });
 
     function toggleSound() {
       sound.muted = !sound.muted;
