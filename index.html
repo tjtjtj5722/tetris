@@ -2,6 +2,9 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>TETRIS - 럭셔리 모바일 & 웹 에디션</title>
   <style>
@@ -848,6 +851,7 @@
           <button class="touch-btn" id="t-btn-right" onpointerdown="startContinuousMove(1)" onpointerup="stopContinuousMove()" onpointerleave="stopContinuousMove()">우 ▶</button>
         </div>
         <div class="touch-row" style="margin-top: 4px;">
+          <button class="touch-btn" id="m-btn-sound" style="height:38px; font-size:12px; background:rgba(0,242,254,0.12); border-color:rgba(0,242,254,0.4); color:#00f2fe;" onclick="toggleSound()">🔊 효과음 ON</button>
           <button class="touch-btn" style="height:38px; font-size:12px; background:rgba(255,255,255,0.06);" onclick="handlePause()">⏸ 일시정지</button>
           <button class="touch-btn" style="height:38px; font-size:12px; background:rgba(255,42,109,0.15); color:#ff5c9d; border-color:rgba(255,42,109,0.4);" onclick="handleEndGame()">⏹ 게임종료</button>
         </div>
@@ -860,8 +864,8 @@
         <button id="btn-sound" class="btn-audio" onclick="toggleSound()">
           <span id="sound-icon">🔊</span> <span id="sound-text">효과음 ON</span>
         </button>
-        <button id="btn-bgm" class="btn-audio" onclick="cycleBGM()">
-          <span id="bgm-icon">🎵</span> <span id="bgm-text">BGM 1</span>
+        <button id="btn-bgm" class="btn-audio" onclick="cycleBGM()" title="클릭 시 BGM 선택 (기본 무음)">
+          <span id="bgm-icon">🔇</span> <span id="bgm-text">BGM OFF</span>
         </button>
       </div>
 
@@ -979,13 +983,13 @@
 
   <script>
     /* ========================================================
-       1. 다채로운 3테마 BGM & 찰진 타격감 사운드 엔진
+       1. 효과음 중심 사운드 엔진 (기본 BGM OFF, 시원한 타격감 효과음 특화)
        ======================================================== */
     class SoundEngine {
       constructor() {
         this.ctx = null;
         this.muted = false;
-        this.bgmTheme = 1; // 1: 레트로 아케이드, 2: 감성 카페 라벤더, 3: 신나는 팝, 0: 끔
+        this.bgmTheme = 0; // 0: 끔 (기본 무음), 1: 레트로 아케이드, 2: 감성 카페, 3: 경쾌 팝
         this.bgmPlaying = false;
         this.bgmTimer = null;
         this.bgmIndex = 0;
@@ -1239,17 +1243,29 @@
       sound.muted = !sound.muted;
       const icon = document.getElementById('sound-icon');
       const text = document.getElementById('sound-text');
+      const mBtn = document.getElementById('m-btn-sound');
+
       if (sound.muted) {
-        icon.innerText = '🔇';
-        text.innerText = '효과음 OFF';
+        if (icon) icon.innerText = '🔇';
+        if (text) text.innerText = '효과음 OFF';
+        if (mBtn) {
+          mBtn.innerText = '🔇 효과음 OFF';
+          mBtn.style.color = '#94a3b8';
+          mBtn.style.borderColor = 'rgba(255,255,255,0.2)';
+        }
       } else {
-        icon.innerText = '🔊';
-        text.innerText = '효과음 ON';
+        if (icon) icon.innerText = '🔊';
+        if (text) text.innerText = '효과음 ON';
+        if (mBtn) {
+          mBtn.innerText = '🔊 효과음 ON';
+          mBtn.style.color = '#00f2fe';
+          mBtn.style.borderColor = 'rgba(0,242,254,0.4)';
+        }
         sound.playClick();
       }
     }
 
-    /* BGM 테마 순환 (테마 1 ➔ 테마 2 ➔ 테마 3 ➔ OFF) */
+    /* BGM 테마 순환 (기본 OFF -> 테마 1 -> 테마 2 -> 테마 3 -> OFF) */
     function cycleBGM() {
       sound.bgmTheme = (sound.bgmTheme + 1) % 4;
       const icon = document.getElementById('bgm-icon');
@@ -1257,13 +1273,14 @@
 
       if (sound.bgmTheme === 0) {
         sound.stopBGM();
-        icon.innerText = '🔇';
-        text.innerText = 'BGM OFF';
+        if (icon) icon.innerText = '🔇';
+        if (text) text.innerText = 'BGM OFF';
+        showFloatingText('🔇 BGM 끔 (효과음 집중 모드)', '#94a3b8');
       } else {
         sound.stopBGM();
         sound.startBGM();
-        icon.innerText = '🎵';
-        text.innerText = `BGM ${sound.bgmTheme}`;
+        if (icon) icon.innerText = '🎵';
+        if (text) text.innerText = `BGM ${sound.bgmTheme}`;
         const themeNames = ['', '아케이드', '감성 카페', '경쾌 팝'];
         showFloatingText(`🎵 음악 변경: ${themeNames[sound.bgmTheme]}`, '#00f2fe');
       }
@@ -1284,26 +1301,30 @@
     }
 
     /* ========================================================
-       2. 15가지 실용적인 틈새 해결 블록 라인업
-       (난해한 십자가는 빼고, 쏙 들어가는 효자 블록들 보강!)
+       2. 빈틈 쏙쏙! 초보자 맞춤형 효자 블록 라인업 (더하기 모양 0% 영구 제외)
        ======================================================== */
+    const UNIQUE_PIECES = [
+      'I', 'J', 'L', 'O', 'S', 'T', 'Z',
+      'DOT', 'DOMINO', 'I3', 'CORNER_L', 'CORNER_R', 'MINI_L', 'MINI_J', 'I5'
+    ];
+
     const COLORS = [
       null,
-      { main: '#00e5ff', light: '#80f2ff', dark: '#009bb3' }, // 1: I
-      { main: '#2979ff', light: '#80adff', dark: '#004ecb' }, // 2: J
-      { main: '#ff6d00', light: '#ffa34d', dark: '#b34d00' }, // 3: L
-      { main: '#ffd600', light: '#ffe766', dark: '#b39600' }, // 4: O
-      { main: '#00e676', light: '#66f0ab', dark: '#00a353' }, // 5: S
-      { main: '#d500f9', light: '#ea66fb', dark: '#9500ae' }, // 6: T
-      { main: '#ff1744', light: '#ff6685', dark: '#b80026' }, // 7: Z
-      { main: '#ffe600', light: '#ffffff', dark: '#c49b00' }, // 8: DOT (1칸 보석)
-      { main: '#00f5d4', light: '#7bfff0', dark: '#00a38d' }, // 9: DOMINO (2칸 바)
-      { main: '#ff2a85', light: '#ff80b3', dark: '#b3004b' }, // 10: I3 (3칸 일자)
-      { main: '#ff7b54', light: '#ffa387', dark: '#b84423' }, // 11: CORNER_L (3칸 좌코너)
-      { main: '#ff9f43', light: '#fed330', dark: '#ee5253' }, // 12: CORNER_R (3칸 우코너)
-      { main: '#00ffff', light: '#a6ffff', dark: '#00b3b3' }, // 13: I5 (5칸 슈퍼일자)
-      { main: '#b388ff', light: '#d1b3ff', dark: '#7c4dff' }, // 14: DIAG (대각선)
-      { main: '#e056fd', light: '#ff9ff3', dark: '#be2edd' }  // 15: DIAG_R (역대각선)
+      { main: '#00e5ff', light: '#80f2ff', dark: '#009bb3' }, // 1: I (네온 시안 일자)
+      { main: '#2979ff', light: '#80adff', dark: '#004ecb' }, // 2: J (코발트 블루)
+      { main: '#ff6d00', light: '#ffa34d', dark: '#b34d00' }, // 3: L (비비드 오렌지)
+      { main: '#ffd600', light: '#ffe766', dark: '#b39600' }, // 4: O (샤이닝 골드 큐브)
+      { main: '#00e676', light: '#66f0ab', dark: '#00a353' }, // 5: S (에메랄드 그린)
+      { main: '#d500f9', light: '#ea66fb', dark: '#9500ae' }, // 6: T (네온 퍼플)
+      { main: '#ff1744', light: '#ff6685', dark: '#b80026' }, // 7: Z (루비 레드)
+      { main: '#fffb00', light: '#ffffff', dark: '#cca300' }, // 8: DOT (1칸 만능 보석 - 최고 효자!)
+      { main: '#00f5d4', light: '#8afff0', dark: '#00a38d' }, // 9: DOMINO (2칸 미니 바)
+      { main: '#ff2a85', light: '#ff80b3', dark: '#b3004b' }, // 10: I3 (3칸 미니 일자)
+      { main: '#ff7b54', light: '#ffa387', dark: '#b84423' }, // 11: CORNER_L (3칸 좌 코너 ㄱ자)
+      { main: '#ffb300', light: '#ffd54f', dark: '#ff8f00' }, // 12: CORNER_R (3칸 우 코너 역ㄱ자)
+      { main: '#38ef7d', light: '#a8ff78', dark: '#11998e' }, // 13: MINI_L (3칸 미니 L)
+      { main: '#9b51e0', light: '#bb6bd9', dark: '#6a11cb' }, // 14: MINI_J (3칸 미니 J)
+      { main: '#00ffff', light: '#a6ffff', dark: '#00b3b3' }  // 15: I5 (5칸 슈퍼 일자)
     ];
 
     const SHAPES = {
@@ -1314,22 +1335,27 @@
       'S': [[0,5,5],[5,5,0],[0,0,0]],
       'T': [[0,6,0],[6,6,6],[0,0,0]],
       'Z': [[7,7,0],[0,7,7],[0,0,0]],
-      // ★ 빈틈 채우기 특급 해결사들
-      'DOT': [[8]],                      // 1칸 만능 보석
-      'DOMINO': [[0,0],[9,9]],           // 2칸 미니 바
-      'I3': [[0,0,0],[10,10,10],[0,0,0]],// 3칸 미니 일자
-      'CORNER_L': [[11,11],[11,0]],      // 3칸 좌측 코너
-      'CORNER_R': [[12,12],[0,12]],      // 3칸 우측 코너
-      'I5': [[0,0,0,0,0],[0,0,0,0,0],[13,13,13,13,13],[0,0,0,0,0],[0,0,0,0,0]], // 5칸 슈퍼일자
-      'DIAG': [[14,0],[0,14]],           // 2칸 대각선
-      'DIAG_R': [[0,15],[15,0]]          // 2칸 역대각선
+      // ★ 빈 구멍과 틈새를 시원하게 채워주는 맞춤 블록들 (더하기 모양 0%)
+      'DOT': [[8]],                                           // 1칸 만능 보석
+      'DOMINO': [[9,9],[0,0]],                                // 2칸 미니 바
+      'I3': [[0,0,0],[10,10,10],[0,0,0]],                    // 3칸 미니 일자
+      'CORNER_L': [[11,11],[11,0]],                          // 3칸 좌 코너 ㄱ자
+      'CORNER_R': [[12,12],[0,12]],                          // 3칸 우 코너 역ㄱ자
+      'MINI_L': [[13,0],[13,13]],                            // 3칸 미니 L
+      'MINI_J': [[0,14],[14,14]],                            // 3칸 미니 J
+      'I5': [[0,0,0,0,0],[0,0,0,0,0],[15,15,15,15,15],[0,0,0,0,0],[0,0,0,0,0]] // 5칸 슈퍼 일자
     };
 
-    // 가방 목록 (1칸 보석을 2개 넣어 자주 등장하게 만듦!)
+    // 가방 목록 (빈틈 해결 블록을 대량 투입하여 쏙쏙 채우기 최적화!)
     const ALL_PIECES = [
-      'I', 'J', 'L', 'O', 'S', 'T', 'Z',
-      'DOT', 'DOT', 'DOMINO', 'I3',
-      'CORNER_L', 'CORNER_R', 'I5', 'DIAG', 'DIAG_R'
+      'DOT', 'DOT', 'DOT', 'DOT',      // 1칸 보석 4개 (어디든 쏙 들어가는 구원투수!)
+      'DOMINO', 'DOMINO', 'DOMINO',    // 2칸 미니 바 3개
+      'I3', 'I3', 'I3',                // 3칸 일자 3개
+      'CORNER_L', 'CORNER_L',          // 3칸 코너 2개
+      'CORNER_R', 'CORNER_R',          // 3칸 역코너 2개
+      'MINI_L', 'MINI_J',              // 미니 L/J 2개
+      'I', 'I5',                       // 4칸 일자 & 5칸 슈퍼일자
+      'O', 'J', 'L', 'S', 'T', 'Z'     // 정통 블록 각 1개
     ];
 
     const STATE = {
@@ -1430,14 +1456,10 @@
     function getRandomPiece() {
       if (pieceBag.length === 0) fillBag();
       const type = pieceBag.pop();
-      const uniqueTypes = [
-        'I', 'J', 'L', 'O', 'S', 'T', 'Z',
-        'DOT', 'DOMINO', 'I3', 'CORNER_L', 'CORNER_R', 'I5', 'DIAG', 'DIAG_R'
-      ];
       return {
         type: type,
         matrix: SHAPES[type].map(row => [...row]),
-        colorIdx: uniqueTypes.indexOf(type) + 1,
+        colorIdx: UNIQUE_PIECES.indexOf(type) + 1,
         pos: { x: 0, y: 0 }
       };
     }
