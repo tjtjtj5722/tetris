@@ -1,0 +1,2128 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>TETRIS - 럭셔리 모바일 & 웹 에디션</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700;800;900&family=Pretendard:wght@400;500;600;700;800&display=swap');
+
+    :root {
+      --bg-color: #05070c;
+      --card-bg: rgba(14, 19, 32, 0.92);
+      --neon-cyan: #00f2fe;
+      --neon-blue: #2575fc;
+      --neon-gold: #ffd600;
+      --neon-purple: #c084fc;
+      --neon-red: #ff2a6d;
+      --text-main: #ffffff;
+      --text-dim: #94a3b8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-touch-callout: none;
+      touch-action: manipulation;
+    }
+
+    body {
+      background: radial-gradient(circle at 50% 15%, #161c32 0%, #090c16 65%, var(--bg-color) 100%);
+      color: var(--text-main);
+      font-family: 'Pretendard', sans-serif;
+      min-height: 100vh;
+      min-height: -webkit-fill-available;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 12px;
+      overflow-x: hidden;
+    }
+
+    /* 상단 헤더 */
+    .header {
+      text-align: center;
+      margin-bottom: 12px;
+    }
+
+    .title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 32px;
+      font-weight: 900;
+      letter-spacing: 5px;
+      background: linear-gradient(90deg, #ff1744 0%, #ff9100 20%, #ffd600 40%, #00e676 60%, #00f2fe 80%, #d500f9 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 0 16px rgba(0, 242, 254, 0.4));
+      margin-bottom: 2px;
+    }
+
+    .subtitle {
+      font-size: 11px;
+      font-weight: 700;
+      color: #93c5fd;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+
+    /* 메인 컨테이너 */
+    .game-container {
+      display: flex;
+      align-items: flex-start;
+      gap: 20px;
+      background: rgba(10, 14, 24, 0.94);
+      backdrop-filter: blur(25px);
+      border: 2px solid rgba(0, 242, 254, 0.4);
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: 0 25px 70px rgba(0, 0, 0, 0.9),
+                  0 0 35px rgba(0, 242, 254, 0.15);
+      position: relative;
+    }
+
+    /* ========================================================
+       좌측 패널: 게임 가이드 & 진짜 선물 보관함 (PC 전용)
+       ======================================================== */
+    .guide-panel {
+      width: 230px;
+      height: 564px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .guide-card {
+      background: var(--card-bg);
+      border: 1.5px solid rgba(0, 242, 254, 0.3);
+      border-radius: 14px;
+      padding: 12px 14px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.35);
+    }
+
+    .card-title {
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--neon-cyan);
+      letter-spacing: 1px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 8px;
+      border-bottom: 1px solid rgba(0, 242, 254, 0.2);
+      padding-bottom: 5px;
+    }
+
+    .guide-list {
+      list-style: none;
+      font-size: 11px;
+      line-height: 1.6;
+      color: #cbd5e1;
+    }
+
+    .guide-list li {
+      margin-bottom: 6px;
+      position: relative;
+      padding-left: 12px;
+    }
+
+    .guide-list li::before {
+      content: '✔';
+      position: absolute;
+      left: 0;
+      color: #00ff88;
+      font-size: 9px;
+    }
+
+    .guide-list strong {
+      color: #fff;
+    }
+
+    .achievement-card {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .trophy-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      overflow-y: auto;
+      flex: 1;
+      padding-right: 4px;
+    }
+
+    .trophy-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      padding: 7px 9px;
+      transition: all 0.3s;
+      opacity: 0.45;
+      filter: grayscale(0.8);
+      cursor: pointer;
+    }
+
+    .trophy-item.unlocked {
+      opacity: 1;
+      filter: none;
+      border-color: rgba(255, 214, 0, 0.6);
+      background: rgba(255, 214, 0, 0.1);
+      box-shadow: 0 0 12px rgba(255, 214, 0, 0.25);
+    }
+
+    .trophy-icon {
+      font-size: 20px;
+    }
+
+    .trophy-info {
+      flex: 1;
+    }
+
+    .trophy-name {
+      font-size: 11px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .trophy-condition {
+      font-size: 10px;
+      color: var(--text-dim);
+    }
+
+    .trophy-badge {
+      font-size: 9px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.1);
+      color: #cbd5e1;
+    }
+
+    .trophy-item.unlocked .trophy-badge {
+      background: #ffd600;
+      color: #000;
+      font-weight: 800;
+    }
+
+    /* ========================================================
+       중앙 패널: 게임 보드
+       ======================================================== */
+    .center-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .board-wrapper {
+      position: relative;
+      width: 284px;
+      height: 564px;
+      border-radius: 12px;
+      background: #030508;
+      border: 2px solid #00f2fe;
+      box-shadow: 0 0 20px rgba(0, 242, 254, 0.45),
+                  inset 0 0 15px rgba(0, 242, 254, 0.15);
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+
+    #tetris {
+      display: block;
+      width: 280px;
+      height: 560px;
+    }
+
+    .floating-text-layer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 8;
+    }
+
+    .floating-msg {
+      position: absolute;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-family: 'Orbitron', sans-serif;
+      font-size: 20px;
+      font-weight: 900;
+      text-shadow: 0 0 15px currentColor;
+      animation: floatUp 1.2s ease-out forwards;
+      white-space: nowrap;
+      text-align: center;
+    }
+
+    @keyframes floatUp {
+      0% { opacity: 0; transform: translate(-50%, 0) scale(0.6); }
+      20% { opacity: 1; transform: translate(-50%, -20px) scale(1.15); }
+      80% { opacity: 1; transform: translate(-50%, -40px) scale(1); }
+      100% { opacity: 0; transform: translate(-50%, -60px) scale(0.9); }
+    }
+
+    .board-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(4, 7, 12, 0.94);
+      backdrop-filter: blur(8px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 20px;
+      transition: opacity 0.25s ease;
+      z-index: 10;
+    }
+
+    .board-overlay.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .overlay-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 24px;
+      font-weight: 800;
+      margin-bottom: 10px;
+      letter-spacing: 1px;
+    }
+
+    .overlay-title.ready { color: #00f2fe; filter: drop-shadow(0 0 14px rgba(0, 242, 254, 0.7)); }
+    .overlay-title.pause { color: #ffd600; filter: drop-shadow(0 0 14px rgba(255, 214, 0, 0.7)); }
+    .overlay-title.gameover { color: #ff2a6d; filter: drop-shadow(0 0 16px rgba(255, 42, 109, 0.8)); }
+
+    .overlay-desc {
+      font-size: 13px;
+      color: var(--text-dim);
+      margin-bottom: 16px;
+      line-height: 1.5;
+    }
+
+    .final-score-box {
+      margin-bottom: 18px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 214, 0, 0.35);
+      border-radius: 12px;
+      padding: 10px 18px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+    }
+
+    .final-score-main {
+      font-family: 'Pretendard', sans-serif;
+      font-size: 22px;
+      font-weight: 800;
+      color: #ffd600;
+      white-space: nowrap;
+      text-shadow: 0 0 10px rgba(255, 214, 0, 0.4);
+    }
+
+    .final-score-sub {
+      font-size: 13px;
+      font-weight: 600;
+      color: #93c5fd;
+      white-space: nowrap;
+    }
+
+    /* ========================================================
+       우측 패널: 대시보드
+       ======================================================== */
+    .side-panel {
+      width: 200px;
+      height: 564px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .audio-bar {
+      display: flex;
+      justify-content: space-between;
+      gap: 6px;
+    }
+
+    .btn-audio {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1.5px solid rgba(0, 242, 254, 0.4);
+      color: #cbd5e1;
+      border-radius: 9px;
+      padding: 5px 8px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.2s;
+    }
+
+    .btn-audio:hover {
+      background: rgba(0, 242, 254, 0.15);
+      border-color: #00f2fe;
+      color: #fff;
+    }
+
+    .info-card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 8px 12px;
+      text-align: center;
+      border: 1.5px solid rgba(0, 242, 254, 0.35);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+    }
+
+    .card-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      color: #94a3b8;
+      margin-bottom: 2px;
+      text-transform: uppercase;
+    }
+
+    .card-value {
+      font-family: 'Pretendard', sans-serif;
+      font-size: 22px;
+      font-weight: 800;
+      color: #ffffff;
+      text-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .card-value.gold {
+      color: #ffd600;
+      text-shadow: 0 0 12px rgba(255, 214, 0, 0.5);
+    }
+
+    .progress-box {
+      margin-top: 4px;
+    }
+
+    .progress-text {
+      font-size: 9px;
+      color: #93c5fd;
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 2px;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 5px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, #00f2fe, #2575fc);
+      border-radius: 3px;
+      transition: width 0.3s ease;
+    }
+
+    /* NEXT & HOLD 듀얼 프리뷰 */
+    .preview-dual-box {
+      display: flex;
+      gap: 8px;
+    }
+
+    .preview-card {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 6px 8px;
+    }
+
+    .preview-canvas {
+      background: rgba(0, 0, 0, 0.6);
+      border-radius: 6px;
+      border: 1px solid rgba(0, 242, 254, 0.3);
+      margin-top: 3px;
+    }
+
+    .btn-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    button.game-btn {
+      font-family: 'Pretendard', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 10px 14px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    button.game-btn:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+      filter: grayscale(0.8);
+      transform: none !important;
+      box-shadow: none !important;
+    }
+
+    .btn-start {
+      background: linear-gradient(135deg, #00f2fe 0%, #2575fc 100%);
+      color: #030812;
+      font-weight: 800;
+      box-shadow: 0 4px 18px rgba(0, 242, 254, 0.4);
+      border: 1px solid #00f2fe;
+    }
+
+    .btn-start:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 25px rgba(0, 242, 254, 0.65);
+    }
+
+    .btn-pause {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-main);
+      border: 1.5px solid rgba(0, 242, 254, 0.3);
+    }
+
+    .btn-end {
+      background: rgba(255, 42, 109, 0.15);
+      color: #ff5c9d;
+      border: 1.5px solid rgba(255, 42, 109, 0.5);
+    }
+
+    /* 하단 키보드 가이드 (PC용) */
+    .controls-guide {
+      margin-top: 14px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+      max-width: 820px;
+    }
+
+    .key-badge {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(0, 242, 254, 0.25);
+      border-radius: 8px;
+      padding: 4px 8px;
+      font-size: 11px;
+      color: var(--text-dim);
+    }
+
+    .key {
+      display: inline-block;
+      padding: 2px 6px;
+      background: rgba(0, 242, 254, 0.15);
+      border-radius: 5px;
+      font-family: 'Orbitron', monospace;
+      font-size: 10px;
+      color: #00f2fe;
+      border-bottom: 2px solid rgba(0, 242, 254, 0.5);
+    }
+
+    /* ========================================================
+       📱 모바일 전용 가상 터치 패드 컨트롤러 (스마트폰 최적화)
+       ======================================================== */
+    .mobile-touch-controller {
+      display: none; /* PC에서는 숨김 */
+      width: 100%;
+      max-width: 380px;
+      margin-top: 14px;
+      padding: 0 6px;
+    }
+
+    .touch-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .touch-btn {
+      flex: 1;
+      height: 52px;
+      background: rgba(22, 28, 48, 0.9);
+      border: 1.5px solid rgba(0, 242, 254, 0.35);
+      border-radius: 12px;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+      transition: all 0.1s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .touch-btn:active {
+      background: rgba(0, 242, 254, 0.25);
+      border-color: #00f2fe;
+      transform: scale(0.94);
+      box-shadow: 0 0 15px rgba(0, 242, 254, 0.4);
+    }
+
+    .touch-btn.primary {
+      background: linear-gradient(135deg, rgba(0, 242, 254, 0.2) 0%, rgba(37, 117, 252, 0.2) 100%);
+      border-color: #00f2fe;
+      color: #00f2fe;
+    }
+
+    .touch-btn.accent {
+      background: linear-gradient(135deg, rgba(255, 214, 0, 0.2) 0%, rgba(255, 109, 0, 0.2) 100%);
+      border-color: #ffd600;
+      color: #ffd600;
+    }
+
+    /* 모바일 헤더 요약바 (스마트폰에서만 표시) */
+    .mobile-summary-bar {
+      display: none;
+      width: 100%;
+      max-width: 340px;
+      justify-content: space-between;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+
+    .mobile-sum-card {
+      flex: 1;
+      background: var(--card-bg);
+      border: 1px solid rgba(0, 242, 254, 0.3);
+      border-radius: 8px;
+      padding: 4px 6px;
+      text-align: center;
+    }
+
+    .mobile-sum-card .label {
+      font-size: 9px;
+      color: var(--text-dim);
+      font-weight: 700;
+    }
+
+    .mobile-sum-card .val {
+      font-size: 14px;
+      color: #fff;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* ========================================================
+       📱 모바일 반응형 미디어 쿼리 (스마트폰 세로 화면 최적화)
+       ======================================================== */
+    @media (max-width: 820px) {
+      body {
+        padding: 8px 6px;
+        justify-content: flex-start;
+      }
+
+      .header {
+        margin-bottom: 8px;
+      }
+
+      .title {
+        font-size: 26px;
+        letter-spacing: 3px;
+      }
+
+      .game-container {
+        flex-direction: column;
+        align-items: center;
+        padding: 12px;
+        gap: 10px;
+        width: 100%;
+        max-width: 380px;
+      }
+
+      /* PC용 좌측/우측 패널 숨기고 모바일 요약바와 컨트롤러 활성화 */
+      .guide-panel {
+        display: none;
+      }
+
+      .side-panel {
+        display: none;
+      }
+
+      .controls-guide {
+        display: none;
+      }
+
+      .mobile-summary-bar {
+        display: flex;
+      }
+
+      .mobile-touch-controller {
+        display: block;
+      }
+
+      /* 스마트폰 화면에 맞춘 캔버스 스케일링 */
+      .board-wrapper {
+        width: 254px;
+        height: 504px;
+      }
+
+      #tetris {
+        width: 250px;
+        height: 500px;
+      }
+    }
+
+    /* 🎁 진짜 선물 모달 */
+    .gift-modal {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: rgba(3, 5, 10, 0.88);
+      backdrop-filter: blur(10px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+      transition: opacity 0.3s ease;
+    }
+
+    .gift-modal.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .gift-card-popup {
+      background: linear-gradient(145deg, #161b2e 0%, #0d101d 100%);
+      border: 2px solid rgba(255, 214, 0, 0.5);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9), 0 0 30px rgba(255, 214, 0, 0.3);
+      border-radius: 20px;
+      width: 420px;
+      max-width: 92vw;
+      padding: 24px;
+      position: relative;
+      text-align: center;
+      animation: popIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    @keyframes popIn {
+      0% { transform: scale(0.85); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .gift-close {
+      position: absolute;
+      top: 14px; right: 16px;
+      background: none; border: none;
+      color: #94a3b8; font-size: 20px;
+      cursor: pointer;
+    }
+
+    .gift-badge {
+      display: inline-block;
+      background: #ffd600; color: #000;
+      font-size: 11px; font-weight: 800;
+      letter-spacing: 1px;
+      padding: 3px 10px; border-radius: 20px;
+      margin-bottom: 6px;
+    }
+
+    .gift-header h2 { font-size: 20px; color: #fff; margin-bottom: 4px; }
+    .gift-header p { font-size: 13px; color: #cbd5e1; margin-bottom: 14px; }
+
+    .real-gift-voucher {
+      background: #ffffff; color: #1a1a1a;
+      border-radius: 14px; padding: 14px 16px;
+      text-align: left; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+      margin-bottom: 16px;
+    }
+
+    .voucher-top {
+      display: flex; align-items: center; gap: 12px;
+      border-bottom: 1px dashed #cbd5e1;
+      padding-bottom: 10px; margin-bottom: 10px;
+    }
+
+    .coffee-icon {
+      font-size: 34px; background: #eef7ee;
+      border-radius: 10px; width: 46px; height: 46px;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .coffee-name { font-size: 14px; font-weight: 800; color: #006241; }
+    .voucher-sub { font-size: 11px; color: #64748b; margin-top: 2px; }
+
+    .barcode-box { text-align: center; padding: 4px 0; }
+    .barcode-lines {
+      height: 38px;
+      background: repeating-linear-gradient(90deg, #111, #111 2px, #fff 2px, #fff 4px, #111 4px, #111 7px, #fff 7px, #fff 9px);
+      margin-bottom: 4px;
+    }
+    .barcode-number { font-family: 'Orbitron', monospace; font-size: 11px; letter-spacing: 2px; color: #475569; font-weight: 700; }
+
+    .gift-actions { display: flex; flex-direction: column; gap: 8px; }
+    .gift-btn.primary {
+      background: linear-gradient(135deg, #00b074 0%, #006241 100%);
+      color: #fff; font-weight: 800; padding: 11px;
+      border-radius: 10px; border: none; cursor: pointer; font-size: 13px;
+    }
+    .custom-gift-upload-btn {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px dashed rgba(255, 255, 255, 0.3);
+      color: #cbd5e1; padding: 9px;
+      border-radius: 10px; font-size: 11px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="title">TETRIS</div>
+    <div class="subtitle">Ultimate Mobile & Web Edition</div>
+  </div>
+
+  <div class="game-container">
+    <!-- 1. 좌측 패널 (PC 전용 가이드 & 선물함) -->
+    <div class="guide-panel">
+      <div class="guide-card">
+        <div class="card-title">📖 게임 가이드 & 꿀팁</div>
+        <ul class="guide-list">
+          <li><strong>게임 목적:</strong> 가로 한 줄(10칸)을 채우면 <strong>줄이 팡! 터지며 점수</strong>를 얻습니다.</li>
+          <li><strong>진짜 선물:</strong> <strong>3,000점 달성 시 스타벅스 커피 선물</strong>이 즉시 열립니다!</li>
+          <li><strong>📦 HOLD (보관):</strong> `C` 키(모바일은 [보관])로 필요 없는 블록을 창고에 넣을 수 있습니다.</li>
+          <li><strong>조작 팁:</strong> 1칸 보석(`■`)이나 3칸 일자는 깊은 구멍을 메꾸는 최고의 치트키입니다.</li>
+        </ul>
+      </div>
+
+      <div class="guide-card achievement-card">
+        <div class="card-title">🎁 점수별 선물 보관함</div>
+        <div class="trophy-list">
+          <div id="trophy-1" class="trophy-item" onclick="openGiftModal('candy')">
+            <div class="trophy-icon">🍬</div>
+            <div class="trophy-info">
+              <div class="trophy-name">[입문 달성] 달콤한 사탕 선물</div>
+              <div class="trophy-condition">500점 달성</div>
+            </div>
+            <div class="trophy-badge">미획득</div>
+          </div>
+
+          <div id="trophy-2" class="trophy-item" onclick="openGiftModal('soda')">
+            <div class="trophy-icon">🥤</div>
+            <div class="trophy-info">
+              <div class="trophy-name">[숙련 달성] 탄산음료 쿠폰</div>
+              <div class="trophy-condition">1,500점 달성</div>
+            </div>
+            <div class="trophy-badge">미획득</div>
+          </div>
+
+          <div id="trophy-3" class="trophy-item" onclick="openGiftModal('coffee')">
+            <div class="trophy-icon">☕</div>
+            <div class="trophy-info">
+              <div class="trophy-name">[마스터] 스타벅스 커피 쿠폰</div>
+              <div class="trophy-condition">★ 3,000점 진짜 커피 교환권!</div>
+            </div>
+            <div class="trophy-badge">미획득</div>
+          </div>
+
+          <div id="trophy-4" class="trophy-item" onclick="openGiftModal('cake')">
+            <div class="trophy-icon">🎂</div>
+            <div class="trophy-info">
+              <div class="trophy-name">[제왕 등극] 케이크+커피 세트</div>
+              <div class="trophy-condition">5,000점 VIP 선물</div>
+            </div>
+            <div class="trophy-badge">미획득</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. 중앙 패널: 게임 보드 & 모바일 요약바 -->
+    <div class="center-section">
+      <!-- 📱 스마트폰 모바일 상단 요약 바 -->
+      <div class="mobile-summary-bar">
+        <div class="mobile-sum-card">
+          <div class="label">SCORE</div>
+          <div id="m-score" class="val">0</div>
+        </div>
+        <div class="mobile-sum-card">
+          <div class="label" style="color:#ffd600;">BEST</div>
+          <div id="m-best" class="val" style="color:#ffd600;">0</div>
+        </div>
+        <div class="mobile-sum-card">
+          <div class="label">LEVEL</div>
+          <div id="m-level" class="val">1</div>
+        </div>
+        <div class="mobile-sum-card">
+          <div class="label">LINES</div>
+          <div id="m-lines" class="val">0</div>
+        </div>
+      </div>
+
+      <div class="board-wrapper">
+        <canvas id="tetris" width="280" height="560"></canvas>
+        <div id="floating-layer" class="floating-text-layer"></div>
+
+        <div id="board-overlay" class="board-overlay">
+          <div id="overlay-title" class="overlay-title ready">준비되셨나요?</div>
+          <div id="overlay-desc" class="overlay-desc">스마트폰 터치로도 시원하게 즐기는 테트리스!<br>3,000점을 넘겨 스타벅스 커피를 획득하세요!</div>
+          
+          <div id="final-score" class="final-score-box" style="display: none;">
+            <div class="final-score-main">최종 점수: <span id="final-score-val">0</span>점</div>
+            <div class="final-score-sub">(<span id="final-lines-val">0</span>줄 클리어 · 레벨 <span id="final-level-val">1</span>)</div>
+          </div>
+
+          <button id="overlay-btn" class="game-btn btn-start" onclick="handleStartOrResume()">
+            <span>▶</span> 게임 시작
+          </button>
+        </div>
+      </div>
+
+      <!-- 📱 스마트폰 전용 가상 터치 컨트롤러 패드 -->
+      <div class="mobile-touch-controller">
+        <div class="touch-row">
+          <button class="touch-btn" id="t-btn-hold" onclick="handleHold()">📦 보관</button>
+          <button class="touch-btn primary" id="t-btn-rotate" onclick="handleTouchRotate()">🔄 회전</button>
+          <button class="touch-btn accent" id="t-btn-hard" onclick="handleTouchHardDrop()">⚡ 즉시착지</button>
+        </div>
+        <div class="touch-row">
+          <button class="touch-btn" id="t-btn-left" onpointerdown="startContinuousMove(-1)" onpointerup="stopContinuousMove()" onpointerleave="stopContinuousMove()">◀ 좌</button>
+          <button class="touch-btn" id="t-btn-down" onpointerdown="startContinuousDrop()" onpointerup="stopContinuousDrop()" onpointerleave="stopContinuousDrop()">▼ 내리기</button>
+          <button class="touch-btn" id="t-btn-right" onpointerdown="startContinuousMove(1)" onpointerup="stopContinuousMove()" onpointerleave="stopContinuousMove()">우 ▶</button>
+        </div>
+        <div class="touch-row" style="margin-top: 4px;">
+          <button class="touch-btn" style="height:38px; font-size:12px; background:rgba(255,255,255,0.06);" onclick="handlePause()">⏸ 일시정지</button>
+          <button class="touch-btn" style="height:38px; font-size:12px; background:rgba(255,42,109,0.15); color:#ff5c9d; border-color:rgba(255,42,109,0.4);" onclick="handleEndGame()">⏹ 게임종료</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. 우측 패널 (PC 전용 대시보드) -->
+    <div class="side-panel">
+      <div class="audio-bar">
+        <button id="btn-sound" class="btn-audio" onclick="toggleSound()">
+          <span id="sound-icon">🔊</span> <span id="sound-text">효과음 ON</span>
+        </button>
+        <button id="btn-bgm" class="btn-audio" onclick="toggleBGM()">
+          <span id="bgm-icon">🎵</span> <span id="bgm-text">BGM ON</span>
+        </button>
+      </div>
+
+      <!-- NEXT & HOLD 듀얼 창 -->
+      <div class="preview-dual-box">
+        <div class="info-card preview-card">
+          <div class="card-label">NEXT</div>
+          <canvas id="next-canvas" class="preview-canvas" width="70" height="70"></canvas>
+        </div>
+        <div class="info-card preview-card">
+          <div class="card-label">HOLD</div>
+          <canvas id="hold-canvas" class="preview-canvas" width="70" height="70"></canvas>
+        </div>
+      </div>
+
+      <!-- 최고 점수 & 현재 점수 -->
+      <div class="info-card">
+        <div class="card-label">BEST HIGH SCORE</div>
+        <div id="high-score" class="card-value gold">0</div>
+      </div>
+
+      <div class="info-card">
+        <div class="card-label">SCORE</div>
+        <div id="score" class="card-value">0</div>
+        <div class="progress-box">
+          <div class="progress-text">
+            <span>커피 선물까지</span>
+            <span id="score-progress-text">3,000점</span>
+          </div>
+          <div class="progress-track">
+            <div id="score-progress-bar" class="progress-fill"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-card">
+        <div class="card-label">LEVEL / LINES</div>
+        <div style="font-size: 18px; font-weight:800; color:#fff;">
+          Lv.<span id="level">1</span> · <span id="lines">0</span>줄
+        </div>
+        <div class="progress-box">
+          <div class="progress-text">
+            <span>다음 단계까지</span>
+            <span id="lines-progress-text">5줄 남음</span>
+          </div>
+          <div class="progress-track">
+            <div id="level-progress-bar" class="progress-fill"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="btn-group">
+        <button id="btn-start" class="game-btn btn-start" onclick="handleStartOrResume()">
+          <span>▶</span> 게임 시작
+        </button>
+        <button id="btn-pause" class="game-btn btn-pause" onclick="handlePause()" disabled>
+          <span>⏸</span> 일시정지
+        </button>
+        <button id="btn-end" class="game-btn btn-end" onclick="handleEndGame()" disabled>
+          <span>⏹</span> 게임 종료
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 하단 키보드 가이드 -->
+  <div class="controls-guide">
+    <div class="key-badge"><span class="key">←</span> <span class="key">→</span> 좌우 이동</div>
+    <div class="key-badge"><span class="key">↑</span> 회전</div>
+    <div class="key-badge"><span class="key">↓</span> 빠른 낙하</div>
+    <div class="key-badge"><span class="key">Space</span> 즉시 착지</div>
+    <div class="key-badge"><span class="key">C / Shift</span> 블록 보관(HOLD)</div>
+    <div class="key-badge"><span class="key">P</span> 일시정지</div>
+    <div class="key-badge"><span class="key">M</span> 효과음</div>
+  </div>
+
+  <!-- 🎁 커피 선물 모달 -->
+  <div id="gift-modal" class="gift-modal hidden">
+    <div class="gift-card-popup">
+      <button class="gift-close" onclick="closeGiftModal()">✕</button>
+      <div class="gift-header">
+        <span class="gift-badge">MISSION REWARD</span>
+        <h2>🎉 축하합니다! 진짜 커피 선물 획득!</h2>
+        <p>열심히 도전하여 <strong style="color: #ffd600;">스타벅스 카페 아메리카노 선물</strong>을 획득하셨습니다!</p>
+      </div>
+
+      <div class="real-gift-voucher">
+        <div class="voucher-top">
+          <div class="coffee-icon">☕</div>
+          <div class="voucher-details">
+            <div class="coffee-name">스타벅스 카페 아메리카노 Tall</div>
+            <div class="voucher-sub">모바일 교환권 · 전국 스타벅스 매장 사용 가능</div>
+          </div>
+        </div>
+
+        <div class="barcode-box">
+          <div class="barcode-lines"></div>
+          <div class="barcode-number">TETRIS-STARBUCKS-WINNER-2026</div>
+        </div>
+      </div>
+
+      <div id="custom-gift-preview" style="display: none; margin-bottom: 14px;">
+        <p style="font-size: 11px; color: #00ff88; margin-bottom: 5px; font-weight: 700;">✔ 내가 등록한 실제 기프티콘 쿠폰:</p>
+        <img id="custom-gift-img" src="" alt="등록된 기프티콘" style="max-width: 100%; max-height: 200px; border-radius: 10px; border: 2px solid #ffd600;">
+      </div>
+
+      <div class="gift-actions">
+        <button class="gift-btn primary" onclick="handleRealGiftClaim()">
+          <span>🎁</span> 선물 당첨 인증 & 저장하기
+        </button>
+        <label class="custom-gift-upload-btn">
+          <span>📷</span> 내가 소장한 실제 기프티콘 이미지 등록하기
+          <input type="file" id="custom-gift-input" accept="image/*" style="display:none;" onchange="handleCustomGiftUpload(event)">
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* 1. 사운드 및 8비트 레트로 BGM 엔진 */
+    class SoundEngine {
+      constructor() {
+        this.ctx = null;
+        this.muted = false;
+        this.bgmMuted = false;
+        this.bgmPlaying = false;
+        this.bgmTimer = null;
+        this.bgmIndex = 0;
+
+        // 테트리스 Korobeiniki 8비트 멜로디
+        this.melody = [
+          { n: 'E5', d: 2 }, { n: 'B4', d: 1 }, { n: 'C5', d: 1 }, { n: 'D5', d: 2 },
+          { n: 'C5', d: 1 }, { n: 'B4', d: 1 }, { n: 'A4', d: 2 }, { n: 'A4', d: 1 },
+          { n: 'C5', d: 1 }, { n: 'E5', d: 2 }, { n: 'D5', d: 1 }, { n: 'C5', d: 1 },
+          { n: 'B4', d: 3 }, { n: 'C5', d: 1 }, { n: 'D5', d: 2 }, { n: 'E5', d: 2 },
+          { n: 'C5', d: 2 }, { n: 'A4', d: 2 }, { n: 'A4', d: 3 }, { n: 'R', d: 1 },
+          { n: 'D5', d: 3 }, { n: 'F5', d: 1 }, { n: 'A5', d: 2 }, { n: 'G5', d: 1 },
+          { n: 'F5', d: 1 }, { n: 'E5', d: 3 }, { n: 'C5', d: 1 }, { n: 'E5', d: 2 },
+          { n: 'D5', d: 1 }, { n: 'C5', d: 1 }, { n: 'B4', d: 2 }, { n: 'B4', d: 1 },
+          { n: 'C5', d: 1 }, { n: 'D5', d: 2 }, { n: 'E5', d: 2 }, { n: 'C5', d: 2 },
+          { n: 'A4', d: 2 }, { n: 'A4', d: 3 }, { n: 'R', d: 1 }
+        ];
+
+        this.freqs = {
+          'A4': 440.00, 'B4': 493.88, 'C5': 523.25, 'D5': 587.33,
+          'E5': 659.25, 'F5': 698.46, 'G5': 783.99, 'A5': 880.00, 'R': 0
+        };
+      }
+
+      init() {
+        if (!this.ctx) {
+          const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+          this.ctx = new AudioContextClass();
+        }
+        if (this.ctx.state === 'suspended') {
+          this.ctx.resume();
+        }
+      }
+
+      playMove() {
+        if (this.muted) return;
+        this.init();
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(420, this.ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(260, this.ctx.currentTime + 0.04);
+        gain.gain.setValueAtTime(0.08, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.04);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(this.ctx.currentTime + 0.04);
+      }
+
+      playRotate() {
+        if (this.muted) return;
+        this.init();
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(480, this.ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(860, this.ctx.currentTime + 0.08);
+        gain.gain.setValueAtTime(0.1, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.08);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(this.ctx.currentTime + 0.08);
+      }
+
+      playLock() {
+        if (this.muted) return;
+        this.init();
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(180, this.ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(60, this.ctx.currentTime + 0.09);
+        gain.gain.setValueAtTime(0.12, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.09);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(this.ctx.currentTime + 0.09);
+      }
+
+      playHardDrop() {
+        if (this.muted) return;
+        this.init();
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(280, this.ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(45, this.ctx.currentTime + 0.12);
+        gain.gain.setValueAtTime(0.16, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.12);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(this.ctx.currentTime + 0.12);
+      }
+
+      playClear(lineCount) {
+        if (this.muted) return;
+        this.init();
+        const notes = (lineCount >= 4) ? [523.25, 659.25, 783.99, 1046.50, 1318.51] : [587.33, 739.99, 880.00, 1174.66];
+        notes.forEach((freq, i) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, this.ctx.currentTime + i * 0.06);
+          gain.gain.setValueAtTime(0.14, this.ctx.currentTime + i * 0.06);
+          gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + i * 0.06 + 0.22);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(this.ctx.currentTime + i * 0.06);
+          osc.stop(this.ctx.currentTime + i * 0.06 + 0.22);
+        });
+      }
+
+      playFanfare() {
+        if (this.muted) return;
+        this.init();
+        const melody = [523.25, 659.25, 783.99, 1046.50, 1046.50];
+        melody.forEach((freq, i) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'triangle';
+          const startTime = this.ctx.currentTime + i * 0.08;
+          const duration = (i === melody.length - 1) ? 0.4 : 0.08;
+          osc.frequency.setValueAtTime(freq, startTime);
+          gain.gain.setValueAtTime(0.18, startTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(startTime);
+          osc.stop(startTime + duration);
+        });
+      }
+
+      playGameOver() {
+        if (this.muted) return;
+        this.init();
+        const notes = [440, 392, 349.23, 277.18];
+        notes.forEach((freq, i) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(freq, this.ctx.currentTime + i * 0.14);
+          gain.gain.setValueAtTime(0.1, this.ctx.currentTime + i * 0.14);
+          gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + i * 0.14 + 0.25);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(this.ctx.currentTime + i * 0.14);
+          osc.stop(this.ctx.currentTime + i * 0.14 + 0.25);
+        });
+      }
+
+      playClick() {
+        if (this.muted) return;
+        this.init();
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(650, this.ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(1000, this.ctx.currentTime + 0.05);
+        gain.gain.setValueAtTime(0.08, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.05);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(this.ctx.currentTime + 0.05);
+      }
+
+      /* BGM 제어 */
+      startBGM() {
+        if (this.bgmMuted || this.bgmPlaying) return;
+        this.init();
+        this.bgmPlaying = true;
+        this.bgmIndex = 0;
+        this.playBGMNote();
+      }
+
+      stopBGM() {
+        this.bgmPlaying = false;
+        clearTimeout(this.bgmTimer);
+      }
+
+      playBGMNote() {
+        if (!this.bgmPlaying || this.bgmMuted) return;
+        const item = this.melody[this.bgmIndex];
+        const freq = this.freqs[item.n];
+        const tempo = 135;
+        const durMs = item.d * tempo;
+
+        if (freq > 0 && this.ctx && this.ctx.state === 'running') {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'square';
+          osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+          gain.gain.setValueAtTime(0.018, this.ctx.currentTime); // 편안한 은은한 볼륨
+          gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + (durMs / 1000) * 0.9);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start();
+          osc.stop(this.ctx.currentTime + (durMs / 1000) * 0.9);
+        }
+
+        this.bgmIndex = (this.bgmIndex + 1) % this.melody.length;
+        this.bgmTimer = setTimeout(() => this.playBGMNote(), durMs);
+      }
+    }
+
+    const sound = new SoundEngine();
+
+    function toggleSound() {
+      sound.muted = !sound.muted;
+      const icon = document.getElementById('sound-icon');
+      const text = document.getElementById('sound-text');
+      if (sound.muted) {
+        icon.innerText = '🔇';
+        text.innerText = '효과음 OFF';
+      } else {
+        icon.innerText = '🔊';
+        text.innerText = '효과음 ON';
+        sound.playClick();
+      }
+    }
+
+    function toggleBGM() {
+      sound.bgmMuted = !sound.bgmMuted;
+      const icon = document.getElementById('bgm-icon');
+      const text = document.getElementById('bgm-text');
+      if (sound.bgmMuted) {
+        sound.stopBGM();
+        icon.innerText = '🔇';
+        text.innerText = 'BGM OFF';
+      } else {
+        sound.startBGM();
+        icon.innerText = '🎵';
+        text.innerText = 'BGM ON';
+      }
+    }
+
+    /* 2. 15가지 컬러 팔레트 */
+    const COLORS = [
+      null,
+      { main: '#00e5ff', light: '#80f2ff', dark: '#009bb3' }, // 1: I
+      { main: '#2979ff', light: '#80adff', dark: '#004ecb' }, // 2: J
+      { main: '#ff6d00', light: '#ffa34d', dark: '#b34d00' }, // 3: L
+      { main: '#ffd600', light: '#ffe766', dark: '#b39600' }, // 4: O
+      { main: '#00e676', light: '#66f0ab', dark: '#00a353' }, // 5: S
+      { main: '#d500f9', light: '#ea66fb', dark: '#9500ae' }, // 6: T
+      { main: '#ff1744', light: '#ff6685', dark: '#b80026' }, // 7: Z
+      { main: '#ffe600', light: '#ffffff', dark: '#c49b00' }, // 8: DOT (1칸 보석)
+      { main: '#00f5d4', light: '#7bfff0', dark: '#00a38d' }, // 9: DOMINO (2칸 바)
+      { main: '#ff2a85', light: '#ff80b3', dark: '#b3004b' }, // 10: I3 (3칸 일자)
+      { main: '#ff7b54', light: '#ffa387', dark: '#b84423' }, // 11: CORNER (3칸 ㄱ자)
+      { main: '#00ffff', light: '#a6ffff', dark: '#00b3b3' }, // 12: I5 (5칸 일자)
+      { main: '#b388ff', light: '#d1b3ff', dark: '#7c4dff' }, // 13: DIAG (2칸 대각선)
+      { main: '#ffab00', light: '#ffd54f', dark: '#c67c00' }, // 14: LCORNER (깊은 구석)
+      { main: '#76ff03', light: '#b0ff57', dark: '#52b202' }  // 15: CROSS (십자가)
+    ];
+
+    /* 3. 게임 엔진 */
+    const canvas = document.getElementById('tetris');
+    const ctx = canvas.getContext('2d');
+    const nextCanvas = document.getElementById('next-canvas');
+    const nextCtx = nextCanvas.getContext('2d');
+    const holdCanvas = document.getElementById('hold-canvas');
+    const holdCtx = holdCanvas.getContext('2d');
+
+    const BLOCK_SIZE = 28;
+    const COLS = 10;
+    const ROWS = 20;
+
+    // DOM 요소들 (PC & 모바일)
+    const scoreVal = document.getElementById('score');
+    const highScoreVal = document.getElementById('high-score');
+    const levelVal = document.getElementById('level');
+    const linesVal = document.getElementById('lines');
+    const mScoreVal = document.getElementById('m-score');
+    const mBestVal = document.getElementById('m-best');
+    const mLevelVal = document.getElementById('m-level');
+    const mLinesVal = document.getElementById('m-lines');
+
+    const btnStart = document.getElementById('btn-start');
+    const btnPause = document.getElementById('btn-pause');
+    const btnEnd = document.getElementById('btn-end');
+
+    const scoreProgText = document.getElementById('score-progress-text');
+    const scoreProgBar = document.getElementById('score-progress-bar');
+    const linesProgText = document.getElementById('lines-progress-text');
+    const levelProgBar = document.getElementById('level-progress-bar');
+    const floatingLayer = document.getElementById('floating-layer');
+
+    const overlay = document.getElementById('board-overlay');
+    const overlayTitle = document.getElementById('overlay-title');
+    const overlayDesc = document.getElementById('overlay-desc');
+    const finalScoreBox = document.getElementById('final-score');
+    const finalScoreVal = document.getElementById('final-score-val');
+    const finalLinesVal = document.getElementById('final-lines-val');
+    const finalLevelVal = document.getElementById('final-level-val');
+    const overlayBtn = document.getElementById('overlay-btn');
+
+    const giftModal = document.getElementById('gift-modal');
+    const customGiftPreview = document.getElementById('custom-gift-preview');
+    const customGiftImg = document.getElementById('custom-gift-img');
+
+    // 15종 블록 모양
+    const SHAPES = {
+      'I': [[0,0,0,0],[1,1,1,1],[0,0,0,0],[0,0,0,0]],
+      'J': [[2,0,0],[2,2,2],[0,0,0]],
+      'L': [[0,0,3],[3,3,3],[0,0,0]],
+      'O': [[4,4],[4,4]],
+      'S': [[0,5,5],[5,5,0],[0,0,0]],
+      'T': [[0,6,0],[6,6,6],[0,0,0]],
+      'Z': [[7,7,0],[0,7,7],[0,0,0]],
+      'DOT': [[8]],
+      'DOMINO': [[0,0],[9,9]],
+      'I3': [[0,0,0],[10,10,10],[0,0,0]],
+      'CORNER': [[11,11],[11,0]],
+      'I5': [[0,0,0,0,0],[0,0,0,0,0],[12,12,12,12,12],[0,0,0,0,0],[0,0,0,0,0]],
+      'DIAG': [[13,0],[0,13]],
+      'LCORNER': [[14,0,0],[14,0,0],[14,14,0]],
+      'CROSS': [[0,15,0],[15,15,15],[0,15,0]]
+    };
+
+    const ALL_PIECES = [
+      'I', 'J', 'L', 'O', 'S', 'T', 'Z',
+      'DOT', 'DOMINO', 'I3', 'CORNER',
+      'I5', 'DIAG', 'LCORNER', 'CROSS'
+    ];
+
+    const STATE = {
+      IDLE: 'IDLE',
+      PLAYING: 'PLAYING',
+      PAUSED: 'PAUSED',
+      GAMEOVER: 'GAMEOVER'
+    };
+
+    let gameState = STATE.IDLE;
+    let board = createMatrix(COLS, ROWS);
+    let score = 0;
+    let highScore = parseInt(localStorage.getItem('tetris_high_score') || '0', 10);
+    let lines = 0;
+    let level = 1;
+
+    let currentPiece = null;
+    let nextPiece = null;
+    let holdPiece = null;
+    let canHold = true; // 1턴당 1회 홀드 가능
+
+    let dropCounter = 0;
+    let dropInterval = 1000;
+    let lastTime = 0;
+    let animationId = null;
+
+    let particles = [];
+
+    const TROPHIES = [
+      { id: 'trophy-1', targetScore: 500, name: '사탕 선물', type: 'candy', unlocked: false },
+      { id: 'trophy-2', targetScore: 1500, name: '탄산음료', type: 'soda', unlocked: false },
+      { id: 'trophy-3', targetScore: 3000, name: '스타벅스 커피 쿠폰', type: 'coffee', unlocked: false },
+      { id: 'trophy-4', targetScore: 5000, name: '케이크+커피 세트', type: 'cake', unlocked: false }
+    ];
+
+    function createMatrix(w, h) {
+      const matrix = [];
+      while (h--) matrix.push(new Array(w).fill(0));
+      return matrix;
+    }
+
+    let pieceBag = [];
+
+    function fillBag() {
+      const pieces = [...ALL_PIECES];
+      for (let i = pieces.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [pieces[i], pieces[j]] = [pieces[j], pieces[i]];
+      }
+      pieceBag = pieces;
+    }
+
+    function getRandomPiece() {
+      if (pieceBag.length === 0) fillBag();
+      const type = pieceBag.pop();
+      return {
+        type: type,
+        matrix: SHAPES[type].map(row => [...row]),
+        colorIdx: ALL_PIECES.indexOf(type) + 1,
+        pos: { x: 0, y: 0 }
+      };
+    }
+
+    function spawnPiece() {
+      if (!nextPiece) nextPiece = getRandomPiece();
+      currentPiece = nextPiece;
+      nextPiece = getRandomPiece();
+      canHold = true;
+
+      currentPiece.pos.y = (currentPiece.type === 'I' || currentPiece.type === 'I5') ? -2 : 0;
+      currentPiece.pos.x = Math.floor(COLS / 2) - Math.floor(currentPiece.matrix[0].length / 2);
+
+      drawNext();
+      drawHold();
+
+      if (collide(board, currentPiece)) {
+        gameOver();
+      }
+    }
+
+    /* 📦 블록 보관(HOLD) 기능 */
+    function handleHold() {
+      if (gameState !== STATE.PLAYING || !canHold) return;
+      sound.playClick();
+
+      if (!holdPiece) {
+        holdPiece = {
+          type: currentPiece.type,
+          matrix: SHAPES[currentPiece.type].map(row => [...row]),
+          colorIdx: currentPiece.colorIdx
+        };
+        spawnPiece();
+      } else {
+        const temp = {
+          type: currentPiece.type,
+          matrix: SHAPES[currentPiece.type].map(row => [...row]),
+          colorIdx: currentPiece.colorIdx
+        };
+        currentPiece = {
+          type: holdPiece.type,
+          matrix: SHAPES[holdPiece.type].map(row => [...row]),
+          colorIdx: holdPiece.colorIdx,
+          pos: {
+            x: Math.floor(COLS / 2) - Math.floor(SHAPES[holdPiece.type][0].length / 2),
+            y: (holdPiece.type === 'I' || holdPiece.type === 'I5') ? -2 : 0
+          }
+        };
+        holdPiece = temp;
+      }
+      canHold = false;
+      drawHold();
+    }
+
+    function collide(board, piece) {
+      const [m, o] = [piece.matrix, piece.pos];
+      for (let y = 0; y < m.length; ++y) {
+        for (let x = 0; x < m[y].length; ++x) {
+          if (m[y][x] !== 0) {
+            const boardX = x + o.x;
+            const boardY = y + o.y;
+            if (boardX < 0 || boardX >= COLS) return true;
+            if (boardY >= ROWS) return true;
+            if (boardY >= 0 && board[boardY][boardX] !== 0) return true;
+          }
+        }
+      }
+      return false;
+    }
+
+    function merge(board, piece) {
+      piece.matrix.forEach((row, y) => {
+        row.forEach((value, x) => {
+          if (value !== 0) {
+            const targetY = y + piece.pos.y;
+            const targetX = x + piece.pos.x;
+            if (targetY >= 0 && targetY < ROWS && targetX >= 0 && targetX < COLS) {
+              board[targetY][targetX] = piece.colorIdx;
+            }
+          }
+        });
+      });
+    }
+
+    function rotate(matrix, dir) {
+      if (matrix.length === 1 && matrix[0].length === 1) return;
+      for (let y = 0; y < matrix.length; ++y) {
+        for (let x = 0; x < y; ++x) {
+          [matrix[x][y], matrix[y][x]] = [matrix[y][x], matrix[x][y]];
+        }
+      }
+      if (dir > 0) matrix.forEach(row => row.reverse());
+      else matrix.reverse();
+    }
+
+    function playerRotate(dir) {
+      if (gameState !== STATE.PLAYING) return;
+      if (currentPiece.matrix.length === 1 && currentPiece.matrix[0].length === 1) return;
+
+      const originalPos = { x: currentPiece.pos.x, y: currentPiece.pos.y };
+      rotate(currentPiece.matrix, dir);
+
+      const kicks = [
+        { x: 0, y: 0 }, { x: 1, y: 0 }, { x: -1, y: 0 }, { x: 0, y: -1 },
+        { x: 1, y: -1 }, { x: -1, y: -1 }, { x: 2, y: 0 }, { x: -2, y: 0 }, { x: 0, y: -2 }
+      ];
+
+      let rotated = false;
+      for (const kick of kicks) {
+        currentPiece.pos.x = originalPos.x + kick.x;
+        currentPiece.pos.y = originalPos.y + kick.y;
+        if (!collide(board, currentPiece)) {
+          rotated = true;
+          break;
+        }
+      }
+
+      if (!rotated) {
+        rotate(currentPiece.matrix, -dir);
+        currentPiece.pos.x = originalPos.x;
+        currentPiece.pos.y = originalPos.y;
+        return;
+      }
+      sound.playRotate();
+    }
+
+    function playerMove(dir) {
+      if (gameState !== STATE.PLAYING) return;
+      currentPiece.pos.x += dir;
+      if (collide(board, currentPiece)) {
+        currentPiece.pos.x -= dir;
+      } else {
+        sound.playMove();
+      }
+    }
+
+    function playerDrop() {
+      if (gameState !== STATE.PLAYING) return;
+      currentPiece.pos.y++;
+      if (collide(board, currentPiece)) {
+        currentPiece.pos.y--;
+        merge(board, currentPiece);
+        sound.playLock();
+        clearLines();
+        spawnPiece();
+      }
+      dropCounter = 0;
+    }
+
+    function playerHardDrop() {
+      if (gameState !== STATE.PLAYING) return;
+      while (!collide(board, currentPiece)) {
+        currentPiece.pos.y++;
+      }
+      currentPiece.pos.y--;
+      merge(board, currentPiece);
+      sound.playHardDrop();
+      clearLines();
+      spawnPiece();
+      dropCounter = 0;
+    }
+
+    function showFloatingText(text, color) {
+      const el = document.createElement('div');
+      el.className = 'floating-msg';
+      el.style.color = color;
+      el.style.top = '40%';
+      el.innerText = text;
+      floatingLayer.appendChild(el);
+      setTimeout(() => el.remove(), 1200);
+    }
+
+    function spawnParticles(lineY) {
+      const colors = ['#00f2fe', '#ffd600', '#ff2a85', '#00ff88', '#fff'];
+      for (let i = 0; i < 35; i++) {
+        particles.push({
+          x: Math.random() * (COLS * BLOCK_SIZE),
+          y: lineY * BLOCK_SIZE + BLOCK_SIZE / 2,
+          vx: (Math.random() - 0.5) * 8,
+          vy: (Math.random() - 0.7) * 7,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          size: Math.random() * 4 + 2,
+          alpha: 1,
+          decay: Math.random() * 0.02 + 0.015
+        });
+      }
+    }
+
+    function clearLines() {
+      let linesCleared = 0;
+      let lastClearedY = 0;
+
+      outer: for (let y = board.length - 1; y >= 0; --y) {
+        for (let x = 0; x < board[y].length; ++x) {
+          if (board[y][x] === 0) continue outer;
+        }
+        const row = board.splice(y, 1)[0].fill(0);
+        board.unshift(row);
+        ++y;
+        linesCleared++;
+        lastClearedY = y;
+      }
+
+      if (linesCleared > 0) {
+        sound.playClear(linesCleared);
+        spawnParticles(lastClearedY);
+
+        const lineScores = [0, 100, 300, 600, 1000];
+        const earned = (lineScores[linesCleared] || 1200) * level;
+        score += earned;
+        lines += linesCleared;
+
+        if (score > highScore) {
+          highScore = score;
+          localStorage.setItem('tetris_high_score', highScore.toString());
+        }
+
+        if (linesCleared === 1) showFloatingText(`GOOD! +${earned}`, '#00f2fe');
+        else if (linesCleared === 2) showFloatingText(`DOUBLE! +${earned}`, '#00ff88');
+        else if (linesCleared === 3) showFloatingText(`TRIPLE! +${earned}`, '#ffd600');
+        else if (linesCleared >= 4) showFloatingText(`★ TETRIS! +${earned} ★`, '#ff2a85');
+
+        const newLevel = Math.floor(lines / 5) + 1;
+        if (newLevel > level) {
+          level = newLevel;
+          sound.playFanfare();
+          showFloatingText(`🎉 LEVEL ${level} 승급! 🎉`, '#ffd600');
+          dropInterval = Math.max(150, 1000 - (level - 1) * 80);
+        }
+
+        checkTrophies();
+        updateUI();
+      }
+    }
+
+    function checkTrophies() {
+      TROPHIES.forEach(t => {
+        if (!t.unlocked && score >= t.targetScore) {
+          t.unlocked = true;
+          sound.playFanfare();
+          const item = document.getElementById(t.id);
+          if (item) {
+            item.classList.add('unlocked');
+            item.querySelector('.trophy-badge').innerText = '선물받기!';
+          }
+          showFloatingText(`🎁 [${t.name}] 달성! 🎁`, '#ffd600');
+
+          if (t.type === 'coffee') {
+            setTimeout(() => openGiftModal('coffee'), 600);
+          }
+        }
+      });
+    }
+
+    function updateUI() {
+      // 점수 업데이트
+      scoreVal.innerText = score.toLocaleString();
+      highScoreVal.innerText = highScore.toLocaleString();
+      levelVal.innerText = level;
+      linesVal.innerText = lines;
+
+      // 모바일 요약바 동기화
+      mScoreVal.innerText = score.toLocaleString();
+      mBestVal.innerText = highScore.toLocaleString();
+      mLevelVal.innerText = level;
+      mLinesVal.innerText = lines;
+
+      // 진행도 바
+      const currentLevelLines = lines % 5;
+      const linesRemaining = 5 - currentLevelLines;
+      const levelPercent = (currentLevelLines / 5) * 100;
+      levelProgBar.style.width = `${levelPercent}%`;
+      linesProgText.innerText = `${linesRemaining}줄 남음`;
+
+      const coffeeTarget = 3000;
+      if (score < coffeeTarget) {
+        const remaining = coffeeTarget - score;
+        scoreProgText.innerText = `${remaining.toLocaleString()}점 남음`;
+        scoreProgBar.style.width = `${Math.min(100, (score / coffeeTarget) * 100)}%`;
+      } else {
+        scoreProgText.innerText = '☕ 커피 획득완료!';
+        scoreProgBar.style.width = '100%';
+        scoreProgBar.style.background = '#00ff88';
+      }
+    }
+
+    /* 4. 렌더링 */
+    function drawBlock(context, x, y, colorIdx) {
+      const px = x * BLOCK_SIZE;
+      const py = y * BLOCK_SIZE;
+      const color = COLORS[colorIdx];
+
+      context.fillStyle = color.main;
+      context.fillRect(px, py, BLOCK_SIZE, BLOCK_SIZE);
+
+      context.fillStyle = color.light;
+      context.beginPath();
+      context.moveTo(px, py);
+      context.lineTo(px + BLOCK_SIZE, py);
+      context.lineTo(px + BLOCK_SIZE - 3.5, py + 3.5);
+      context.lineTo(px + 3.5, py + 3.5);
+      context.lineTo(px + 3.5, py + BLOCK_SIZE - 3.5);
+      context.lineTo(px, py + BLOCK_SIZE);
+      context.closePath();
+      context.fill();
+
+      context.fillStyle = color.dark;
+      context.beginPath();
+      context.moveTo(px + BLOCK_SIZE, py);
+      context.lineTo(px + BLOCK_SIZE, py + BLOCK_SIZE);
+      context.lineTo(px, py + BLOCK_SIZE);
+      context.lineTo(px + 3.5, py + BLOCK_SIZE - 3.5);
+      context.lineTo(px + BLOCK_SIZE - 3.5, py + BLOCK_SIZE - 3.5);
+      context.lineTo(px + BLOCK_SIZE - 3.5, py + 3.5);
+      context.closePath();
+      context.fill();
+
+      context.strokeStyle = 'rgba(0, 0, 0, 0.5)';
+      context.lineWidth = 1;
+      context.strokeRect(px, py, BLOCK_SIZE, BLOCK_SIZE);
+    }
+
+    function drawGrid() {
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+      ctx.lineWidth = 1;
+      for (let x = 0; x <= COLS; x++) {
+        ctx.beginPath();
+        ctx.moveTo(x * BLOCK_SIZE, 0);
+        ctx.lineTo(x * BLOCK_SIZE, ROWS * BLOCK_SIZE);
+        ctx.stroke();
+      }
+      for (let y = 0; y <= ROWS; y++) {
+        ctx.beginPath();
+        ctx.moveTo(0, y * BLOCK_SIZE);
+        ctx.lineTo(COLS * BLOCK_SIZE, y * BLOCK_SIZE);
+        ctx.stroke();
+      }
+    }
+
+    function updateParticles() {
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += 0.2;
+        p.alpha -= p.decay;
+
+        if (p.alpha <= 0) {
+          particles.splice(i, 1);
+          continue;
+        }
+
+        ctx.save();
+        ctx.globalAlpha = p.alpha;
+        ctx.fillStyle = p.color;
+        ctx.shadowBlur = 8;
+        ctx.shadowColor = p.color;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+    }
+
+    function draw() {
+      ctx.fillStyle = '#030508';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      drawGrid();
+
+      board.forEach((row, y) => {
+        row.forEach((value, x) => {
+          if (value !== 0) drawBlock(ctx, x, y, value);
+        });
+      });
+
+      if (currentPiece && gameState === STATE.PLAYING) {
+        currentPiece.matrix.forEach((row, y) => {
+          row.forEach((value, x) => {
+            if (value !== 0) {
+              const drawY = y + currentPiece.pos.y;
+              if (drawY >= 0) drawBlock(ctx, x + currentPiece.pos.x, drawY, currentPiece.colorIdx);
+            }
+          });
+        });
+      }
+
+      updateParticles();
+    }
+
+    /* 프리뷰 캔버스 렌더러 (NEXT & HOLD 공용) */
+    function renderPreview(context, targetCanvas, piece) {
+      context.fillStyle = '#030508';
+      context.fillRect(0, 0, targetCanvas.width, targetCanvas.height);
+
+      if (!piece) return;
+
+      const m = piece.matrix;
+      const maxSize = Math.max(m.length, m[0].length);
+      const size = maxSize >= 5 ? 11 : 14;
+      const offsetX = (targetCanvas.width - m[0].length * size) / 2;
+      const offsetY = (targetCanvas.height - m.length * size) / 2;
+
+      m.forEach((row, y) => {
+        row.forEach((value, x) => {
+          if (value !== 0) {
+            const px = offsetX + x * size;
+            const py = offsetY + y * size;
+            const color = COLORS[piece.colorIdx];
+
+            context.fillStyle = color.main;
+            context.fillRect(px, py, size, size);
+
+            context.fillStyle = color.light;
+            context.fillRect(px, py, size, 2);
+            context.fillRect(px, py, 2, size);
+
+            context.strokeStyle = 'rgba(0, 0, 0, 0.4)';
+            context.lineWidth = 1;
+            context.strokeRect(px, py, size, size);
+          }
+        });
+      });
+    }
+
+    function drawNext() {
+      renderPreview(nextCtx, nextCanvas, nextPiece);
+    }
+
+    function drawHold() {
+      renderPreview(holdCtx, holdCanvas, holdPiece);
+    }
+
+    function update(time = 0) {
+      if (gameState !== STATE.PLAYING) return;
+
+      const deltaTime = time - lastTime;
+      lastTime = time;
+
+      dropCounter += deltaTime;
+      if (dropCounter > dropInterval) {
+        playerDrop();
+      }
+
+      draw();
+      animationId = requestAnimationFrame(update);
+    }
+
+    /* 5. 컨트롤 핸들러 */
+    function handleStartOrResume() {
+      sound.playClick();
+      if (gameState === STATE.PAUSED) {
+        gameState = STATE.PLAYING;
+        hideOverlay();
+        btnStart.innerHTML = '<span>▶</span> 진행 중';
+        btnStart.disabled = true;
+        btnPause.disabled = false;
+        btnEnd.disabled = false;
+        btnPause.innerHTML = '<span>⏸</span> 일시정지';
+        sound.startBGM();
+        lastTime = performance.now();
+        animationId = requestAnimationFrame(update);
+        return;
+      }
+
+      board = createMatrix(COLS, ROWS);
+      score = 0;
+      lines = 0;
+      level = 1;
+      dropInterval = 1000;
+      dropCounter = 0;
+      pieceBag = [];
+      particles = [];
+      holdPiece = null;
+      canHold = true;
+
+      TROPHIES.forEach(t => {
+        t.unlocked = false;
+        const item = document.getElementById(t.id);
+        if (item) {
+          item.classList.remove('unlocked');
+          item.querySelector('.trophy-badge').innerText = '미획득';
+        }
+      });
+
+      updateUI();
+
+      nextPiece = null;
+      spawnPiece();
+
+      gameState = STATE.PLAYING;
+      hideOverlay();
+
+      btnStart.innerHTML = '<span>▶</span> 진행 중';
+      btnStart.disabled = true;
+      btnPause.disabled = false;
+      btnEnd.disabled = false;
+
+      sound.startBGM();
+      lastTime = performance.now();
+      cancelAnimationFrame(animationId);
+      animationId = requestAnimationFrame(update);
+    }
+
+    function handlePause() {
+      sound.playClick();
+      if (gameState === STATE.PLAYING) {
+        gameState = STATE.PAUSED;
+        cancelAnimationFrame(animationId);
+        sound.stopBGM();
+        showOverlay('일시정지', '게임이 잠시 멈췄습니다.<br>계속하려면 아래 버튼이나 [P]를 누르세요.', 'pause', '▶ 계속하기');
+        btnPause.innerHTML = '<span>▶</span> 계속하기';
+        btnStart.disabled = false;
+        btnStart.innerHTML = '<span>▶</span> 계속하기';
+      } else if (gameState === STATE.PAUSED) {
+        handleStartOrResume();
+      }
+    }
+
+    function handleEndGame() {
+      if (gameState === STATE.IDLE) return;
+      sound.playClick();
+      gameOver('게임을 종료했습니다.');
+    }
+
+    function gameOver(customMsg) {
+      gameState = STATE.GAMEOVER;
+      cancelAnimationFrame(animationId);
+      sound.stopBGM();
+      sound.playGameOver();
+
+      btnStart.innerHTML = '<span>🔄</span> 다시 시작';
+      btnStart.disabled = false;
+      btnPause.disabled = true;
+      btnEnd.disabled = true;
+
+      const title = customMsg ? '게임 종료' : 'GAME OVER';
+      const desc = customMsg 
+        ? `${customMsg}<br>수고하셨습니다!` 
+        : '블록이 맨 위까지 쌓였습니다!';
+
+      finalScoreBox.style.display = 'flex';
+      finalScoreVal.innerText = score.toLocaleString();
+      finalLinesVal.innerText = lines;
+      finalLevelVal.innerText = level;
+
+      showOverlay(title, desc, 'gameover', '🔄 다시 플레이');
+      draw();
+    }
+
+    function showOverlay(titleText, descHTML, titleClass, btnText) {
+      overlayTitle.className = `overlay-title ${titleClass}`;
+      overlayTitle.innerText = titleText;
+      overlayDesc.innerHTML = descHTML;
+      overlayBtn.innerText = btnText;
+      overlay.classList.remove('hidden');
+    }
+
+    function hideOverlay() {
+      overlay.classList.add('hidden');
+      finalScoreBox.style.display = 'none';
+    }
+
+    /* 🎁 선물 모달 */
+    function openGiftModal(type) {
+      sound.playFanfare();
+      giftModal.classList.remove('hidden');
+
+      const savedGift = localStorage.getItem('my_tetris_real_gift');
+      if (savedGift) {
+        customGiftImg.src = savedGift;
+        customGiftPreview.style.display = 'block';
+      } else {
+        customGiftPreview.style.display = 'none';
+      }
+    }
+
+    function closeGiftModal() {
+      giftModal.classList.add('hidden');
+    }
+
+    function handleRealGiftClaim() {
+      sound.playClick();
+      alert('🎉 [스타벅스 카페 아메리카노 모바일 교환권] 당첨!\n\n쿠폰 번호: TETRIS-STARBUCKS-WINNER-2026\n\n화면을 캡처하여 매장에서 보여주시거나, 아래 [내 진짜 기프티콘 이미지 등록하기]를 통해 실제 보유하신 모바일 쿠폰 이미지를 등록해 두실 수 있습니다!');
+    }
+
+    function handleCustomGiftUpload(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const dataUrl = e.target.result;
+          localStorage.setItem('my_tetris_real_gift', dataUrl);
+          customGiftImg.src = dataUrl;
+          customGiftPreview.style.display = 'block';
+          alert('✔ 실제 기프티콘 이미지가 등록되었습니다!\n이제 3,000점을 달성할 때마다 이 기프티콘이 나타납니다!');
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    /* ========================================================
+       📱 모바일 터치 이벤트 핸들러 (연속 이동 및 제어)
+       ======================================================== */
+    let touchMoveTimer = null;
+    let touchDropTimer = null;
+
+    function handleTouchRotate() {
+      playerRotate(1);
+      draw();
+    }
+
+    function handleTouchHardDrop() {
+      playerHardDrop();
+      draw();
+    }
+
+    function startContinuousMove(dir) {
+      playerMove(dir);
+      draw();
+      clearInterval(touchMoveTimer);
+      touchMoveTimer = setInterval(() => {
+        playerMove(dir);
+        draw();
+      }, 100);
+    }
+
+    function stopContinuousMove() {
+      clearInterval(touchMoveTimer);
+    }
+
+    function startContinuousDrop() {
+      playerDrop();
+      draw();
+      clearInterval(touchDropTimer);
+      touchDropTimer = setInterval(() => {
+        playerDrop();
+        draw();
+      }, 70);
+    }
+
+    function stopContinuousDrop() {
+      clearInterval(touchDropTimer);
+    }
+
+    /* 키보드 이벤트 (PC용) */
+    document.addEventListener('keydown', event => {
+      if (gameState === STATE.PLAYING) {
+        if (event.key === 'ArrowLeft') {
+          playerMove(-1);
+          draw();
+        } else if (event.key === 'ArrowRight') {
+          playerMove(1);
+          draw();
+        } else if (event.key === 'ArrowDown') {
+          playerDrop();
+          draw();
+        } else if (event.key === 'ArrowUp') {
+          playerRotate(1);
+          draw();
+        } else if (event.key === ' ') {
+          event.preventDefault();
+          playerHardDrop();
+          draw();
+        } else if (event.key === 'c' || event.key === 'C' || event.key === 'Shift') {
+          handleHold();
+          draw();
+        }
+      }
+
+      if (event.key === 'p' || event.key === 'P' || event.key === 'ㅔ') {
+        if (gameState === STATE.PLAYING || gameState === STATE.PAUSED) {
+          handlePause();
+        }
+      }
+
+      if (event.key === 'm' || event.key === 'M' || event.key === 'ㅡ') {
+        toggleSound();
+      }
+    });
+
+    updateUI();
+    draw();
+    drawHold();
+  </script>
+</body>
+</html>
