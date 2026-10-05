@@ -1149,6 +1149,45 @@
       color: #e2e8f0;
     }
 
+    /* ⚔️ 카카오톡 점수 내기 배틀 버튼 스타일 */
+    .btn-kakao-battle {
+      background: #fee500 !important;
+      color: #191919 !important;
+      border: none !important;
+      font-weight: 900 !important;
+      font-size: 13px !important;
+      box-shadow: 0 4px 15px rgba(254, 229, 0, 0.45) !important;
+      margin-top: 8px !important;
+      width: 100% !important;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    }
+    .btn-kakao-battle:hover {
+      background: #ffd600 !important;
+      transform: translateY(-2px) scale(1.02) !important;
+      box-shadow: 0 6px 20px rgba(254, 229, 0, 0.6) !important;
+    }
+
+    /* 🔥 콤보 플로팅 텍스트 팝업 전용 */
+    .combo-msg {
+      position: absolute;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 20px;
+      font-weight: 900;
+      font-family: 'Orbitron', sans-serif;
+      text-shadow: 0 0 15px rgba(255, 100, 0, 0.8), 0 0 30px rgba(255, 200, 0, 0.6);
+      pointer-events: none;
+      animation: comboPop 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+      z-index: 50;
+      white-space: nowrap;
+    }
+    @keyframes comboPop {
+      0% { opacity: 0; transform: translate(-50%, 0) scale(0.6); }
+      25% { opacity: 1; transform: translate(-50%, -40px) scale(1.2); }
+      75% { opacity: 1; transform: translate(-50%, -70px) scale(1); }
+      100% { opacity: 0; transform: translate(-50%, -100px) scale(0.85); }
+    }
+
     /* 선물 모달 */
     .gift-modal {
       position: fixed;
@@ -1405,6 +1444,10 @@
 
           <button id="overlay-btn" class="game-btn btn-start" onclick="handleStartOrResume()">
             <span>▶</span> 게임 시작
+          </button>
+
+          <button id="overlay-kakao-btn" class="game-btn btn-kakao-battle" style="display: none;" onclick="handleKakaoBattleShare()">
+            <span>⚔️</span> 친구에게 카톡으로 점수 내기 도전장 보내기!
           </button>
         </div>
       </div>
@@ -1870,6 +1913,63 @@
         });
       }
 
+      /* 💣 폭탄 블록 착지 시 거대한 지진급 대폭발 사운드 */
+      playBombExplosion() {
+        if (this.muted) return;
+        this.init();
+
+        // 1. 거대한 서브우퍼 저음 충격파 (Bass Boom)
+        const subOsc = this.ctx.createOscillator();
+        const subGain = this.ctx.createGain();
+        subOsc.type = 'triangle';
+        subOsc.frequency.setValueAtTime(140, this.ctx.currentTime);
+        subOsc.frequency.exponentialRampToValueAtTime(20, this.ctx.currentTime + 0.35);
+        subGain.gain.setValueAtTime(0.5, this.ctx.currentTime);
+        subGain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.35);
+        subOsc.connect(subGain);
+        subGain.connect(this.ctx.destination);
+        subOsc.start();
+        subOsc.stop(this.ctx.currentTime + 0.35);
+
+        // 2. 크런치 화염 파열음 (White Noise Burst)
+        try {
+          const bufferSize = this.ctx.sampleRate * 0.25;
+          const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+          const data = buffer.getChannelData(0);
+          for (let i = 0; i < bufferSize; i++) {
+            data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (this.ctx.sampleRate * 0.08));
+          }
+          const noise = this.ctx.createBufferSource();
+          noise.buffer = buffer;
+          const noiseGain = this.ctx.createGain();
+          noiseGain.gain.setValueAtTime(0.3, this.ctx.currentTime);
+          noiseGain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.25);
+          noise.connect(noiseGain);
+          noiseGain.connect(this.ctx.destination);
+          noise.start();
+        } catch(e) {}
+      }
+
+      /* 🔥 연속 콤보 달성 시 짜릿한 상승 아르페지오 사운드 */
+      playCombo(combo) {
+        if (this.muted) return;
+        this.init();
+        const basePitch = Math.min(1200, 440 + (combo * 70));
+        const chord = [basePitch, basePitch * 1.25, basePitch * 1.5];
+        chord.forEach((freq, idx) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, this.ctx.currentTime + idx * 0.04);
+          gain.gain.setValueAtTime(0.18, this.ctx.currentTime + idx * 0.04);
+          gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + idx * 0.04 + 0.18);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(this.ctx.currentTime + idx * 0.04);
+          osc.stop(this.ctx.currentTime + idx * 0.04 + 0.18);
+        });
+      }
+
       playFanfare() {
         if (this.muted) return;
         this.init();
@@ -2041,7 +2141,8 @@
        ======================================================== */
     const UNIQUE_PIECES = [
       'I', 'J', 'L', 'O', 'S', 'T', 'Z',
-      'DOT', 'DOMINO', 'I3', 'CORNER_L', 'CORNER_R', 'MINI_L', 'MINI_J', 'I5'
+      'DOT', 'DOMINO', 'I3', 'CORNER_L', 'CORNER_R', 'MINI_L', 'MINI_J', 'I5',
+      'BOMB'
     ];
 
     const COLORS = [
@@ -2060,7 +2161,8 @@
       { main: '#ffb300', light: '#ffd54f', dark: '#ff8f00' }, // 12: CORNER_R (3칸 우 코너 역ㄱ자)
       { main: '#38ef7d', light: '#a8ff78', dark: '#11998e' }, // 13: MINI_L (3칸 미니 L)
       { main: '#9b51e0', light: '#bb6bd9', dark: '#6a11cb' }, // 14: MINI_J (3칸 미니 J)
-      { main: '#00ffff', light: '#a6ffff', dark: '#00b3b3' }  // 15: I5 (5칸 슈퍼 일자)
+      { main: '#00ffff', light: '#a6ffff', dark: '#00b3b3' }, // 15: I5 (5칸 슈퍼 일자)
+      { main: '#ff003c', light: '#ff6685', dark: '#80001f', isBomb: true } // 16: BOMB (주변 3x3 초토화 폭탄)
     ];
 
     const SHAPES = {
@@ -2079,10 +2181,11 @@
       'CORNER_R': [[12,12],[0,12]],                          // 3칸 우 코너 역ㄱ자
       'MINI_L': [[13,0],[13,13]],                            // 3칸 미니 L
       'MINI_J': [[0,14],[14,14]],                            // 3칸 미니 J
-      'I5': [[0,0,0,0,0],[0,0,0,0,0],[15,15,15,15,15],[0,0,0,0,0],[0,0,0,0,0]] // 5칸 슈퍼 일자
+      'I5': [[0,0,0,0,0],[0,0,0,0,0],[15,15,15,15,15],[0,0,0,0,0],[0,0,0,0,0]], // 5칸 슈퍼 일자
+      'BOMB': [[16]]                                          // 💣 1칸 초강력 폭탄 블록!
     };
 
-    // 가방 목록 (빈틈 해결 블록을 대량 투입하여 쏙쏙 채우기 최적화!)
+    // 가방 목록 (빈틈 해결 블록 대량 투입 + 시원한 폭탄 블록 투하!)
     const ALL_PIECES = [
       'DOT', 'DOT', 'DOT', 'DOT',      // 1칸 보석 4개 (어디든 쏙 들어가는 구원투수!)
       'DOMINO', 'DOMINO', 'DOMINO',    // 2칸 미니 바 3개
@@ -2091,6 +2194,7 @@
       'CORNER_R', 'CORNER_R',          // 3칸 역코너 2개
       'MINI_L', 'MINI_J',              // 미니 L/J 2개
       'I', 'I5',                       // 4칸 일자 & 5칸 슈퍼일자
+      'BOMB', 'BOMB',                  // 💣 3x3 주변 초토화 폭탄 2개!
       'O', 'J', 'L', 'S', 'T', 'Z'     // 정통 블록 각 1개
     ];
 
@@ -2112,6 +2216,7 @@
     let highScore = parseInt(localStorage.getItem('tetris_high_score') || '0', 10);
     let lines = 0;
     let level = 1;
+    let comboCount = 0; // 🔥 연속 줄 삭제 콤보 카운터 (점수 뻥튀기!)
 
     let currentPiece = null;
     let nextPiece = null;
@@ -2615,17 +2720,93 @@
       }
     }
 
+    /* 🚀 점수 비례 실시간 스피드 러시 계산 (점수가 오를수록 심장 쫄깃 가속!) */
+    function calculateDropInterval() {
+      const conf = DIFFICULTY_CONFIG[currentDifficulty] || DIFFICULTY_CONFIG.easy;
+      const levelDrop = (level - conf.startLevel) * conf.intervalStep;
+      // 점수 350점마다 25ms씩 점진적 스피드 러시 가속!
+      const scoreSpeedBoost = Math.floor(score / 350) * 25;
+      const currentInterval = conf.baseInterval - levelDrop - scoreSpeedBoost;
+      return Math.max(conf.minInterval, currentInterval);
+    }
+
+    /* 💣 폭탄 블록 착지 시 주변 3x3 초토화 대폭발 함수! */
+    function triggerBombExplosion(centerX, centerY) {
+      sound.playBombExplosion();
+      triggerScreenShake();
+      triggerHaptic('heavy');
+
+      // 주변 3x3 범위 파괴 (centerX-1 ~ centerX+1, centerY-1 ~ centerY+1)
+      let destroyedCount = 0;
+      for (let dy = -1; dy <= 1; dy++) {
+        for (let dx = -1; dx <= 1; dx++) {
+          const tx = centerX + dx;
+          const ty = centerY + dy;
+          if (tx >= 0 && tx < COLS && ty >= 0 && ty < ROWS) {
+            if (board[ty][tx] !== 0) {
+              board[ty][tx] = 0;
+              destroyedCount++;
+            }
+          }
+        }
+      }
+
+      // 💥 폭발 파티클 55개 사방 분사 (강렬한 레드, 오렌지, 골드 화염)
+      const bombColors = ['#ff003c', '#ff5722', '#ffd600', '#ffffff', '#ff9800'];
+      for (let i = 0; i < 55; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = Math.random() * 8 + 3;
+        particles.push({
+          x: centerX * BLOCK_SIZE + BLOCK_SIZE / 2,
+          y: centerY * BLOCK_SIZE + BLOCK_SIZE / 2,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed,
+          color: bombColors[Math.floor(Math.random() * bombColors.length)],
+          size: Math.random() * 5 + 3,
+          alpha: 1,
+          decay: Math.random() * 0.025 + 0.02
+        });
+      }
+
+      // 점수 적립 (파괴된 블록당 120점 + 폭탄 기본 200점)
+      const conf = DIFFICULTY_CONFIG[currentDifficulty] || DIFFICULTY_CONFIG.easy;
+      const bombEarned = Math.round((200 + destroyedCount * 120) * conf.scoreMultiplier);
+      score += bombEarned;
+      if (score > highScore) {
+        highScore = score;
+        localStorage.setItem('tetris_high_score', highScore.toString());
+      }
+
+      dropInterval = calculateDropInterval();
+      showFloatingText(`💣 폭탄 대폭발! 주변 초토화! +${bombEarned}`, '#ff003c');
+      const p = PARTNER_DATA[selectedPartner];
+      setPartnerQuote('"와아아! 💣 폭탄 블록으로 꽉 막힌 곳을 싹 날려버렸어요! 완전 쾌감 대박! 🔥"', true, true);
+      speakPraise('폭탄 대폭발!');
+
+      checkMissionMilestones();
+      checkTrophies();
+      updateUI();
+
+      if (score >= 3000 && gameState === STATE.PLAYING) {
+        triggerVictoryCelebration();
+      }
+    }
+
     function playerDrop() {
       if (gameState !== STATE.PLAYING) return;
       currentPiece.pos.y++;
       if (collide(board, currentPiece)) {
         currentPiece.pos.y--;
-        merge(board, currentPiece);
-        sound.playLock();
-        triggerHaptic('light');
-        spawnLandingSparks(currentPiece);
-        triggerBlockPlacedReaction();
-        clearLines();
+        if (currentPiece.type === 'BOMB') {
+          triggerBombExplosion(currentPiece.pos.x, currentPiece.pos.y);
+        } else {
+          merge(board, currentPiece);
+          sound.playLock();
+          triggerHaptic('light');
+          spawnLandingSparks(currentPiece);
+          triggerBlockPlacedReaction();
+          clearLines();
+        }
         spawnPiece();
       }
       dropCounter = 0;
@@ -2637,19 +2818,25 @@
         currentPiece.pos.y++;
       }
       currentPiece.pos.y--;
-      merge(board, currentPiece);
-      sound.playHardDrop();
-      triggerHaptic('medium');
-      spawnLandingSparks(currentPiece);
-      
-      const p = PARTNER_DATA[selectedPartner];
-      if (p.hardDrop && Math.random() < 0.6) {
-        setPartnerQuote(p.hardDrop, true, false);
+
+      if (currentPiece.type === 'BOMB') {
+        triggerBombExplosion(currentPiece.pos.x, currentPiece.pos.y);
       } else {
-        triggerBlockPlacedReaction();
+        merge(board, currentPiece);
+        sound.playHardDrop();
+        triggerHaptic('medium');
+        spawnLandingSparks(currentPiece);
+        
+        const p = PARTNER_DATA[selectedPartner];
+        if (p.hardDrop && Math.random() < 0.6) {
+          setPartnerQuote(p.hardDrop, true, false);
+        } else {
+          triggerBlockPlacedReaction();
+        }
+
+        clearLines();
       }
 
-      clearLines();
       spawnPiece();
       dropCounter = 0;
     }
@@ -2686,7 +2873,7 @@
       }
     }
 
-    /* 통쾌한 줄 삭제 & 타격감 리액션 */
+    /* 통쾌한 줄 삭제 & 타격감 리액션 & 콤보 뻥튀기 시스템 */
     function clearLines() {
       let linesCleared = 0;
       let lastClearedY = 0;
@@ -2703,6 +2890,7 @@
       }
 
       if (linesCleared > 0) {
+        comboCount++; // 🔥 연속 콤보 적립!
         sound.playExplosion(linesCleared);
         triggerScreenShake(); // 화면 쿵 흔들림!
         triggerHaptic('heavy'); // 묵직한 진동 타격감!
@@ -2710,7 +2898,16 @@
 
         const conf = DIFFICULTY_CONFIG[currentDifficulty] || DIFFICULTY_CONFIG.easy;
         const lineScores = [0, 100, 300, 600, 1000];
-        const earned = Math.round((lineScores[linesCleared] || 1200) * level * conf.scoreMultiplier);
+        let earned = Math.round((lineScores[linesCleared] || 1200) * level * conf.scoreMultiplier);
+
+        // 🔥 콤보 점수 뻥튀기 시스템! (연속으로 터질 때마다 추가 보너스 폭증)
+        let comboBonus = 0;
+        if (comboCount >= 2) {
+          comboBonus = Math.round((comboCount - 1) * 200 * level * conf.scoreMultiplier);
+          earned += comboBonus;
+          sound.playCombo(comboCount);
+        }
+
         score += earned;
         lines += linesCleared;
 
@@ -2721,7 +2918,11 @@
 
         // 찰진 한국어 칭찬 리액션 & 파트너 실시간 응원
         const p = PARTNER_DATA[selectedPartner];
-        if (linesCleared === 1) {
+        if (comboCount >= 2) {
+          showFloatingText(`🔥 ${comboCount} COMBO!! +${earned}점 뻥튀기!`, '#ff007f');
+          setPartnerQuote(`"대박!! ${comboCount}연속 콤보 폭발!! 점수가 미친 듯이 올라가요! 🔥"`, true, true);
+          speakPraise(`${comboCount} 콤보!`);
+        } else if (linesCleared === 1) {
           showFloatingText(`👍 나이스! +${earned}`, '#00f2fe');
           setPartnerQuote(p.line1, true, false);
           speakPraise('나이스!');
@@ -2744,8 +2945,10 @@
           level = newLevel;
           sound.playFanfare();
           showFloatingText(`🎉 LEVEL ${level} 승급! 속도 UP! 🎉`, '#ffd600');
-          dropInterval = Math.max(conf.minInterval, conf.baseInterval - (level - conf.startLevel) * conf.intervalStep);
         }
+
+        // 🚀 실시간 스피드 러시 가속 반영!
+        dropInterval = calculateDropInterval();
 
         checkMissionMilestones();
         checkTrophies();
@@ -2755,6 +2958,9 @@
         if (score >= 3000 && gameState === STATE.PLAYING) {
           triggerVictoryCelebration();
         }
+      } else {
+        // 줄을 지우지 못했을 경우 콤보 카운트 리셋
+        comboCount = 0;
       }
     }
 
@@ -2910,6 +3116,16 @@
       context.strokeStyle = 'rgba(0, 0, 0, 0.5)';
       context.lineWidth = 1;
       context.strokeRect(px, py, BLOCK_SIZE, BLOCK_SIZE);
+
+      // 💣 폭탄 블록 전용 렌더링: 이모지 💣 표시!
+      if (color.isBomb) {
+        context.save();
+        context.font = '16px "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif';
+        context.textAlign = 'center';
+        context.textBaseline = 'middle';
+        context.fillText('💣', px + BLOCK_SIZE / 2, py + BLOCK_SIZE / 2 + 1);
+        context.restore();
+      }
     }
 
 
@@ -3026,7 +3242,7 @@
 
       const m = piece.matrix;
       const maxSize = Math.max(m.length, m[0].length);
-      const size = maxSize >= 5 ? 11 : 14;
+      const size = maxSize >= 5 ? 11 : (piece.type === 'BOMB' ? 22 : 14);
       const offsetX = (targetCanvas.width - m[0].length * size) / 2;
       const offsetY = (targetCanvas.height - m.length * size) / 2;
 
@@ -3047,6 +3263,16 @@
             context.strokeStyle = 'rgba(0, 0, 0, 0.4)';
             context.lineWidth = 1;
             context.strokeRect(px, py, size, size);
+
+            // 💣 미리보기 창 폭탄 이모지 표시
+            if (color && color.isBomb) {
+              context.save();
+              context.font = '14px "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif';
+              context.textAlign = 'center';
+              context.textBaseline = 'middle';
+              context.fillText('💣', px + size / 2, py + size / 2 + 1);
+              context.restore();
+            }
           }
         });
       });
@@ -3091,6 +3317,7 @@
       board = createMatrix(COLS, ROWS);
       score = 0;
       lines = 0;
+      comboCount = 0;
       
       const conf = DIFFICULTY_CONFIG[currentDifficulty] || DIFFICULTY_CONFIG.easy;
       level = conf.startLevel;
@@ -3176,7 +3403,11 @@
       finalLinesVal.innerText = lines;
       finalLevelVal.innerText = level;
 
-      setPartnerQuote('"정말 수고 많으셨어요! 너무 멋진 실력이었어요. 다시 한번 도전해볼까요? ✨"', true, true);
+      // ⚔️ 카카오톡 점수 내기 도전장 버튼 노출!
+      const kakaoBattleBtn = document.getElementById('overlay-kakao-btn');
+      if (kakaoBattleBtn) kakaoBattleBtn.style.display = 'flex';
+
+      setPartnerQuote('"정말 수고 많으셨어요! 너무 멋진 실력이었어요. 친구에게 점수 내기 도전장을 보내볼까요? ⚔️✨"', true, true);
 
       showOverlay(title, desc, 'gameover', '🔄 다시 플레이');
       draw();
@@ -3193,6 +3424,43 @@
     function hideOverlay() {
       overlay.classList.add('hidden');
       finalScoreBox.style.display = 'none';
+      const kakaoBattleBtn = document.getElementById('overlay-kakao-btn');
+      if (kakaoBattleBtn) kakaoBattleBtn.style.display = 'none';
+    }
+
+    /* ⚔️ 카카오톡 점수 내기 도전장 공유 핸들러 */
+    function handleKakaoBattleShare() {
+      sound.playClick();
+      const currentScoreStr = score.toLocaleString();
+      const shareTitle = '⚔️ [테트리스 스타벅스 커피 내기 도전장!] ☕';
+      const shareText = `⚔️ [테트리스 스타벅스 커피 내기 도전장!] ☕\n\n내 점수는 【 ${currentScoreStr}점 】 찍었음! 😎\n너 나 이길 수 있어? 이기면 내가 스타벅스 커피 쏜다!\n대신 지면 네가 나한테 시원한 아메리카노 한 잔 사기! ☕✨\n\n지금 바로 도전해봐 👇\nhttps://tjtjtj5722.github.io/tetris/`;
+      const shareUrl = 'https://tjtjtj5722.github.io/tetris/';
+
+      if (navigator.share) {
+        navigator.share({
+          title: shareTitle,
+          text: shareText,
+          url: shareUrl
+        }).then(() => {
+          showFloatingText('✔ 카카오톡 공유 완료!', '#00ff88');
+        }).catch(() => {
+          copyBattleTextToClipboard(shareText);
+        });
+      } else {
+        copyBattleTextToClipboard(shareText);
+      }
+    }
+
+    function copyBattleTextToClipboard(text) {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => {
+          alert(`✔ [카톡 점수내기 도전장]이 복사되었습니다!\n\n내 점수: ${score.toLocaleString()}점\n\n카카오톡 친구 채팅방에 [붙여넣기]해서 바로 커피 내기를 신청해보세요! ☕⚔️`);
+        }).catch(() => {
+          prompt('아래 텍스트를 복사(Ctrl+C)하여 카카오톡 친구에게 보내보세요!', text);
+        });
+      } else {
+        prompt('아래 텍스트를 복사(Ctrl+C)하여 카카오톡 친구에게 보내보세요!', text);
+      }
     }
 
     /* 🎁 선물 모달 */
