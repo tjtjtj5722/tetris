@@ -1479,7 +1479,7 @@
         </div>
 
         <div id="blast-combo-banner" class="blast-combo-banner">
-          ✨ 원하는 블록을 끌어다 판을 채워 팡팡 터뜨리세요!
+          🎯 <strong>게임 목표:</strong> 가로 또는 세로 8칸을 꽉 채우면 줄이 <strong>시원하게 펑!</strong> 터집니다!
         </div>
 
         <div class="blast-board-wrapper" id="blast-board-box">
@@ -1502,10 +1502,19 @@
           </div>
         </div>
 
-        <!-- 하단 3개 블록 선택 트레이 -->
-        <div style="width: 100%; text-align: center; margin-top: 10px;">
-          <div style="font-size: 11px; font-weight: 800; color: #ffd600; letter-spacing: 1px; margin-bottom: 6px;">
-            👇 아래 3개 블록을 터치하거나 위 판으로 끌어올리세요!
+        <!-- 하단 3개 블록 선택 트레이 & 리필 진행 알림 -->
+        <div style="width: 100%; margin-top: 10px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(0, 242, 254, 0.1); border: 1px solid rgba(0, 242, 254, 0.3); border-radius: 8px; padding: 6px 10px; margin-bottom: 6px;">
+            <div style="font-size: 11px; font-weight: 800; color: #ffd600; display: flex; align-items: center; gap: 5px;">
+              <span>📦 남은 블록:</span>
+              <span id="blast-remain-badge" style="background: #ff2a6d; color: #fff; padding: 1px 7px; border-radius: 10px; font-size: 10px; font-weight: 900;">3 / 3</span>
+            </div>
+            <div style="font-size: 10px; color: #cbd5e1; font-weight: 600;">
+              ✨ 3개를 다 놓으면 새 블록 등장!
+            </div>
+          </div>
+          <div style="font-size: 11px; font-weight: 700; color: #00f2fe; text-align: center; margin-bottom: 4px;">
+            👇 아래 블록을 <strong>톡! 터치</strong>한 뒤, 위 판의 <strong>빈 칸을 톡!</strong> 누르세요!
           </div>
         </div>
         <div class="blast-tray-container" id="blast-tray">
@@ -1540,62 +1549,112 @@
         </button>
       </div>
 
-      <div class="preview-dual-box">
-        <div class="info-card preview-card">
-          <div class="card-label">NEXT</div>
-          <canvas id="next-canvas" class="preview-canvas" width="70" height="70"></canvas>
+      <!-- 클래식 테트리스 전용 우측 박스들 -->
+      <div id="classic-side-panel">
+        <div class="preview-dual-box">
+          <div class="info-card preview-card">
+            <div class="card-label">NEXT</div>
+            <canvas id="next-canvas" class="preview-canvas" width="70" height="70"></canvas>
+          </div>
+          <div class="info-card preview-card">
+            <div class="card-label">HOLD</div>
+            <canvas id="hold-canvas" class="preview-canvas" width="70" height="70"></canvas>
+          </div>
         </div>
-        <div class="info-card preview-card">
-          <div class="card-label">HOLD</div>
-          <canvas id="hold-canvas" class="preview-canvas" width="70" height="70"></canvas>
+
+        <div class="info-card">
+          <div class="card-label">BEST HIGH SCORE</div>
+          <div id="high-score" class="card-value gold">0</div>
+        </div>
+
+        <div class="info-card">
+          <div class="card-label">SCORE</div>
+          <div id="score" class="card-value">0</div>
+          <div class="progress-box">
+            <div class="progress-text">
+              <span>커피 선물까지</span>
+              <span id="score-progress-text">3,000점</span>
+            </div>
+            <div class="progress-track">
+              <div id="score-progress-bar" class="progress-fill"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-card">
+          <div class="card-label">LEVEL / LINES</div>
+          <div style="font-size: 18px; font-weight:800; color:#fff;">
+            Lv.<span id="level">1</span> · <span id="lines">0</span>줄
+          </div>
+          <div class="progress-box">
+            <div class="progress-text">
+              <span>다음 단계까지</span>
+              <span id="lines-progress-text">5줄 남음</span>
+            </div>
+            <div class="progress-track">
+              <div id="level-progress-bar" class="progress-fill"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="btn-group">
+          <button id="btn-start" class="game-btn btn-start" onclick="handleStartOrResume()">
+            <span>▶</span> 게임 시작
+          </button>
+          <button id="btn-pause" class="game-btn btn-pause" onclick="handlePause()" disabled>
+            <span>⏸</span> 일시정지
+          </button>
+          <button id="btn-end" class="game-btn btn-end" onclick="handleEndGame()" disabled>
+            <span>⏹</span> 게임 종료
+          </button>
         </div>
       </div>
 
-      <div class="info-card">
-        <div class="card-label">BEST HIGH SCORE</div>
-        <div id="high-score" class="card-value gold">0</div>
-      </div>
-
-      <div class="info-card">
-        <div class="card-label">SCORE</div>
-        <div id="score" class="card-value">0</div>
-        <div class="progress-box">
-          <div class="progress-text">
-            <span>커피 선물까지</span>
-            <span id="score-progress-text">3,000점</span>
-          </div>
-          <div class="progress-track">
-            <div id="score-progress-bar" class="progress-fill"></div>
+      <!-- 블록 블라스트 전용 우측 박스들 -->
+      <div id="blast-side-panel" style="display: none; flex-direction: column; gap: 10px;">
+        <div class="info-card" style="border-color: rgba(255, 42, 109, 0.4);">
+          <div class="card-label" style="color: #ff2a6d;">💥 BLAST MODE</div>
+          <div style="font-size: 12px; font-weight: 800; color: #ffd600; line-height: 1.5; margin-top: 4px;">
+            시간 제한 없이<br>머리 쓰는 힐링 퍼즐!
           </div>
         </div>
-      </div>
 
-      <div class="info-card">
-        <div class="card-label">LEVEL / LINES</div>
-        <div style="font-size: 18px; font-weight:800; color:#fff;">
-          Lv.<span id="level">1</span> · <span id="lines">0</span>줄
+        <div class="info-card">
+          <div class="card-label">BEST SCORE</div>
+          <div id="blast-side-best" class="card-value gold">0</div>
         </div>
-        <div class="progress-box">
-          <div class="progress-text">
-            <span>다음 단계까지</span>
-            <span id="lines-progress-text">5줄 남음</span>
-          </div>
-          <div class="progress-track">
-            <div id="level-progress-bar" class="progress-fill"></div>
-          </div>
-        </div>
-      </div>
 
-      <div class="btn-group">
-        <button id="btn-start" class="game-btn btn-start" onclick="handleStartOrResume()">
-          <span>▶</span> 게임 시작
-        </button>
-        <button id="btn-pause" class="game-btn btn-pause" onclick="handlePause()" disabled>
-          <span>⏸</span> 일시정지
-        </button>
-        <button id="btn-end" class="game-btn btn-end" onclick="handleEndGame()" disabled>
-          <span>⏹</span> 게임 종료
-        </button>
+        <div class="info-card">
+          <div class="card-label">CURRENT SCORE</div>
+          <div id="blast-side-score" class="card-value" style="color: #00f2fe;">0</div>
+          <div class="progress-box">
+            <div class="progress-text">
+              <span>커피 선물까지</span>
+              <span id="blast-score-progress-text">3,000점</span>
+            </div>
+            <div class="progress-track">
+              <div id="blast-score-progress-bar" class="progress-fill"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-card" style="background: rgba(255, 214, 0, 0.08); border-color: rgba(255, 214, 0, 0.3);">
+          <div class="card-label" style="color: #ffd600;">💡 핵심 플레이 요령</div>
+          <div style="font-size: 11px; color: #cbd5e1; line-height: 1.6; text-align: left;">
+            1. <strong>가로 또는 세로 8칸</strong>을 채우면 팡! 터집니다.<br>
+            2. 아래 3개 블록을 <strong>모두 판에 놓아야</strong> 새 블록 3개가 채워집니다.<br>
+            3. 블록을 <strong>톡 누르고 판을 톡 누르면</strong> 바로 쏙 들어갑니다!
+          </div>
+        </div>
+
+        <div class="btn-group">
+          <button class="game-btn btn-start" onclick="blastGame.reset()">
+            <span>🔄</span> 블록 블라스트 새 게임
+          </button>
+          <button class="game-btn btn-pause" onclick="openGiftModal('coffee')" style="background: rgba(0, 242, 254, 0.2); border-color: #00f2fe; color: #00f2fe;">
+            <span>☕</span> 스타벅스 쿠폰함
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -3311,6 +3370,8 @@
       const tabBlast = document.getElementById('mode-tab-blast');
       const classicArea = document.getElementById('classic-game-area');
       const blastArea = document.getElementById('blast-game-area');
+      const classicSide = document.getElementById('classic-side-panel');
+      const blastSide = document.getElementById('blast-side-panel');
 
       // PC 가이드 카드 갱신
       const guideCardTitle = document.querySelector('.guide-card .card-title');
@@ -3321,6 +3382,8 @@
         tabBlast.classList.remove('active');
         classicArea.style.display = 'flex';
         blastArea.style.display = 'none';
+        if (classicSide) classicSide.style.display = 'block';
+        if (blastSide) blastSide.style.display = 'none';
 
         if (guideCardTitle && guideCardList) {
           guideCardTitle.innerHTML = '📖 클래식 테트리스 꿀팁';
@@ -3341,6 +3404,8 @@
         tabBlast.classList.add('active');
         classicArea.style.display = 'none';
         blastArea.style.display = 'flex';
+        if (classicSide) classicSide.style.display = 'none';
+        if (blastSide) blastSide.style.display = 'flex';
 
         if (guideCardTitle && guideCardList) {
           guideCardTitle.innerHTML = '💥 블록 블라스트 꿀팁';
@@ -3470,6 +3535,14 @@
       }
 
       renderTray() {
+        // 남은 블록 수 계산 및 뱃지 갱신
+        const remainCount = this.traySlots.filter(s => s !== null).length;
+        const remainBadge = document.getElementById('blast-remain-badge');
+        if (remainBadge) {
+          remainBadge.innerText = `${remainCount} / 3`;
+          remainBadge.style.background = (remainCount === 1) ? '#00e676' : '#ff2a6d';
+        }
+
         for (let i = 0; i < 3; i++) {
           const slotEl = document.getElementById(`blast-slot-${i}`);
           const canvas = document.getElementById(`slot-canvas-${i}`);
@@ -3657,6 +3730,28 @@
           }
           requestAnimationFrame(() => this.render());
         }
+      }
+
+            updateRecommendedHover() {
+        if (this.selectedSlotIndex < 0) {
+          this.hoverGridPos = null;
+          return;
+        }
+        const block = this.traySlots[this.selectedSlotIndex];
+        if (!block) {
+          this.hoverGridPos = null;
+          return;
+        }
+        // 보드에서 가장 배치하기 좋은 첫 번째 유효 위치를 찾아 미리보기 가이드로 표시
+        for (let r = 0; r < 8; r++) {
+          for (let c = 0; c < 8; c++) {
+            if (this.canPlace(block, r, c)) {
+              this.hoverGridPos = { r, c };
+              return;
+            }
+          }
+        }
+        this.hoverGridPos = null;
       }
 
       canPlace(block, startR, startC) {
@@ -3849,6 +3944,28 @@
         if (s) s.innerText = this.score.toLocaleString();
         if (b) b.innerText = this.bestScore.toLocaleString();
         if (st) st.innerText = this.streak;
+
+        // PC 우측 대시보드 동기화
+        const sideScore = document.getElementById('blast-side-score');
+        const sideBest = document.getElementById('blast-side-best');
+        if (sideScore) sideScore.innerText = this.score.toLocaleString();
+        if (sideBest) sideBest.innerText = this.bestScore.toLocaleString();
+
+        const coffeeTarget = 3000;
+        const blastBar = document.getElementById('blast-score-progress-bar');
+        const blastText = document.getElementById('blast-score-progress-text');
+        if (blastBar && blastText) {
+          if (this.score < coffeeTarget) {
+            const rem = coffeeTarget - this.score;
+            blastText.innerText = `${rem.toLocaleString()}점 남음`;
+            blastBar.style.width = `${Math.min(100, (this.score / coffeeTarget) * 100)}%`;
+            blastBar.style.background = '#00f2fe';
+          } else {
+            blastText.innerText = '☕ 커피 획득완료!';
+            blastBar.style.width = '100%';
+            blastBar.style.background = '#00ff88';
+          }
+        }
       }
 
       checkGameOver() {
@@ -3902,6 +4019,7 @@
             // 탭 선택 표시
             this.selectedSlotIndex = i;
             this.renderTray();
+            this.updateRecommendedHover();
 
             // 고스트 생성
             this.updateGhostCanvas(this.dragBlock);
@@ -3937,9 +4055,9 @@
               // 2. 단순 탭(클릭)인 경우: 해당 슬롯을 선택 상태로 유지!
               this.selectedSlotIndex = this.dragSlotIndex;
               this.renderTray();
-              this.hoverGridPos = null;
+              this.updateRecommendedHover();
               this.render();
-              this.setBanner("블록이 선택되었습니다! 보드의 원하는 빈 칸을 터치하세요! 👆", true);
+              this.setBanner("👉 블록 선택됨! 위 보드의 빈 칸(또는 반짝이는 칸)을 톡! 터치하세요! 👆", true);
             } else {
               this.hoverGridPos = null;
               this.render();
