@@ -907,17 +907,143 @@
       font-size: 11px;
       font-weight: 600;
       color: #e2e8f0;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      transition: all 0.2s ease;
+      line-height: 1.35;
+      min-height: 28px;
+      display: flex;
+      align-items: center;
+      transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
     .partner-bubble-msg.highlight {
       color: #00ff88;
       font-weight: 800;
-      text-shadow: 0 0 8px rgba(0, 255, 136, 0.5);
+      text-shadow: 0 0 10px rgba(0, 255, 136, 0.6);
+      transform: scale(1.04);
     }
+
+    .partner-bubble-msg.pulse {
+      animation: bubblePulse 0.4s ease-out;
+    }
+
+    @keyframes bubblePulse {
+      0% { transform: scale(0.95); opacity: 0.7; }
+      50% { transform: scale(1.08); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    /* 🎯 3단계 난이도 선택 스타일 */
+    .difficulty-select-wrap {
+      margin: 12px 0 14px;
+      width: 100%;
+      max-width: 250px;
+    }
+    .difficulty-label {
+      font-size: 11px;
+      font-weight: 800;
+      color: #7dd3fc;
+      margin-bottom: 6px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      text-align: center;
+    }
+    .difficulty-btn-group {
+      display: flex;
+      gap: 6px;
+      justify-content: center;
+    }
+    .diff-btn {
+      flex: 1;
+      padding: 7px 4px;
+      background: rgba(15, 23, 42, 0.7);
+      border: 1.5px solid rgba(255, 255, 255, 0.12);
+      border-radius: 10px;
+      color: #94a3b8;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .diff-btn:hover {
+      background: rgba(30, 41, 59, 0.9);
+      border-color: rgba(255, 255, 255, 0.3);
+      transform: translateY(-2px);
+    }
+    .diff-btn .diff-icon { font-size: 15px; }
+    .diff-btn .diff-name { font-size: 12px; font-weight: 800; }
+    .diff-btn .diff-desc { font-size: 9px; opacity: 0.85; white-space: nowrap; }
+
+    /* 활성화 상태 */
+    .diff-btn.active#diff-easy {
+      background: rgba(0, 255, 136, 0.18);
+      border-color: #00ff88;
+      color: #00ff88;
+      box-shadow: 0 0 12px rgba(0, 255, 136, 0.45);
+      transform: translateY(-2px) scale(1.03);
+    }
+    .diff-btn.active#diff-normal {
+      background: rgba(255, 214, 0, 0.18);
+      border-color: #ffd600;
+      color: #ffd600;
+      box-shadow: 0 0 12px rgba(255, 214, 0, 0.45);
+      transform: translateY(-2px) scale(1.03);
+    }
+    .diff-btn.active#diff-hard {
+      background: rgba(255, 42, 133, 0.18);
+      border-color: #ff2a85;
+      color: #ff2a85;
+      box-shadow: 0 0 12px rgba(255, 42, 133, 0.45);
+      transform: translateY(-2px) scale(1.03);
+    }
+
+    /* 우측 사이드 패널용 난이도 셀렉터 */
+    .side-diff-selector {
+      display: flex;
+      gap: 4px;
+      margin-top: 6px;
+    }
+    .side-diff-btn {
+      flex: 1;
+      padding: 6px 2px;
+      font-size: 11px;
+      font-weight: 700;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 8px;
+      color: #94a3b8;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .side-diff-btn:hover { color: #fff; border-color: rgba(255, 255, 255, 0.4); }
+    .side-diff-btn.active#side-diff-easy { background: rgba(0, 255, 136, 0.2); border-color: #00ff88; color: #00ff88; }
+    .side-diff-btn.active#side-diff-normal { background: rgba(255, 214, 0, 0.2); border-color: #ffd600; color: #ffd600; }
+    .side-diff-btn.active#side-diff-hard { background: rgba(255, 42, 133, 0.2); border-color: #ff2a85; color: #ff2a85; }
+
+    /* 모바일 난이도 바 */
+    .mobile-diff-bar {
+      display: none;
+      gap: 5px;
+      margin-bottom: 8px;
+      width: 100%;
+    }
+    @media (max-width: 900px) {
+      .mobile-diff-bar { display: flex; }
+    }
+    .m-diff-btn {
+      flex: 1;
+      padding: 6px 2px;
+      font-size: 11px;
+      font-weight: 700;
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 8px;
+      color: #94a3b8;
+      cursor: pointer;
+    }
+    .m-diff-btn.active#m-diff-easy { background: rgba(0, 255, 136, 0.2); border-color: #00ff88; color: #00ff88; font-weight: 800; }
+    .m-diff-btn.active#m-diff-normal { background: rgba(255, 214, 0, 0.2); border-color: #ffd600; color: #ffd600; font-weight: 800; }
+    .m-diff-btn.active#m-diff-hard { background: rgba(255, 42, 133, 0.2); border-color: #ff2a85; color: #ff2a85; font-weight: 800; }
 
     /* 선물 모달 */
     .gift-modal {
@@ -1116,6 +1242,13 @@
         </div>
       </div>
 
+      <!-- 모바일 난이도 선택 탭 -->
+      <div class="mobile-diff-bar">
+        <button type="button" class="m-diff-btn active" id="m-diff-easy" onclick="selectDifficulty('easy')">🟢 초급</button>
+        <button type="button" class="m-diff-btn" id="m-diff-normal" onclick="selectDifficulty('normal')">🟡 중급 (1.5x)</button>
+        <button type="button" class="m-diff-btn" id="m-diff-hard" onclick="selectDifficulty('hard')">🔴 고급 (2.5x)</button>
+      </div>
+
       <div class="board-wrapper" id="board-box">
         <canvas id="tetris" width="280" height="560"></canvas>
         <div id="floating-layer" class="floating-text-layer"></div>
@@ -1124,6 +1257,28 @@
           <div id="overlay-title" class="overlay-title ready">준비되셨나요?</div>
           <div id="overlay-desc" class="overlay-desc">줄을 터뜨릴 때마다 화끈한 리액션과 타격감!<br>3,000점을 넘겨 스타벅스 커피를 획득하세요!</div>
           
+          <!-- 🎯 3단계 난이도 선택 바 -->
+          <div class="difficulty-select-wrap">
+            <div class="difficulty-label">🎯 난이도 선택</div>
+            <div class="difficulty-btn-group">
+              <button type="button" class="diff-btn active" id="diff-easy" onclick="selectDifficulty('easy')">
+                <span class="diff-icon">🟢</span>
+                <span class="diff-name">초급</span>
+                <span class="diff-desc">여유로운 속도</span>
+              </button>
+              <button type="button" class="diff-btn" id="diff-normal" onclick="selectDifficulty('normal')">
+                <span class="diff-icon">🟡</span>
+                <span class="diff-name">중급</span>
+                <span class="diff-desc">짜릿한 1.5배</span>
+              </button>
+              <button type="button" class="diff-btn" id="diff-hard" onclick="selectDifficulty('hard')">
+                <span class="diff-icon">🔴</span>
+                <span class="diff-name">고급</span>
+                <span class="diff-desc">초스피드 2.5배</span>
+              </button>
+            </div>
+          </div>
+
           <div id="final-score" class="final-score-box" style="display: none;">
             <div class="final-score-main">최종 점수: <span id="final-score-val">0</span>점</div>
             <div class="final-score-sub">(<span id="final-lines-val">0</span>줄 클리어 · 레벨 <span id="final-level-val">1</span>)</div>
@@ -1193,6 +1348,19 @@
           <div class="progress-track">
             <div id="score-progress-bar" class="progress-fill"></div>
           </div>
+        </div>
+      </div>
+
+      <!-- 🎯 PC 우측 난이도 셀렉터 카드 -->
+      <div class="info-card" id="difficulty-card">
+        <div class="card-label">난이도 (DIFFICULTY)</div>
+        <div class="side-diff-selector">
+          <button type="button" class="side-diff-btn active" id="side-diff-easy" onclick="selectDifficulty('easy')">🟢 초급</button>
+          <button type="button" class="side-diff-btn" id="side-diff-normal" onclick="selectDifficulty('normal')">🟡 중급</button>
+          <button type="button" class="side-diff-btn" id="side-diff-hard" onclick="selectDifficulty('hard')">🔴 고급</button>
+        </div>
+        <div id="diff-detail-desc" style="font-size: 10px; color: #7dd3fc; margin-top: 6px; font-weight: 600;">
+          🟢 초급 · 여유로운 속도 (기본 1.0배)
         </div>
       </div>
 
@@ -1875,7 +2043,73 @@
     const welcomeModal = document.getElementById('welcome-modal');
 
     /* ========================================================
-       💬 파트너 캐릭터 대화 & 응원 시스템
+       🎯 3단계 난이도 시스템 (초급 / 중급 / 고급)
+       ======================================================== */
+    let currentDifficulty = 'easy'; // 'easy' | 'normal' | 'hard'
+
+    const DIFFICULTY_CONFIG = {
+      easy: {
+        name: '초급',
+        startLevel: 1,
+        baseInterval: 1000,
+        intervalStep: 70,
+        minInterval: 220,
+        scoreMultiplier: 1.0,
+        partnerReaction: '"🟢 초급 선택! 부담 없이 여유롭고 편안하게 힐링해 보세요! ☕"'
+      },
+      normal: {
+        name: '중급',
+        startLevel: 4,
+        baseInterval: 650,
+        intervalStep: 55,
+        minInterval: 150,
+        scoreMultiplier: 1.5,
+        partnerReaction: '"🟡 중급 선택! 손끝이 쫄깃해지는 스피드와 점수 1.5배 보너스! ⚡"'
+      },
+      hard: {
+        name: '고급',
+        startLevel: 8,
+        baseInterval: 360,
+        intervalStep: 35,
+        minInterval: 100,
+        scoreMultiplier: 2.5,
+        partnerReaction: '"🔴 고급 선택! 진정한 마스터의 신들린 손놀림! 점수 무려 2.5배 폭풍 질주! 🔥"'
+      }
+    };
+
+    function selectDifficulty(diffKey) {
+      if (!DIFFICULTY_CONFIG[diffKey]) return;
+      currentDifficulty = diffKey;
+      sound.playClick();
+
+      // UI 3곳 동기화 (보드 오버레이, 우측 PC 패널, 모바일 바)
+      ['easy', 'normal', 'hard'].forEach(k => {
+        const obBtn = document.getElementById(`diff-${k}`);
+        const sideBtn = document.getElementById(`side-diff-${k}`);
+        const mBtn = document.getElementById(`m-diff-${k}`);
+        if (obBtn) obBtn.classList.toggle('active', k === diffKey);
+        if (sideBtn) sideBtn.classList.toggle('active', k === diffKey);
+        if (mBtn) mBtn.classList.toggle('active', k === diffKey);
+      });
+
+      const conf = DIFFICULTY_CONFIG[diffKey];
+      const descEl = document.getElementById('diff-detail-desc');
+      if (descEl) {
+        descEl.innerText = `${conf.name} · 시작 Lv.${conf.startLevel} (점수 ${conf.scoreMultiplier}배)`;
+      }
+
+      setPartnerQuote(conf.partnerReaction, true, true);
+      showFloatingText(`🎯 난이도: ${conf.name} 설정!`, '#ffd600');
+
+      if (gameState !== STATE.PLAYING && gameState !== STATE.PAUSED) {
+        level = conf.startLevel;
+        dropInterval = conf.baseInterval;
+        updateUI();
+      }
+    }
+
+    /* ========================================================
+       💬 파트너 캐릭터 대화 & 실시간 피드백 시스템 (빈번한 코칭)
        ======================================================== */
     let selectedPartner = 'duo';
     let blockDropCount = 0;
@@ -1890,18 +2124,28 @@
         welcomeMsg: '"오늘 당신의 운명 카드에는 <strong>최고의 행운</strong>이 깃들어 있습니다! 저희와 함께 3,000점을 돌파하고 <strong>스타벅스 커피 선물</strong>을 쟁취할 운명입니다! ✨"',
         enterMsg: '안녕하세요! 반가워요! 신나게 달려봐요~!',
         buttonText: '운명의 듀오와 함께 게임 시작하기',
-        idleQuotes: [
-          '"와 최고입니다! 센스가 정말 대단하세요!"',
-          '"오~ 완벽한 배치예요! 손끝 감각이 살아있어요!"',
-          '"침착하게 아주 잘하고 계세요! 멋져요!"',
-          '"걱정 마세요! 1칸 보석이 곧 빈틈을 메꿔줄 거예요!"',
-          '"테트리스 고수의 향기가 느껴집니다! 최고!"'
+        // 블록 놓을 때마다 퐁퐁 솟는 실시간 피드백
+        frequentQuotes: [
+          '"오! 완벽한 자리에 쏙 들어갔어요!"',
+          '"나이스 안착! 리듬 타기 시작했군요~"',
+          '"각도가 예술이에요! 손끝 감각 짱!"',
+          '"침착하게 아주 잘 메우고 계세요! ✨"',
+          '"좋은 판단이에요! 각을 아주 잘 보시네요."',
+          '"착착 붙는 이 느낌, 너무 짜릿해요!"',
+          '"빈틈 없이 메워지는 중! 나이스 플레이!"',
+          '"지금 페이스 아주 훌륭합니다! 최고!"',
+          '"손놀림이 점점 빨라지시는데요?! 멋져요!"',
+          '"걱정 마세요! 1칸 보석이 언제든 대기 중이에요!"',
+          '"크~ 이 리듬감! 완벽한 빌드업입니다!"',
+          '"커피가 점점 가까워지고 있어요! 힘내세요!"'
         ],
-        line1: '"나이스! 좋은 출발이에요!"',
-        line2: '"와 최고입니다!! 콤보 폭발!"',
-        line3: '"실력자 인정! 벌써 커피가 눈앞이에요!"',
-        line4: '"와아아 대박 싹쓸이!! 미쳤다!! 🎆"',
-        danger: '"조금만 집중하세요! 1칸 보석을 노려보세요!"',
+        hardDrop: '"시원하게 쾅-척! 망설임 없는 과감함 최고! ⚡"',
+        hold: '"전략적인 보관! 한 수 앞을 내다보시네요! 📦"',
+        line1: '"나이스 샷! 한 줄 시원하게 삭제! 👍"',
+        line2: '"더블 클리어!! 콤보 감각 미쳤다! 🔥"',
+        line3: '"트리플 클리어!! 대단한 실력자 등장! ⚡"',
+        line4: '"와아아 4줄 테트리스 대폭발!! 싹쓸이 대박!! 🎆"',
+        danger: '"앗 조금 위험해요! 침착하게 아래 줄부터 터뜨려봐요! ⚠️"',
         coffee: '"축하해요!! 드디어 스타벅스 커피 당첨이에요!! ☕🎉"',
         poke: '"저희가 항상 열렬히 응원하고 있어요! 힘내세요! ✨"'
       },
@@ -1914,18 +2158,23 @@
         welcomeMsg: '"오늘 당신에게는 <strong>흔들리지 않는 황제의 집중력</strong>이 함께합니다. 정밀한 플레이로 <strong>스타벅스 커피</strong>까지 완벽하게 안내해 드리겠습니다. 화이팅!"',
         enterMsg: '안녕하세요! 반갑습니다. 오늘 최고 기록 가보시죠!',
         buttonText: '황제 루이와 함께 게임 시작하기',
-        idleQuotes: [
-          '"와 최고입니다! 아주 스마트한 한 수였어요."',
+        frequentQuotes: [
           '"완벽한 균형입니다. 이 흐름을 유지하세요."',
+          '"스마트한 한 수였습니다. 감탄스럽군요."',
           '"훌륭합니다. 침착한 판단이 돋보이네요."',
-          '"빈틈은 곧 채워집니다. 시야를 넓혀보세요."',
-          '"프로게이머의 집중력이 느껴집니다. 멋져요."'
+          '"각이 아주 정교합니다. 프로다운 배치예요."',
+          '"차분하게 밑바닥을 탄탄히 다지고 계십니다."',
+          '"시야가 아주 넓으시군요. 감각이 탁월합니다."',
+          '"좋은 호흡입니다. 계속 이렇게 가시죠."',
+          '"정확한 안착입니다. 실수 없는 무결점 플레이예요."'
         ],
-        line1: '"나이스 클리어. 깔끔한 정리입니다."',
-        line2: '"와 최고입니다! 완벽한 연속기네요."',
-        line3: '"대단합니다! 고득점의 길이 열렸습니다."',
-        line4: '"환상적입니다!! 완벽한 테트리스 싹쓸이!"',
-        danger: '"차분하게 호흡을 가다듬고 1칸 큐브를 활용하세요."',
+        hardDrop: '"결단력 있는 하드 드롭, 아주 훌륭했습니다. ⚡"',
+        hold: '"지혜로운 홀드 활용입니다. 승리의 열쇠가 될 겁니다. 📦"',
+        line1: '"나이스 클리어. 군더더기 없는 정리입니다."',
+        line2: '"훌륭합니다! 완벽한 2줄 연속 클리어네요."',
+        line3: '"대단합니다! 고득점의 길이 활짝 열렸습니다."',
+        line4: '"환상적입니다!! 완벽한 4줄 테트리스 싹쓸이! 👑"',
+        danger: '"차분하게 호흡을 가다듬고 1칸 큐브를 활용하세요. ⚠️"',
         coffee: '"축하드립니다! 약속된 스타벅스 커피 교환권입니다! ☕"',
         poke: '"당신의 집중력은 최고입니다. 저만 믿고 가시죠!"'
       },
@@ -1938,18 +2187,23 @@
         welcomeMsg: '"오늘 당신에게는 <strong>끝없는 황금빛 행운</strong>이 쏟아집니다! <strong>스타벅스 커피 쿠폰</strong>은 무조건 플레이어님 거예요! 제가 비타민처럼 팍팍 응원할게요! 💖"',
         enterMsg: '안녕하세요! 반가워요~ 신나게 팡팡 터뜨려봐요!',
         buttonText: '여황제 세라와 함께 게임 시작하기',
-        idleQuotes: [
-          '"와 최고입니다!! 손끝이 날아다녀요~!"',
+        frequentQuotes: [
           '"우와 감각 짱이에요! 보는 제가 다 신나요!"',
           '"대박 대박! 너무 잘 맞추시는데요?! 짱!"',
+          '"착! 하고 붙는 소리 너무 좋아요~ 꺄!"',
+          '"손끝이 날아다녀요! 완전 프로게이머 포스!"',
+          '"자리 완전 나이스! 센스 넘치세요~ 💖"',
+          '"오늘 스타벅스 커피는 100% 플레이어님 거! ☕"',
           '"1칸 보석 출동 준비 완료! 맘 편히 두세요!"',
-          '"오늘 스타벅스 커피는 100% 플레이어님 거! ☕"'
+          '"우와앙~ 블록이 쏙 들어갈 때마다 쾌감 짱!"'
         ],
-        line1: '"야호! 한 줄 시원하게 터졌어요!"',
-        line2: '"와 짱이다!! 팡팡 터지는 중!"',
-        line3: '"대박 대박 실력자!! 심장이 두근거려요!"',
-        line4: '"꺄악 미쳤다!! 환상의 싹쓸이 대폭발!! 🎆"',
-        danger: '"침착하게 침착하게! 1칸 보석 얼른 나와라 얍!"',
+        hardDrop: '"꺄악 속전속결 쾅-! 스트레스 싹 풀려요!! ⚡"',
+        hold: '"킵해두는 센스 최고! 역시 한 수 위예요~ 📦"',
+        line1: '"야호! 한 줄 시원하게 터졌어요! 💖"',
+        line2: '"와 짱이다!! 팡팡 터지는 중!! 🔥"',
+        line3: '"대박 대박 실력자!! 심장이 두근거려요!! ⚡"',
+        line4: '"꺄악 미쳤다!! 환상의 4줄 싹쓸이 대폭발!! 🎆"',
+        danger: '"침착하게 침착하게! 1칸 보석 얼른 나와라 얍! ⚠️"',
         coffee: '"꺄아아!! 커피 당첨 축하드려요!! 제가 다 뿌듯해요!! ☕💖"',
         poke: '"언제나 당신의 1호 팬이에요! 끝까지 파이팅! 💖"'
       }
@@ -2003,12 +2257,18 @@
       const bubbleEl = document.getElementById('partner-bubble-text');
       if (!bubbleEl) return;
       bubbleEl.innerText = text;
+
+      // 톡톡 튀는 펄스 애니메이션
+      bubbleEl.classList.remove('pulse');
+      void bubbleEl.offsetWidth; // 리플로우 강제
+      bubbleEl.classList.add('pulse');
+
       if (isHighlight) {
         bubbleEl.classList.add('highlight');
-        setTimeout(() => bubbleEl.classList.remove('highlight'), 2200);
+        setTimeout(() => bubbleEl.classList.remove('highlight'), 2500);
       }
       if (speak && !sound.muted) {
-        const cleanMsg = text.replace(/["!~?💖✨☕🎆●★]/g, '').trim();
+        const cleanMsg = text.replace(/["!~?💖✨☕🎆●★🟢🟡🔴⚡📦]/g, '').trim();
         speakPraise(cleanMsg);
       }
     }
@@ -2105,6 +2365,8 @@
       }
       canHold = false;
       drawHold();
+      const p = PARTNER_DATA[selectedPartner];
+      if (p.hold) setPartnerQuote(p.hold, false, false);
     }
 
     function collide(board, piece) {
@@ -2191,18 +2453,27 @@
 
     function triggerBlockPlacedReaction() {
       blockDropCount++;
-      if (blockDropCount % 5 === 0) {
-        const p = PARTNER_DATA[selectedPartner];
-        let isDanger = false;
-        for (let y = 0; y < 7; y++) {
-          if (board[y].some(v => v !== 0)) { isDanger = true; break; }
+      const p = PARTNER_DATA[selectedPartner];
+
+      // 1. 위기 상황 체크 (상단 7줄 이내 침범 시 경보)
+      let isDanger = false;
+      for (let y = 0; y < 7; y++) {
+        if (board[y].some(v => v !== 0)) { isDanger = true; break; }
+      }
+
+      if (isDanger) {
+        if (blockDropCount % 2 === 0) {
+          setPartnerQuote(p.danger, true, true);
         }
-        if (isDanger) {
-          setPartnerQuote(p.danger, true, false);
-        } else {
-          const randomQuote = p.idleQuotes[Math.floor(Math.random() * p.idleQuotes.length)];
-          setPartnerQuote(randomQuote, false, false);
-        }
+        return;
+      }
+
+      // 2. 사용자의 핵심 요청: "피드백을 자주 자주 주는 말이 나왔으면 좋겠어"
+      // 매 2번째 블록마다 생생하고 다채로운 격려/피드백 출력!
+      if (blockDropCount % 2 === 0) {
+        const quotes = p.frequentQuotes || p.idleQuotes;
+        const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+        setPartnerQuote(randomQuote, false, false);
       }
     }
 
@@ -2232,7 +2503,14 @@
       sound.playHardDrop();
       triggerHaptic('medium');
       spawnLandingSparks(currentPiece);
-      triggerBlockPlacedReaction();
+      
+      const p = PARTNER_DATA[selectedPartner];
+      if (p.hardDrop && Math.random() < 0.6) {
+        setPartnerQuote(p.hardDrop, true, false);
+      } else {
+        triggerBlockPlacedReaction();
+      }
+
       clearLines();
       spawnPiece();
       dropCounter = 0;
@@ -2292,8 +2570,9 @@
         triggerHaptic('heavy'); // 묵직한 진동 타격감!
         spawnParticles(lastClearedY);
 
+        const conf = DIFFICULTY_CONFIG[currentDifficulty] || DIFFICULTY_CONFIG.easy;
         const lineScores = [0, 100, 300, 600, 1000];
-        const earned = (lineScores[linesCleared] || 1200) * level;
+        const earned = Math.round((lineScores[linesCleared] || 1200) * level * conf.scoreMultiplier);
         score += earned;
         lines += linesCleared;
 
@@ -2309,25 +2588,25 @@
           setPartnerQuote(p.line1, true, false);
           speakPraise('나이스!');
         } else if (linesCleared === 2) {
-          showFloatingText(`🔥 와 짱이다! +${earned}`, '#00ff88');
-          setPartnerQuote(p.line2, true, false);
-          speakPraise('와 짱이다!');
+          showFloatingText(`🔥 더블 클리어! +${earned}`, '#00ff88');
+          setPartnerQuote(p.line2, true, true);
+          speakPraise('더블 클리어!');
         } else if (linesCleared === 3) {
-          showFloatingText(`⚡ 대박! 실력자! +${earned}`, '#ffd600');
-          setPartnerQuote(p.line3, true, false);
-          speakPraise('대박! 실력자!');
+          showFloatingText(`⚡ 트리플 클리어! +${earned}`, '#ffd600');
+          setPartnerQuote(p.line3, true, true);
+          speakPraise('트리플!');
         } else if (linesCleared >= 4) {
-          showFloatingText(`🎆 싹쓸이! 미쳤다! +${earned} 🎆`, '#ff2a85');
-          setPartnerQuote(p.line4, true, false);
-          speakPraise('싹쓸이! 미쳤다!');
+          showFloatingText(`🎆 4줄 대박 싹쓸이! +${earned} 🎆`, '#ff2a85');
+          setPartnerQuote(p.line4, true, true);
+          speakPraise('대박 싹쓸이!');
         }
 
-        const newLevel = Math.floor(lines / 5) + 1;
+        const newLevel = conf.startLevel + Math.floor(lines / 5);
         if (newLevel > level) {
           level = newLevel;
           sound.playFanfare();
-          showFloatingText(`🎉 LEVEL ${level} 승급! 축하해요! 🎉`, '#ffd600');
-          dropInterval = Math.max(150, 1000 - (level - 1) * 80);
+          showFloatingText(`🎉 LEVEL ${level} 승급! 속도 UP! 🎉`, '#ffd600');
+          dropInterval = Math.max(conf.minInterval, conf.baseInterval - (level - conf.startLevel) * conf.intervalStep);
         }
 
         checkTrophies();
@@ -2600,8 +2879,10 @@
       board = createMatrix(COLS, ROWS);
       score = 0;
       lines = 0;
-      level = 1;
-      dropInterval = 1000;
+      
+      const conf = DIFFICULTY_CONFIG[currentDifficulty] || DIFFICULTY_CONFIG.easy;
+      level = conf.startLevel;
+      dropInterval = conf.baseInterval;
       dropCounter = 0;
       blockDropCount = 0;
       pieceBag = [];
@@ -2610,7 +2891,7 @@
       canHold = true;
 
       const p = PARTNER_DATA[selectedPartner];
-      setPartnerQuote(p.enterMsg, true, true);
+      setPartnerQuote(`"【${conf.name}】모드로 출발합니다! 신나게 팡팡 달려봐요~!"`, true, true);
 
       TROPHIES.forEach(t => {
         t.unlocked = false;
