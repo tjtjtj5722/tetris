@@ -636,6 +636,257 @@
       .mobile-touch-controller { display: block; }
       .board-wrapper { width: 254px; height: 504px; }
       #tetris { width: 250px; height: 500px; }
+      .live-partner-bar { max-width: 254px; }
+    }
+
+    /* ========================================================
+       👑 첫 3초 시선강탈! VIP 럭셔리 인트로 웰컴 스크린
+       ======================================================== */
+    .welcome-modal {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: radial-gradient(circle at 50% 25%, rgba(20, 26, 48, 0.98) 0%, rgba(5, 7, 13, 0.99) 100%);
+      backdrop-filter: blur(25px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+      padding: 16px;
+      transition: opacity 0.4s ease, visibility 0.4s ease;
+    }
+
+    .welcome-modal.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .welcome-card {
+      background: linear-gradient(160deg, rgba(20, 26, 48, 0.96) 0%, rgba(8, 12, 22, 0.98) 100%);
+      border: 2px solid rgba(255, 214, 0, 0.6);
+      box-shadow: 0 25px 80px rgba(0, 0, 0, 0.95), 0 0 45px rgba(0, 242, 254, 0.35);
+      border-radius: 22px;
+      width: 440px;
+      max-width: 95vw;
+      max-height: 94vh;
+      overflow-y: auto;
+      padding: 18px 16px;
+      text-align: center;
+      position: relative;
+      animation: popIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .welcome-thumb-wrap {
+      position: relative;
+      width: 100%;
+      height: 200px;
+      border-radius: 14px;
+      overflow: hidden;
+      margin-bottom: 12px;
+      border: 1.5px solid rgba(0, 242, 254, 0.45);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6);
+      background: #030508;
+    }
+
+    .welcome-thumb-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 20%;
+      transition: transform 0.5s ease;
+      display: block;
+    }
+
+    .welcome-thumb-wrap:hover .welcome-thumb-img {
+      transform: scale(1.03);
+    }
+
+    .welcome-thumb-overlay {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      background: linear-gradient(0deg, rgba(8, 12, 22, 0.92) 0%, transparent 100%);
+      padding: 10px 12px 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+
+    .partner-badge-duo {
+      font-size: 11px;
+      font-weight: 800;
+      color: #ffd600;
+      background: rgba(0, 0, 0, 0.7);
+      padding: 4px 9px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 214, 0, 0.45);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .welcome-speech-bubble {
+      background: rgba(0, 242, 254, 0.08);
+      border: 1.5px solid rgba(0, 242, 254, 0.35);
+      border-radius: 14px;
+      padding: 12px 14px;
+      margin-bottom: 14px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+    }
+
+    .welcome-speech-title {
+      font-size: 11px;
+      font-weight: 800;
+      color: #00f2fe;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+    }
+
+    .welcome-speech-text {
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 1.5;
+      color: #f8fafc;
+    }
+
+    .welcome-partner-tabs {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      margin-bottom: 14px;
+    }
+
+    .partner-tab {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1.5px solid rgba(255, 255, 255, 0.12);
+      border-radius: 10px;
+      padding: 8px 4px;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 11px;
+      color: var(--text-dim);
+    }
+
+    .partner-tab.active {
+      background: rgba(255, 214, 0, 0.16);
+      border-color: #ffd600;
+      color: #ffd600;
+      font-weight: 800;
+      box-shadow: 0 0 12px rgba(255, 214, 0, 0.3);
+    }
+
+    .welcome-btn-start {
+      width: 100%;
+      padding: 14px 18px;
+      font-size: 16px;
+      font-weight: 900;
+      font-family: 'Pretendard', sans-serif;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #ffd600 0%, #ff6d00 50%, #ff2a85 100%);
+      color: #05070c;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 6px 25px rgba(255, 214, 0, 0.45);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      animation: pulseGlow 1.8s infinite;
+      transition: transform 0.15s ease;
+    }
+
+    .welcome-btn-start:hover {
+      transform: translateY(-2px) scale(1.02);
+    }
+
+    @keyframes pulseGlow {
+      0%, 100% { box-shadow: 0 6px 25px rgba(255, 214, 0, 0.4); }
+      50% { box-shadow: 0 8px 35px rgba(255, 214, 0, 0.85); }
+    }
+
+    /* ========================================================
+       💬 게임 중 살아 숨 쉬는 실시간 파트너 응원 바
+       ======================================================== */
+    .live-partner-bar {
+      width: 100%;
+      max-width: 284px;
+      background: linear-gradient(135deg, rgba(20, 26, 48, 0.92) 0%, rgba(12, 16, 30, 0.95) 100%);
+      border: 1.5px solid rgba(0, 242, 254, 0.35);
+      border-radius: 12px;
+      padding: 6px 10px;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.35);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .live-partner-bar:hover {
+      border-color: rgba(255, 214, 0, 0.6);
+      box-shadow: 0 0 15px rgba(255, 214, 0, 0.25);
+    }
+
+    .partner-avatar-wrap {
+      position: relative;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 2px solid #ffd600;
+      flex-shrink: 0;
+      box-shadow: 0 0 10px rgba(255, 214, 0, 0.4);
+      animation: avatarBounce 3s infinite ease-in-out;
+    }
+
+    @keyframes avatarBounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-2px); }
+    }
+
+    .partner-avatar-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 20%;
+    }
+
+    .partner-content {
+      flex: 1;
+      overflow: hidden;
+      text-align: left;
+    }
+
+    .partner-name-tag {
+      font-size: 10px;
+      font-weight: 800;
+      color: #ffd600;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-bottom: 2px;
+    }
+
+    .partner-bubble-msg {
+      font-size: 11px;
+      font-weight: 600;
+      color: #e2e8f0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      transition: all 0.2s ease;
+    }
+
+    .partner-bubble-msg.highlight {
+      color: #00ff88;
+      font-weight: 800;
+      text-shadow: 0 0 8px rgba(0, 255, 136, 0.5);
     }
 
     /* 선물 모달 */
@@ -800,6 +1051,22 @@
 
     <!-- 2. 중앙 패널: 게임 보드 & 모바일 요약바 -->
     <div class="center-section">
+      <!-- 💬 실시간 파트너 응원 & 말동무 바 -->
+      <div class="live-partner-bar" id="partner-bar" onclick="handlePartnerPoke()" title="터치하면 파트너가 다정하게 인사해요!">
+        <div class="partner-avatar-wrap">
+          <img id="partner-avatar" src="assets/splash_duo.jpg" alt="파트너 아바타" class="partner-avatar-img">
+        </div>
+        <div class="partner-content">
+          <div class="partner-name-tag">
+            <span id="partner-name-label">👫 파트너 루이 & 세라</span>
+            <span style="font-size: 9px; color: #00ff88; font-weight:700;">● 응원 중</span>
+          </div>
+          <div class="partner-bubble-msg" id="partner-bubble-text">
+            "안녕하세요! 반가워요! 신나게 달려봐요~!"
+          </div>
+        </div>
+      </div>
+
       <div class="mobile-summary-bar">
         <div class="mobile-sum-card">
           <div class="label">SCORE</div>
@@ -978,6 +1245,47 @@
           <input type="file" id="custom-gift-input" accept="image/*" style="display:none;" onchange="handleCustomGiftUpload(event)">
         </label>
       </div>
+    </div>
+  </div>
+
+  <!-- 👑 첫 3초 시선강탈! VIP 럭셔리 인트로 웰컴 스크린 -->
+  <div id="welcome-modal" class="welcome-modal">
+    <div class="welcome-card">
+      <div class="welcome-thumb-wrap">
+        <img src="assets/splash_duo.jpg" alt="VIP 테트리스 라운지 파트너" class="welcome-thumb-img" onerror="this.style.display='none'">
+        <div class="welcome-thumb-overlay">
+          <div class="partner-badge-duo">👑 VIP 파트너 루이 & 세라</div>
+          <div style="font-size: 10px; color: #00f2fe; font-weight: 700;">★ 3,000점 스타벅스 커피 도전</div>
+        </div>
+      </div>
+
+      <div class="welcome-speech-bubble">
+        <div class="welcome-speech-title">
+          <span>✨</span> <span id="welcome-speech-name">파트너 루이 & 세라의 환영 인사</span> <span>✨</span>
+        </div>
+        <div class="welcome-speech-text" id="welcome-speech-body">
+          "안녕하세요! 만나서 정말 반가워요~ 오늘 테트리스 신기록 세우시고 <strong>스타벅스 커피 선물</strong> 꼭 받아가세요! 저희가 끝까지 열심히 응원해 드릴게요! ✨"
+        </div>
+      </div>
+
+      <div style="font-size: 11px; color: var(--text-dim); margin-bottom: 8px; font-weight: 600;">
+        나를 응원해 줄 파트너를 선택해 보세요:
+      </div>
+      <div class="welcome-partner-tabs">
+        <div class="partner-tab active" id="tab-duo" onclick="selectPartner('duo')">
+          👫 환상의 듀오
+        </div>
+        <div class="partner-tab" id="tab-louis" onclick="selectPartner('louis')">
+          👨‍💼 젠틀 루이
+        </div>
+        <div class="partner-tab" id="tab-sarah" onclick="selectPartner('sarah')">
+          👩‍💼 상큼 세라
+        </div>
+      </div>
+
+      <button class="welcome-btn-start" onclick="handleWelcomeEnter()">
+        <span>✨</span> <span id="welcome-enter-btn-text">파트너와 함께 게임 입장하기</span> <span>▶</span>
+      </button>
     </div>
   </div>
 
@@ -1435,6 +1743,135 @@
     const giftModal = document.getElementById('gift-modal');
     const customGiftPreview = document.getElementById('custom-gift-preview');
     const customGiftImg = document.getElementById('custom-gift-img');
+    const welcomeModal = document.getElementById('welcome-modal');
+
+    /* ========================================================
+       💬 파트너 캐릭터 대화 & 응원 시스템
+       ======================================================== */
+    let selectedPartner = 'duo';
+    let blockDropCount = 0;
+
+    const PARTNER_DATA = {
+      duo: {
+        name: '👫 파트너 루이 & 세라',
+        welcomeTitle: '파트너 루이 & 세라의 환영 인사',
+        welcomeMsg: '"안녕하세요! 만나서 정말 반가워요~ 오늘 테트리스 신기록 세우시고 <strong>스타벅스 커피 선물</strong> 꼭 챙겨가세요! 저희가 끝까지 열심히 응원해 드릴게요! ✨"',
+        enterMsg: '안녕하세요! 반가워요! 신나게 달려봐요~!',
+        buttonText: '루이 & 세라와 함께 게임 입장하기',
+        idleQuotes: [
+          '"와 최고입니다! 센스가 정말 대단하세요!"',
+          '"오~ 완벽한 배치예요! 손끝 감각이 살아있어요!"',
+          '"침착하게 아주 잘하고 계세요! 멋져요!"',
+          '"걱정 마세요! 1칸 보석이 곧 빈틈을 메꿔줄 거예요!"',
+          '"테트리스 고수의 향기가 느껴집니다! 최고!"'
+        ],
+        line1: '"나이스! 좋은 출발이에요!"',
+        line2: '"와 최고입니다!! 콤보 폭발!"',
+        line3: '"실력자 인정! 벌써 커피가 눈앞이에요!"',
+        line4: '"와아아 대박 싹쓸이!! 미쳤다!! 🎆"',
+        danger: '"조금만 집중하세요! 1칸 보석을 노려보세요!"',
+        coffee: '"축하해요!! 드디어 스타벅스 커피 당첨이에요!! ☕🎉"',
+        poke: '"저희가 항상 열렬히 응원하고 있어요! 힘내세요! ✨"'
+      },
+      louis: {
+        name: '👨‍💼 젠틀 멘토 루이',
+        welcomeTitle: '젠틀 멘토 루이의 환영 인사',
+        welcomeMsg: '"안녕하세요! 만나서 반갑습니다. 오늘 침착하고 정밀한 플레이로 <strong>스타벅스 커피</strong>까지 완벽하게 안내해 드리겠습니다. 화이팅!"',
+        enterMsg: '안녕하세요! 반갑습니다. 오늘 최고 기록 가보시죠!',
+        buttonText: '루이와 함께 게임 입장하기',
+        idleQuotes: [
+          '"와 최고입니다! 아주 스마트한 한 수였어요."',
+          '"완벽한 균형입니다. 이 흐름을 유지하세요."',
+          '"훌륭합니다. 침착한 판단이 돋보이네요."',
+          '"빈틈은 곧 채워집니다. 시야를 넓혀보세요."',
+          '"프로게이머의 집중력이 느껴집니다. 멋져요."'
+        ],
+        line1: '"나이스 클리어. 깔끔한 정리입니다."',
+        line2: '"와 최고입니다! 완벽한 연속기네요."',
+        line3: '"대단합니다! 고득점의 길이 열렸습니다."',
+        line4: '"환상적입니다!! 완벽한 테트리스 싹쓸이!"',
+        danger: '"차분하게 호흡을 가다듬고 1칸 큐브를 활용하세요."',
+        coffee: '"축하드립니다! 약속된 스타벅스 커피 교환권입니다! ☕"',
+        poke: '"당신의 집중력은 최고입니다. 저만 믿고 가시죠!"'
+      },
+      sarah: {
+        name: '👩‍💼 상큼 치어 세라',
+        welcomeTitle: '상큼 치어 세라의 환영 인사',
+        welcomeMsg: '"안녕하세요! 너무너무 반가워요~ 오늘 <strong>스타벅스 커피 쿠폰</strong>은 무조건 플레이어님 거예요! 제가 비타민처럼 팍팍 응원할게요! 💖"',
+        enterMsg: '안녕하세요! 반가워요~ 신나게 팡팡 터뜨려봐요!',
+        buttonText: '세라와 함께 게임 입장하기',
+        idleQuotes: [
+          '"와 최고입니다!! 손끝이 날아다녀요~!"',
+          '"우와 감각 짱이에요! 보는 제가 다 신나요!"',
+          '"대박 대박! 너무 잘 맞추시는데요?! 짱!"',
+          '"1칸 보석 출동 준비 완료! 맘 편히 두세요!"',
+          '"오늘 스타벅스 커피는 100% 플레이어님 거! ☕"'
+        ],
+        line1: '"야호! 한 줄 시원하게 터졌어요!"',
+        line2: '"와 짱이다!! 팡팡 터지는 중!"',
+        line3: '"대박 대박 실력자!! 심장이 두근거려요!"',
+        line4: '"꺄악 미쳤다!! 환상의 싹쓸이 대폭발!! 🎆"',
+        danger: '"침착하게 침착하게! 1칸 보석 얼른 나와라 얍!"',
+        coffee: '"꺄아아!! 커피 당첨 축하드려요!! 제가 다 뿌듯해요!! ☕💖"',
+        poke: '"언제나 당신의 1호 팬이에요! 끝까지 파이팅! 💖"'
+      }
+    };
+
+    function selectPartner(partnerKey) {
+      sound.playClick();
+      selectedPartner = partnerKey;
+      ['duo', 'louis', 'sarah'].forEach(k => {
+        const tab = document.getElementById(`tab-${k}`);
+        if (tab) tab.classList.toggle('active', k === partnerKey);
+      });
+
+      const p = PARTNER_DATA[partnerKey];
+      const titleEl = document.getElementById('welcome-speech-name');
+      const bodyEl = document.getElementById('welcome-speech-body');
+      const btnEl = document.getElementById('welcome-enter-btn-text');
+      const nameLabel = document.getElementById('partner-name-label');
+      const bubbleEl = document.getElementById('partner-bubble-text');
+
+      if (titleEl) titleEl.innerText = p.welcomeTitle;
+      if (bodyEl) bodyEl.innerHTML = p.welcomeMsg;
+      if (btnEl) btnEl.innerText = p.buttonText;
+      if (nameLabel) nameLabel.innerText = p.name;
+      if (bubbleEl) bubbleEl.innerText = p.enterMsg;
+    }
+
+    function setPartnerQuote(text, isHighlight = false, speak = false) {
+      const bubbleEl = document.getElementById('partner-bubble-text');
+      if (!bubbleEl) return;
+      bubbleEl.innerText = text;
+      if (isHighlight) {
+        bubbleEl.classList.add('highlight');
+        setTimeout(() => bubbleEl.classList.remove('highlight'), 2200);
+      }
+      if (speak && !sound.muted) {
+        const cleanMsg = text.replace(/["!~?💖✨☕🎆●★]/g, '').trim();
+        speakPraise(cleanMsg);
+      }
+    }
+
+    function handlePartnerPoke() {
+      sound.playClick();
+      const p = PARTNER_DATA[selectedPartner];
+      setPartnerQuote(p.poke, true, true);
+    }
+
+    function handleWelcomeEnter() {
+      sound.init();
+      sound.playFanfare();
+      if (welcomeModal) welcomeModal.classList.add('hidden');
+
+      const p = PARTNER_DATA[selectedPartner];
+      setPartnerQuote(p.enterMsg, true, true);
+
+      // 환영 인사 후 게임 바로 시작
+      setTimeout(() => {
+        handleStartOrResume();
+      }, 450);
+    }
 
     function createMatrix(w, h) {
       const matrix = [];
@@ -1595,6 +2032,23 @@
       }
     }
 
+    function triggerBlockPlacedReaction() {
+      blockDropCount++;
+      if (blockDropCount % 5 === 0) {
+        const p = PARTNER_DATA[selectedPartner];
+        let isDanger = false;
+        for (let y = 0; y < 7; y++) {
+          if (board[y].some(v => v !== 0)) { isDanger = true; break; }
+        }
+        if (isDanger) {
+          setPartnerQuote(p.danger, true, false);
+        } else {
+          const randomQuote = p.idleQuotes[Math.floor(Math.random() * p.idleQuotes.length)];
+          setPartnerQuote(randomQuote, false, false);
+        }
+      }
+    }
+
     function playerDrop() {
       if (gameState !== STATE.PLAYING) return;
       currentPiece.pos.y++;
@@ -1602,6 +2056,7 @@
         currentPiece.pos.y--;
         merge(board, currentPiece);
         sound.playLock();
+        triggerBlockPlacedReaction();
         clearLines();
         spawnPiece();
       }
@@ -1616,6 +2071,7 @@
       currentPiece.pos.y--;
       merge(board, currentPiece);
       sound.playHardDrop();
+      triggerBlockPlacedReaction();
       clearLines();
       spawnPiece();
       dropCounter = 0;
@@ -1684,18 +2140,23 @@
           localStorage.setItem('tetris_high_score', highScore.toString());
         }
 
-        // 찰진 한국어 칭찬 리액션 & 음성
+        // 찰진 한국어 칭찬 리액션 & 파트너 실시간 응원
+        const p = PARTNER_DATA[selectedPartner];
         if (linesCleared === 1) {
           showFloatingText(`👍 나이스! +${earned}`, '#00f2fe');
+          setPartnerQuote(p.line1, true, false);
           speakPraise('나이스!');
         } else if (linesCleared === 2) {
           showFloatingText(`🔥 와 짱이다! +${earned}`, '#00ff88');
-          speakPraise('와 짱!');
+          setPartnerQuote(p.line2, true, false);
+          speakPraise('와 짱이다!');
         } else if (linesCleared === 3) {
           showFloatingText(`⚡ 대박! 실력자! +${earned}`, '#ffd600');
-          speakPraise('대박!');
+          setPartnerQuote(p.line3, true, false);
+          speakPraise('대박! 실력자!');
         } else if (linesCleared >= 4) {
           showFloatingText(`🎆 싹쓸이! 미쳤다! +${earned} 🎆`, '#ff2a85');
+          setPartnerQuote(p.line4, true, false);
           speakPraise('싹쓸이! 미쳤다!');
         }
 
@@ -1725,6 +2186,8 @@
           showFloatingText(`🎁 [${t.name}] 달성! 🎁`, '#ffd600');
 
           if (t.type === 'coffee') {
+            const p = PARTNER_DATA[selectedPartner];
+            setPartnerQuote(p.coffee, true, true);
             setTimeout(() => openGiftModal('coffee'), 600);
           }
         }
@@ -1927,6 +2390,7 @@
         btnPause.disabled = false;
         btnEnd.disabled = false;
         btnPause.innerHTML = '<span>⏸</span> 일시정지';
+        setPartnerQuote('"다시 집중해볼까요? 화이팅!"', false, false);
         sound.startBGM();
         lastTime = performance.now();
         animationId = requestAnimationFrame(update);
@@ -1939,10 +2403,14 @@
       level = 1;
       dropInterval = 1000;
       dropCounter = 0;
+      blockDropCount = 0;
       pieceBag = [];
       particles = [];
       holdPiece = null;
       canHold = true;
+
+      const p = PARTNER_DATA[selectedPartner];
+      setPartnerQuote(p.enterMsg, true, true);
 
       TROPHIES.forEach(t => {
         t.unlocked = false;
@@ -2013,6 +2481,8 @@
       finalScoreVal.innerText = score.toLocaleString();
       finalLinesVal.innerText = lines;
       finalLevelVal.innerText = level;
+
+      setPartnerQuote('"정말 수고 많으셨어요! 너무 멋진 실력이었어요. 다시 한번 도전해볼까요? ✨"', true, true);
 
       showOverlay(title, desc, 'gameover', '🔄 다시 플레이');
       draw();
