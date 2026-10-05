@@ -2454,10 +2454,13 @@
       const p = PARTNER_DATA[selectedPartner];
       setPartnerQuote(p.enterMsg, true, true);
 
-      // 환영 인사 후 게임 바로 시작 & 은은한 칠링 멜로디 배경음 재생
-      setTimeout(() => {
-        handleStartOrResume();
-      }, 500);
+      // 사용자가 직접 [게임 시작]을 누를 수 있도록 자동 시작을 제거하고,
+      // 선택한 모드 화면으로 자연스럽게 안내합니다.
+      if (welcomeChosenMode === 'blast') {
+        switchGameMode('blast');
+      } else {
+        switchGameMode('classic');
+      }
     }
 
     function createMatrix(w, h) {
@@ -3277,7 +3280,6 @@
     }
 
     function switchGameMode(mode) {
-      if (currentMode === mode) return;
       currentMode = mode;
       sound.playClick();
 
@@ -3306,11 +3308,10 @@
           `;
         }
 
-        // PC 우측 대시보드 최고기록
         const highScoreEl = document.getElementById('high-score');
         if (highScoreEl) highScoreEl.innerText = highScore.toLocaleString();
 
-        setPartnerQuote('"정통 클래식 테트리스 모드입니다! 손가락 빠르고 민첩하게 내려보세요! 🚀"', true);
+        setPartnerQuote('"정통 클래식 테트리스 모드입니다! [게임 시작]을 눌러 도전해보세요! 🚀"', true);
       } else {
         tabClassic.classList.remove('active');
         tabBlast.classList.add('active');
@@ -3327,28 +3328,24 @@
           `;
         }
 
+        // 테트리스가 돌고 있다면 일시정지
         if (gameState === STATE.PLAYING) {
           handlePause();
         }
 
+        // 블록 블라스트 엔진 초기화 및 즉시 렌더링
+        initBlastEngine();
         if (window.blastGame) {
           window.blastGame.render();
+          window.blastGame.renderTray();
           const highScoreEl = document.getElementById('high-score');
           if (highScoreEl) highScoreEl.innerText = window.blastGame.bestScore.toLocaleString();
         }
-        setPartnerQuote('"요즘 최고 대세 블록 블라스트! 시간제한 없이 가로·세로 팡팡 터뜨려봐요! 💥"', true);
+        setPartnerQuote('"요즘 최고 대세 블록 블라스트! 아래 3개 블록을 끌어다 판을 채워봐요! 💥"', true);
       }
     }
 
-    const originalHandleWelcomeEnter = window.handleWelcomeEnter;
-    window.handleWelcomeEnter = function() {
-      if (originalHandleWelcomeEnter) {
-        originalHandleWelcomeEnter();
-      }
-      if (welcomeChosenMode === 'blast') {
-        switchGameMode('blast');
-      }
-    };
+// handleWelcomeEnter handled internally
 
     /* ========================================================
        💥 네온 블록 블라스트(Block Blast) 정밀 엔진
@@ -3371,11 +3368,10 @@
         this.isDragging = false;
         this.dragSlotIndex = -1;
         this.dragBlock = null;
-        this.dragPointerPos = { x: 0, y: 0 };
+        this.dragStartPos = { x: 0, y: 0 };
         this.hoverGridPos = null;
 
         this.particles = [];
-        this.animating = false;
 
         this.ghostCanvas = document.getElementById('blast-drag-ghost');
         this.ghostCtx = this.ghostCanvas ? this.ghostCanvas.getContext('2d') : null;
@@ -3421,7 +3417,8 @@
         this.selectedSlotIndex = -1;
         this.updateScoreUI();
         this.refillTray();
-        document.getElementById('blast-overlay').classList.add('hidden');
+        const overlay = document.getElementById('blast-overlay');
+        if (overlay) overlay.classList.add('hidden');
         this.setBanner("✨ 새로운 모험 시작! 가로·세로를 채워 콤보를 만들어보세요!");
         this.render();
       }
@@ -3452,12 +3449,14 @@
         for (let i = 0; i < 3; i++) {
           const slotEl = document.getElementById(`blast-slot-${i}`);
           const canvas = document.getElementById(`slot-canvas-${i}`);
+          if (!slotEl || !canvas) continue;
+
           const ctx = canvas.getContext('2d');
           ctx.clearRect(0, 0, canvas.width, canvas.height);
 
           const block = this.traySlots[i];
           if (!block) {
-            slotEl.style.opacity = '0.2';
+            slotEl.style.opacity = '0.25';
             slotEl.classList.remove('selected');
             continue;
           }
@@ -3468,7 +3467,7 @@
           const m = block.matrix;
           const rows = m.length;
           const cols = m[0].length;
-          const slotCell = Math.min(20, Math.floor(68 / Math.max(rows, cols)));
+          const slotCell = Math.min(22, Math.floor(66 / Math.max(rows, cols)));
           const offX = Math.floor((canvas.width - cols * slotCell) / 2);
           const offY = Math.floor((canvas.height - rows * slotCell) / 2);
 
@@ -3491,11 +3490,11 @@
         ctx.save();
         if (isGhost) {
           ctx.fillStyle = color;
-          ctx.globalAlpha = 0.45;
+          ctx.globalAlpha = 0.5;
           this.roundRect(ctx, x + p, y + p, w, h, radius);
           ctx.fill();
           ctx.strokeStyle = color;
-          ctx.lineWidth = 1.5;
+          ctx.lineWidth = 2;
           ctx.setLineDash([3, 3]);
           ctx.stroke();
         } else {
@@ -3506,11 +3505,11 @@
           this.roundRect(ctx, x + p, y + p, w, h, radius);
           ctx.fill();
 
-          ctx.fillStyle = 'rgba(255, 255, 255, 0.35)';
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.38)';
           this.roundRect(ctx, x + p + 2, y + p + 2, w - 4, Math.floor(h * 0.35), 3);
           ctx.fill();
 
-          ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+          ctx.strokeStyle = 'rgba(255, 255, 255, 0.45)';
           ctx.lineWidth = 1;
           this.roundRect(ctx, x + p, y + p, w, h, radius);
           ctx.stroke();
@@ -3519,6 +3518,11 @@
       }
 
       roundRect(ctx, x, y, w, h, r) {
+        if (ctx.roundRect) {
+          ctx.beginPath();
+          ctx.roundRect(x, y, w, h, r);
+          return;
+        }
         if (w < 2 * r) r = w / 2;
         if (h < 2 * r) r = h / 2;
         ctx.beginPath();
@@ -3526,7 +3530,7 @@
         ctx.arcTo(x + w, y, x + w, y + h, r);
         ctx.arcTo(x + w, y + h, x, y + h, r);
         ctx.arcTo(x, y + h, x, y, r);
-        ctx.arcTo(x, y + x, y, r);
+        ctx.arcTo(x, y, x + w, y, r);
         ctx.closePath();
       }
 
@@ -3547,16 +3551,18 @@
       }
 
       render() {
+        if (!this.canvas || !this.ctx) return;
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
+        // 8x8 바닥판 그리드
         for (let r = 0; r < 8; r++) {
           for (let c = 0; c < 8; c++) {
             const x = c * this.cellSize;
             const y = r * this.cellSize;
-            this.ctx.fillStyle = 'rgba(14, 20, 36, 0.75)';
+            this.ctx.fillStyle = 'rgba(14, 20, 36, 0.85)';
             this.roundRect(this.ctx, x + 1.5, y + 1.5, this.cellSize - 3, this.cellSize - 3, 5);
             this.ctx.fill();
-            this.ctx.strokeStyle = 'rgba(0, 242, 254, 0.12)';
+            this.ctx.strokeStyle = 'rgba(0, 242, 254, 0.15)';
             this.ctx.lineWidth = 1;
             this.ctx.stroke();
 
@@ -3567,6 +3573,7 @@
           }
         }
 
+        // 드래그 또는 선택된 블록의 하이라이트
         let activeBlock = null;
         if (this.isDragging && this.dragBlock) {
           activeBlock = this.dragBlock;
@@ -3590,13 +3597,14 @@
           }
         }
 
+        // 파티클
         if (this.particles.length > 0) {
           for (let i = this.particles.length - 1; i >= 0; i--) {
             const p = this.particles[i];
             p.x += p.vx;
             p.y += p.vy;
             p.vy += 0.15;
-            p.alpha -= 0.03;
+            p.alpha -= 0.035;
             if (p.alpha <= 0) {
               this.particles.splice(i, 1);
             } else {
@@ -3691,9 +3699,11 @@
           if (this.streak > this.maxCombo) this.maxCombo = this.streak;
 
           const wrapper = document.getElementById('blast-board-box');
-          wrapper.classList.remove('shake');
-          void wrapper.offsetWidth;
-          wrapper.classList.add('shake');
+          if (wrapper) {
+            wrapper.classList.remove('shake');
+            void wrapper.offsetWidth;
+            wrapper.classList.add('shake');
+          }
 
           const clearedCoords = new Set();
           fullRows.forEach(r => {
@@ -3795,9 +3805,12 @@
       }
 
       updateScoreUI() {
-        document.getElementById('blast-score').innerText = this.score.toLocaleString();
-        document.getElementById('blast-best').innerText = this.bestScore.toLocaleString();
-        document.getElementById('blast-streak').innerText = this.streak;
+        const s = document.getElementById('blast-score');
+        const b = document.getElementById('blast-best');
+        const st = document.getElementById('blast-streak');
+        if (s) s.innerText = this.score.toLocaleString();
+        if (b) b.innerText = this.bestScore.toLocaleString();
+        if (st) st.innerText = this.streak;
       }
 
       checkGameOver() {
@@ -3821,9 +3834,12 @@
         if (hasBlocks && !hasValidMove) {
           setTimeout(() => {
             sound.playGameOver();
-            document.getElementById('blast-final-score').innerText = this.score.toLocaleString();
-            document.getElementById('blast-final-combo').innerText = this.maxCombo;
-            document.getElementById('blast-overlay').classList.remove('hidden');
+            const fs = document.getElementById('blast-final-score');
+            const fc = document.getElementById('blast-final-combo');
+            const ov = document.getElementById('blast-overlay');
+            if (fs) fs.innerText = this.score.toLocaleString();
+            if (fc) fc.innerText = this.maxCombo;
+            if (ov) ov.classList.remove('hidden');
             setPartnerQuote('"아쉽게 둘 자리가 꽉 찼네요! 그래도 정말 멋진 실력이었어요. 다시 한 판 해볼까요? ✨"', true, true);
           }, 350);
         }
@@ -3832,42 +3848,60 @@
       setupEvents() {
         for (let i = 0; i < 3; i++) {
           const slotEl = document.getElementById(`blast-slot-${i}`);
+          if (!slotEl) continue;
+
           slotEl.addEventListener('pointerdown', (e) => {
             if (!this.traySlots[i]) return;
+            e.preventDefault();
             sound.playPick();
             triggerHaptic(10);
 
             this.isDragging = true;
             this.dragSlotIndex = i;
             this.dragBlock = this.traySlots[i];
+            this.dragStartPos = { x: e.clientX, y: e.clientY };
+
+            // 탭 선택 표시
             this.selectedSlotIndex = i;
             this.renderTray();
 
+            // 고스트 생성
             this.updateGhostCanvas(this.dragBlock);
-            this.moveGhost(e.clientX, e.clientY);
-            this.ghostCanvas.style.display = 'block';
+            this.moveGhost(e.clientX, e.clientY, e.pointerType);
+            if (this.ghostCanvas) this.ghostCanvas.style.display = 'block';
 
-            slotEl.setPointerCapture(e.pointerId);
+            try { slotEl.setPointerCapture(e.pointerId); } catch(err) {}
           });
 
           slotEl.addEventListener('pointermove', (e) => {
             if (!this.isDragging) return;
-            this.moveGhost(e.clientX, e.clientY);
-            this.calcBoardHover(e.clientX, e.clientY);
+            e.preventDefault();
+            this.moveGhost(e.clientX, e.clientY, e.pointerType);
+            this.calcBoardHover(e.clientX, e.clientY, e.pointerType);
             this.render();
           });
 
           const handleRelease = (e) => {
             if (!this.isDragging) return;
             this.isDragging = false;
-            this.ghostCanvas.style.display = 'none';
+            if (this.ghostCanvas) this.ghostCanvas.style.display = 'none';
 
-            if (this.hoverGridPos && this.dragBlock) {
+            const dist = Math.hypot(e.clientX - this.dragStartPos.x, e.clientY - this.dragStartPos.y);
+
+            // 1. 유효한 보드 위치에 드롭된 경우
+            if (this.hoverGridPos && this.dragBlock && dist > 10) {
               const placed = this.placeBlock(this.dragSlotIndex, this.hoverGridPos.r, this.hoverGridPos.c);
               if (!placed) {
                 this.hoverGridPos = null;
                 this.render();
               }
+            } else if (dist <= 10) {
+              // 2. 단순 탭(클릭)인 경우: 해당 슬롯을 선택 상태로 유지!
+              this.selectedSlotIndex = this.dragSlotIndex;
+              this.renderTray();
+              this.hoverGridPos = null;
+              this.render();
+              this.setBanner("블록이 선택되었습니다! 보드의 원하는 빈 칸을 터치하세요! 👆", true);
             } else {
               this.hoverGridPos = null;
               this.render();
@@ -3875,28 +3909,32 @@
 
             this.dragBlock = null;
             this.dragSlotIndex = -1;
+            try { slotEl.releasePointerCapture(e.pointerId); } catch(err) {}
           };
 
           slotEl.addEventListener('pointerup', handleRelease);
           slotEl.addEventListener('pointercancel', handleRelease);
         }
 
-        this.canvas.addEventListener('click', (e) => {
-          if (this.selectedSlotIndex < 0) return;
-          const rect = this.canvas.getBoundingClientRect();
-          const scaleX = this.canvas.width / rect.width;
-          const scaleY = this.canvas.height / rect.height;
-          const clickX = (e.clientX - rect.left) * scaleX;
-          const clickY = (e.clientY - rect.top) * scaleY;
+        // 보드 탭(클릭) 배치 지원 (원터치 모드)
+        if (this.canvas) {
+          this.canvas.addEventListener('click', (e) => {
+            if (this.selectedSlotIndex < 0) return;
+            const rect = this.canvas.getBoundingClientRect();
+            const scaleX = this.canvas.width / rect.width;
+            const scaleY = this.canvas.height / rect.height;
+            const clickX = (e.clientX - rect.left) * scaleX;
+            const clickY = (e.clientY - rect.top) * scaleY;
 
-          const c = Math.floor(clickX / this.cellSize);
-          const r = Math.floor(clickY / this.cellSize);
+            const c = Math.floor(clickX / this.cellSize);
+            const r = Math.floor(clickY / this.cellSize);
 
-          const block = this.traySlots[this.selectedSlotIndex];
-          if (block && this.canPlace(block, r, c)) {
-            this.placeBlock(this.selectedSlotIndex, r, c);
-          }
-        });
+            const block = this.traySlots[this.selectedSlotIndex];
+            if (block && this.canPlace(block, r, c)) {
+              this.placeBlock(this.selectedSlotIndex, r, c);
+            }
+          });
+        }
       }
 
       updateGhostCanvas(block) {
@@ -3918,16 +3956,20 @@
         }
       }
 
-      moveGhost(clientX, clientY) {
+      moveGhost(clientX, clientY, pointerType) {
         if (!this.ghostCanvas) return;
+        // 터치 기기일 때는 손가락 위 65px로 띄우고, 마우스일 때는 커서 중앙
+        const offsetY = (pointerType === 'touch') ? 65 : 20;
         this.ghostCanvas.style.left = `${clientX}px`;
-        this.ghostCanvas.style.top = `${clientY - 65}px`;
+        this.ghostCanvas.style.top = `${clientY - offsetY}px`;
       }
 
-      calcBoardHover(clientX, clientY) {
+      calcBoardHover(clientX, clientY, pointerType) {
+        if (!this.canvas) return;
         const rect = this.canvas.getBoundingClientRect();
+        const offsetY = (pointerType === 'touch') ? 65 : 20;
         const targetX = clientX;
-        const targetY = clientY - 65;
+        const targetY = clientY - offsetY;
 
         if (
           targetX >= rect.left && targetX <= rect.right &&
@@ -3947,10 +3989,19 @@
       }
     }
 
-    // 엔진 인스턴스 생성
-    window.addEventListener('DOMContentLoaded', () => {
-      window.blastGame = new BlockBlastEngine();
-    });
+    // 엔진 즉시 초기화 함수
+    function initBlastEngine() {
+      if (!window.blastGame) {
+        window.blastGame = new BlockBlastEngine();
+      }
+    }
+
+    // 즉시 실행 및 DOMContentLoaded 안전장치
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initBlastEngine);
+    } else {
+      initBlastEngine();
+    }
 
   </script>
 <canvas id="blast-drag-ghost" width="160" height="160"></canvas>
