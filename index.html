@@ -1468,36 +1468,70 @@
         osc.stop(this.ctx.currentTime + 0.08);
       }
 
+      /* 🧱 착! 척! 달라붙는 마그네틱 락다운 사운드 */
       playLock() {
         if (this.muted) return;
         this.init();
-        const osc = this.ctx.createOscillator();
-        const gain = this.ctx.createGain();
-        osc.type = 'triangle';
-        osc.frequency.setValueAtTime(180, this.ctx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(60, this.ctx.currentTime + 0.09);
-        gain.gain.setValueAtTime(0.14, this.ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.09);
-        osc.connect(gain);
-        gain.connect(this.ctx.destination);
-        osc.start();
-        osc.stop(this.ctx.currentTime + 0.09);
+
+        // 1. 딱! 맞닿는 크리스피 스냅 (Click)
+        const clickOsc = this.ctx.createOscillator();
+        const clickGain = this.ctx.createGain();
+        clickOsc.type = 'triangle';
+        clickOsc.frequency.setValueAtTime(680, this.ctx.currentTime);
+        clickOsc.frequency.exponentialRampToValueAtTime(140, this.ctx.currentTime + 0.035);
+        clickGain.gain.setValueAtTime(0.22, this.ctx.currentTime);
+        clickGain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.035);
+        clickOsc.connect(clickGain);
+        clickGain.connect(this.ctx.destination);
+        clickOsc.start();
+        clickOsc.stop(this.ctx.currentTime + 0.035);
+
+        // 2. 묵직하게 착 달라붙는 쫀득한 베이스 텀프 (Thud)
+        const thudOsc = this.ctx.createOscillator();
+        const thudGain = this.ctx.createGain();
+        thudOsc.type = 'sine';
+        thudOsc.frequency.setValueAtTime(160, this.ctx.currentTime);
+        thudOsc.frequency.exponentialRampToValueAtTime(45, this.ctx.currentTime + 0.07);
+        thudGain.gain.setValueAtTime(0.26, this.ctx.currentTime);
+        thudGain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.07);
+        thudOsc.connect(thudGain);
+        thudGain.connect(this.ctx.destination);
+        thudOsc.start();
+        thudOsc.stop(this.ctx.currentTime + 0.07);
+
+        // 3. 찰칵 잠기는 메탈릭 에어 클링크
+        const airOsc = this.ctx.createOscillator();
+        const airGain = this.ctx.createGain();
+        airOsc.type = 'sine';
+        airOsc.frequency.setValueAtTime(1200, this.ctx.currentTime + 0.01);
+        airGain.gain.setValueAtTime(0.06, this.ctx.currentTime + 0.01);
+        airGain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + 0.05);
+        airOsc.connect(airGain);
+        airGain.connect(this.ctx.destination);
+        airOsc.start(this.ctx.currentTime + 0.01);
+        airOsc.stop(this.ctx.currentTime + 0.05);
       }
 
+      /* ⚡ 하드 드롭 (즉시 착지 쾅-척!) */
       playHardDrop() {
         if (this.muted) return;
         this.init();
-        const osc = this.ctx.createOscillator();
-        const gain = this.ctx.createGain();
-        osc.type = 'square';
-        osc.frequency.setValueAtTime(290, this.ctx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(45, this.ctx.currentTime + 0.12);
-        gain.gain.setValueAtTime(0.18, this.ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.12);
-        osc.connect(gain);
-        gain.connect(this.ctx.destination);
-        osc.start();
-        osc.stop(this.ctx.currentTime + 0.12);
+
+        // 1. 묵직한 서브우퍼 베이스 임팩트
+        const subOsc = this.ctx.createOscillator();
+        const subGain = this.ctx.createGain();
+        subOsc.type = 'triangle';
+        subOsc.frequency.setValueAtTime(220, this.ctx.currentTime);
+        subOsc.frequency.exponentialRampToValueAtTime(30, this.ctx.currentTime + 0.14);
+        subGain.gain.setValueAtTime(0.35, this.ctx.currentTime);
+        subGain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.14);
+        subOsc.connect(subGain);
+        subGain.connect(this.ctx.destination);
+        subOsc.start();
+        subOsc.stop(this.ctx.currentTime + 0.14);
+
+        // 2. 척-! 강타 락 사운드 결합
+        this.playLock();
       }
 
       /* 쾅-! 터지는 시원한 타격감 폭파 사운드 */
@@ -2184,6 +2218,8 @@
         currentPiece.pos.y--;
         merge(board, currentPiece);
         sound.playLock();
+        triggerHaptic('light');
+        spawnLandingSparks(currentPiece);
         triggerBlockPlacedReaction();
         clearLines();
         spawnPiece();
@@ -2199,6 +2235,8 @@
       currentPiece.pos.y--;
       merge(board, currentPiece);
       sound.playHardDrop();
+      triggerHaptic('medium');
+      spawnLandingSparks(currentPiece);
       triggerBlockPlacedReaction();
       clearLines();
       spawnPiece();
@@ -2256,6 +2294,7 @@
       if (linesCleared > 0) {
         sound.playExplosion(linesCleared);
         triggerScreenShake(); // 화면 쿵 흔들림!
+        triggerHaptic('heavy'); // 묵직한 진동 타격감!
         spawnParticles(lastClearedY);
 
         const lineScores = [0, 100, 300, 600, 1000];
@@ -2387,6 +2426,59 @@
       context.strokeRect(px, py, BLOCK_SIZE, BLOCK_SIZE);
     }
 
+    /* 👻 고스트 블록 (바닥 착지 그림자 가이드 - 프로 게임 필수 디테일) */
+    function drawGhostBlock(context, x, y, colorIdx) {
+      const px = x * BLOCK_SIZE;
+      const py = y * BLOCK_SIZE;
+      const color = COLORS[colorIdx];
+
+      context.save();
+      context.fillStyle = 'rgba(255, 255, 255, 0.05)';
+      context.fillRect(px + 2, py + 2, BLOCK_SIZE - 4, BLOCK_SIZE - 4);
+      context.strokeStyle = color.main;
+      context.lineWidth = 1.5;
+      context.setLineDash([3, 2]); // 세련된 네온 점선
+      context.shadowColor = color.main;
+      context.shadowBlur = 6;
+      context.strokeRect(px + 1, py + 1, BLOCK_SIZE - 2, BLOCK_SIZE - 2);
+      context.restore();
+    }
+
+    /* 💥 착지 순간 튀는 황금 스파크 파티클 */
+    function spawnLandingSparks(piece) {
+      if (!piece) return;
+      piece.matrix.forEach((row, y) => {
+        row.forEach((value, x) => {
+          if (value !== 0) {
+            const bx = (x + piece.pos.x) * BLOCK_SIZE + BLOCK_SIZE / 2;
+            const by = (y + piece.pos.y) * BLOCK_SIZE + BLOCK_SIZE;
+            for (let i = 0; i < 2; i++) {
+              particles.push({
+                x: bx,
+                y: by,
+                vx: (Math.random() - 0.5) * 4,
+                vy: (Math.random() * -2.5) - 0.5,
+                color: '#ffd600',
+                size: Math.random() * 2 + 1,
+                alpha: 0.8,
+                decay: 0.05
+              });
+            }
+          }
+        });
+      });
+    }
+
+    /* 📳 스마트폰 햅틱 진동 피드백 (손끝으로 전해지는 손맛) */
+    function triggerHaptic(type = 'light') {
+      if (!('vibrate' in navigator)) return;
+      try {
+        if (type === 'light') navigator.vibrate(15);
+        else if (type === 'medium') navigator.vibrate(28);
+        else if (type === 'heavy') navigator.vibrate([25, 35, 45]);
+      } catch(e) {}
+    }
+
     function drawGrid() {
       ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
       ctx.lineWidth = 1;
@@ -2435,6 +2527,7 @@
 
       drawGrid();
 
+      // 고정된 블록 렌더링
       board.forEach((row, y) => {
         row.forEach((value, x) => {
           if (value !== 0) drawBlock(ctx, x, y, value);
@@ -2442,6 +2535,31 @@
       });
 
       if (currentPiece && gameState === STATE.PLAYING) {
+        // 👻 1. 고스트 블록 (바닥 착지 그림자 가이드 계산 및 렌더링)
+        const ghost = {
+          matrix: currentPiece.matrix,
+          pos: { x: currentPiece.pos.x, y: currentPiece.pos.y }
+        };
+        while (!collide(board, ghost)) {
+          ghost.pos.y++;
+        }
+        ghost.pos.y--; // 충돌 직전 위치
+
+        // 현재 위치와 다를 때만 고스트 블록 그리기
+        if (ghost.pos.y > currentPiece.pos.y) {
+          ghost.matrix.forEach((row, y) => {
+            row.forEach((value, x) => {
+              if (value !== 0) {
+                const drawY = y + ghost.pos.y;
+                if (drawY >= 0) {
+                  drawGhostBlock(ctx, x + ghost.pos.x, drawY, currentPiece.colorIdx);
+                }
+              }
+            });
+          });
+        }
+
+        // 2. 현재 조작 중인 블록 렌더링
         currentPiece.matrix.forEach((row, y) => {
           row.forEach((value, x) => {
             if (value !== 0) {
