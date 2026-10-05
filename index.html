@@ -48,8 +48,15 @@
 
     /* 상단 헤더 */
     .header {
+      position: relative;
       text-align: center;
       margin-bottom: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      max-width: 980px;
     }
 
     .title {
@@ -70,6 +77,101 @@
       color: #93c5fd;
       letter-spacing: 3px;
       text-transform: uppercase;
+    }
+
+    /* 상단 헤더 마스터 사운드 버튼 */
+    .header-sound-btn {
+      position: absolute;
+      right: 4px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 7px 14px;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1.5px solid rgba(0, 242, 254, 0.5);
+      border-radius: 9999px;
+      color: #00f2fe;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 15px rgba(0, 242, 254, 0.2);
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      user-select: none;
+      z-index: 10;
+    }
+    .header-sound-btn:hover {
+      transform: translateY(-50%) scale(1.05);
+      box-shadow: 0 6px 20px rgba(0, 242, 254, 0.45);
+      border-color: #00f2fe;
+    }
+    .header-sound-btn.muted {
+      border-color: rgba(255, 255, 255, 0.25);
+      background: rgba(30, 41, 59, 0.85);
+      color: #94a3b8;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    }
+    .header-sound-btn.muted:hover {
+      border-color: rgba(255, 255, 255, 0.4);
+      color: #cbd5e1;
+    }
+
+    /* 게임 시작 오버레이 사운드 모드 선택 박스 */
+    .sound-prep-box {
+      width: 100%;
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 12px;
+      padding: 10px;
+      margin-bottom: 12px;
+      text-align: center;
+      box-sizing: border-box;
+    }
+    .sound-prep-label {
+      font-size: 11px;
+      color: #94a3b8;
+      font-weight: 700;
+      margin-bottom: 8px;
+      letter-spacing: 0.3px;
+    }
+    .sound-mode-toggle-group {
+      display: flex;
+      gap: 8px;
+    }
+    .sound-mode-chip {
+      flex: 1;
+      padding: 8px 4px;
+      font-size: 12px;
+      font-weight: 700;
+      border-radius: 8px;
+      cursor: pointer;
+      border: 1.5px solid rgba(255, 255, 255, 0.15);
+      background: rgba(30, 41, 59, 0.6);
+      color: #94a3b8;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      user-select: none;
+    }
+    .sound-mode-chip:hover {
+      border-color: rgba(255, 255, 255, 0.3);
+      color: #cbd5e1;
+    }
+    .sound-mode-chip.active {
+      background: rgba(0, 242, 254, 0.16);
+      border-color: #00f2fe;
+      color: #00f2fe;
+      box-shadow: 0 0 12px rgba(0, 242, 254, 0.25);
+    }
+    .sound-mode-chip.active.muted {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: #cbd5e1;
+      color: #f1f5f9;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.15);
     }
 
     /* 메인 컨테이너 */
@@ -623,6 +725,16 @@
       body { padding: 8px 6px; justify-content: flex-start; }
       .header { margin-bottom: 8px; }
       .title { font-size: 26px; letter-spacing: 3px; }
+      .header-sound-btn {
+        position: static;
+        transform: none;
+        margin-top: 8px;
+        padding: 6px 12px;
+        font-size: 11px;
+      }
+      .header-sound-btn:hover {
+        transform: scale(1.03);
+      }
       .game-container {
         flex-direction: column;
         align-items: center;
@@ -1291,6 +1403,10 @@
   <div class="header">
     <div class="title">TETRIS</div>
     <div class="subtitle">Ultimate Mobile & Web Edition</div>
+    <button id="header-sound-btn" class="header-sound-btn" onclick="toggleMasterSound()" title="소리 켜기 / 완전 무음 전환">
+      <span class="sound-status-icon">🔊</span>
+      <span class="sound-status-text">소리 켜짐</span>
+    </button>
   </div>
 
   <div class="game-container">
@@ -1442,6 +1558,19 @@
             <div class="final-score-sub">(<span id="final-lines-val">0</span>줄 클리어 · 레벨 <span id="final-level-val">1</span>)</div>
           </div>
 
+          <!-- 소리 켜기 / 무음 모드 빠른 선택 (공공장소/사무실 배려) -->
+          <div class="sound-prep-box">
+            <div class="sound-prep-label">🎧 사운드 설정 (조용한 곳에선 무음 모드)</div>
+            <div class="sound-mode-toggle-group">
+              <button type="button" id="sound-prep-on" class="sound-mode-chip active" onclick="setMasterMuted(false)">
+                <span>🔊</span> 소리 켬 (신나는 사운드)
+              </button>
+              <button type="button" id="sound-prep-off" class="sound-mode-chip" onclick="setMasterMuted(true)">
+                <span>🔇</span> 완전 무음 (조용히)
+              </button>
+            </div>
+          </div>
+
           <button id="overlay-btn" class="game-btn btn-start" onclick="handleStartOrResume()">
             <span>▶</span> 게임 시작
           </button>
@@ -1564,6 +1693,7 @@
     <div class="key-badge" style="border-color: rgba(0, 242, 254, 0.5);"><span class="key" style="background:#00f2fe; color:#000; font-weight:800;">C / ㅊ</span> 📦 블록 임시 보관 (홀드/킵)</div>
     <div class="key-badge"><span class="key">🎵 BGM</span> 8비트 오락실 BGM (Web Audio)</div>
     <div class="key-badge"><span class="key">🏆 기록</span> 껐다 켜도 최고기록 영구 저장</div>
+    <div class="key-badge" style="border-color: rgba(255, 255, 255, 0.35);"><span class="key" style="background:#cbd5e1; color:#000; font-weight:800;">M / ㅡ</span> 🔇 소리 켜기 / 무음 모드</div>
     <div class="key-badge"><span class="key">P</span> 일시정지</div>
   </div>
 
@@ -1685,7 +1815,11 @@
     class SoundEngine {
       constructor() {
         this.ctx = null;
-        this.muted = false;
+        let savedMuted = false;
+        try {
+          savedMuted = (localStorage.getItem('tetris_sound_muted') === 'true');
+        } catch(e) {}
+        this.muted = savedMuted;
         this.bgmTheme = 1; // 1: 오리지널 레트로 8비트 오락실 테트리스 BGM (기본 활성화!)
         this.bgmPlaying = false;
         this.bgmTimer = null;
@@ -2052,7 +2186,7 @@
 
       /* BGM 제어 */
       startBGM() {
-        if (this.bgmTheme === 0 || this.bgmPlaying) return;
+        if (this.muted || this.bgmTheme === 0 || this.bgmPlaying) return;
         this.init();
         this.bgmPlaying = true;
         this.bgmIndex = 0;
@@ -2065,7 +2199,7 @@
       }
 
       playBGMNote() {
-        if (!this.bgmPlaying || this.bgmTheme === 0) return;
+        if (this.muted || !this.bgmPlaying || this.bgmTheme === 0) return;
 
         let currentMelody = this.theme1;
         let tempo = 130;
@@ -2139,8 +2273,9 @@
 
     const sound = new SoundEngine();
 
-    // 🔊 브라우저 자동 재생 정책(Autoplay Policy) 완벽 대응: 첫 터치/클릭/키 입력 시 오디오 자동 언락!
+    // 🔊 브라우저 자동 재생 정책(Autoplay Policy) 대응: 첫 터치/클릭/키 입력 시 오디오 언락
     function unlockAudioContext() {
+      if (sound.muted) return;
       sound.init();
       if (sound.ctx && sound.ctx.state === 'suspended') {
         sound.ctx.resume().catch(() => {});
@@ -2150,34 +2285,116 @@
       document.addEventListener(evt, unlockAudioContext, { passive: true });
     });
 
-    function toggleSound() {
-      sound.muted = !sound.muted;
-      const icon = document.getElementById('sound-icon');
-      const text = document.getElementById('sound-text');
-      const mBtn = document.getElementById('m-btn-sound');
+    /* 🔊 마스터 사운드 제어 (효과음 + BGM + 음성 추임새 100% 일괄 ON/OFF 및 영구 기억) */
+    function setMasterMuted(isMuted, showToast = true) {
+      sound.muted = isMuted;
+      try {
+        localStorage.setItem('tetris_sound_muted', isMuted ? 'true' : 'false');
+      } catch (e) {}
 
-      if (sound.muted) {
-        if (icon) icon.innerText = '🔇';
-        if (text) text.innerText = '효과음 OFF';
-        if (mBtn) {
-          mBtn.innerText = '🔇 효과음 OFF';
-          mBtn.style.color = '#94a3b8';
-          mBtn.style.borderColor = 'rgba(255,255,255,0.2)';
+      if (isMuted) {
+        sound.stopBGM();
+        if ('speechSynthesis' in window) {
+          try { window.speechSynthesis.cancel(); } catch(e) {}
+        }
+        if (showToast) {
+          showFloatingText('🔇 소리가 완전히 꺼졌습니다 (완전 무음 모드)', '#94a3b8');
         }
       } else {
-        if (icon) icon.innerText = '🔊';
-        if (text) text.innerText = '효과음 ON';
-        if (mBtn) {
-          mBtn.innerText = '🔊 효과음 ON';
-          mBtn.style.color = '#00f2fe';
-          mBtn.style.borderColor = 'rgba(0,242,254,0.4)';
+        unlockAudioContext();
+        if (showToast) {
+          showFloatingText('🔊 소리가 켜졌습니다 (신나는 사운드 ON)', '#00f2fe');
         }
         sound.playClick();
+        if (typeof gameState !== 'undefined' && typeof STATE !== 'undefined' && gameState === STATE.PLAYING && sound.bgmTheme > 0) {
+          sound.startBGM();
+        }
+      }
+      updateAllSoundUI();
+    }
+
+    function toggleMasterSound() {
+      setMasterMuted(!sound.muted);
+    }
+
+    /* 기존 버튼 및 키보드 'M' 키 호환 */
+    function toggleSound() {
+      toggleMasterSound();
+    }
+
+    /* 4개 사운드 UI 일괄 동기화 (최상단 헤더, 보드 준비화면, PC 우측 패널, 모바일 터치 패널) */
+    function updateAllSoundUI() {
+      const isMuted = sound.muted;
+
+      // 1. 화면 최상단 헤더 마스터 버튼
+      const headerBtn = document.getElementById('header-sound-btn');
+      if (headerBtn) {
+        if (isMuted) {
+          headerBtn.classList.add('muted');
+          headerBtn.innerHTML = '<span class="sound-status-icon">🔇</span> <span class="sound-status-text">완전 무음</span>';
+        } else {
+          headerBtn.classList.remove('muted');
+          headerBtn.innerHTML = '<span class="sound-status-icon">🔊</span> <span class="sound-status-text">소리 켜짐</span>';
+        }
+      }
+
+      // 2. 게임 시작 화면(오버레이) 사운드 모드 선택 칩
+      const chipOn = document.getElementById('sound-prep-on');
+      const chipOff = document.getElementById('sound-prep-off');
+      if (chipOn && chipOff) {
+        if (isMuted) {
+          chipOn.classList.remove('active');
+          chipOff.classList.add('active', 'muted');
+        } else {
+          chipOn.classList.add('active');
+          chipOff.classList.remove('active', 'muted');
+        }
+      }
+
+      // 3. PC 사이드 패널 효과음 버튼 (#btn-sound)
+      const soundIcon = document.getElementById('sound-icon');
+      const soundText = document.getElementById('sound-text');
+      const btnSound = document.getElementById('btn-sound');
+      if (soundIcon && soundText) {
+        if (isMuted) {
+          soundIcon.innerText = '🔇';
+          soundText.innerText = '완전 무음';
+          if (btnSound) {
+            btnSound.style.opacity = '0.75';
+            btnSound.style.borderColor = 'rgba(255,255,255,0.2)';
+          }
+        } else {
+          soundIcon.innerText = '🔊';
+          soundText.innerText = '소리 ON';
+          if (btnSound) {
+            btnSound.style.opacity = '1';
+            btnSound.style.borderColor = 'rgba(0,242,254,0.4)';
+          }
+        }
+      }
+
+      // 4. 모바일 터치 패널 사운드 버튼 (#m-btn-sound)
+      const mBtn = document.getElementById('m-btn-sound');
+      if (mBtn) {
+        if (isMuted) {
+          mBtn.innerText = '🔇 완전 무음';
+          mBtn.style.color = '#94a3b8';
+          mBtn.style.borderColor = 'rgba(255,255,255,0.2)';
+          mBtn.style.background = 'rgba(255,255,255,0.06)';
+        } else {
+          mBtn.innerText = '🔊 소리 ON';
+          mBtn.style.color = '#00f2fe';
+          mBtn.style.borderColor = 'rgba(0,242,254,0.4)';
+          mBtn.style.background = 'rgba(0,242,254,0.12)';
+        }
       }
     }
 
     /* BGM 테마 순환 (기본 8비트 오락실 -> 감성 카페 -> 경쾌 팝 -> OFF) */
     function cycleBGM() {
+      if (sound.muted) {
+        setMasterMuted(false, false);
+      }
       sound.bgmTheme = (sound.bgmTheme + 1) % 4;
       const icon = document.getElementById('bgm-icon');
       const text = document.getElementById('bgm-text');
@@ -3657,6 +3874,7 @@
     });
 
     updateUI();
+    updateAllSoundUI();
     draw();
     drawHold();
   </script>
