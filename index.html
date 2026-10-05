@@ -679,50 +679,80 @@
 
     .welcome-thumb-wrap {
       position: relative;
-      width: 100%;
-      height: 200px;
-      border-radius: 14px;
+      width: 240px;
+      height: 320px;
+      margin: 0 auto 14px;
+      border-radius: 16px;
       overflow: hidden;
-      margin-bottom: 12px;
-      border: 1.5px solid rgba(0, 242, 254, 0.45);
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6);
-      background: #030508;
+      border: 3px solid #ffd600;
+      box-shadow: 0 0 30px rgba(255, 214, 0, 0.45),
+                  0 15px 35px rgba(0, 0, 0, 0.8),
+                  inset 0 0 20px rgba(255, 214, 0, 0.3);
+      background: radial-gradient(circle at 50% 30%, #1a1630 0%, #05070d 100%);
+      animation: tarotFloat 3.6s infinite ease-in-out;
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .welcome-thumb-wrap:hover {
+      transform: translateY(-6px) scale(1.03);
+      box-shadow: 0 0 45px rgba(255, 214, 0, 0.75), 0 20px 45px rgba(0, 0, 0, 0.9);
+    }
+
+    @keyframes tarotFloat {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-8px) rotate(0.8deg); }
+    }
+
+    .tarot-badge-top {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 0, 0, 0.75);
+      border: 1.5px solid #ffd600;
+      border-radius: 12px;
+      padding: 3px 12px;
+      font-size: 11px;
+      font-weight: 900;
+      color: #ffd600;
+      letter-spacing: 2px;
+      box-shadow: 0 0 10px rgba(255, 214, 0, 0.4);
+      z-index: 2;
     }
 
     .welcome-thumb-img {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      object-position: center 20%;
-      transition: transform 0.5s ease;
+      object-position: center;
+      transition: transform 0.6s ease;
       display: block;
-    }
-
-    .welcome-thumb-wrap:hover .welcome-thumb-img {
-      transform: scale(1.03);
     }
 
     .welcome-thumb-overlay {
       position: absolute;
       bottom: 0; left: 0; right: 0;
-      background: linear-gradient(0deg, rgba(8, 12, 22, 0.92) 0%, transparent 100%);
-      padding: 10px 12px 6px;
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
+      background: linear-gradient(0deg, rgba(5, 7, 13, 0.95) 0%, rgba(5, 7, 13, 0.6) 60%, transparent 100%);
+      padding: 14px 10px 8px;
+      text-align: center;
+      z-index: 2;
     }
 
-    .partner-badge-duo {
-      font-size: 11px;
-      font-weight: 800;
+    .tarot-card-name {
+      font-family: 'Orbitron', serif;
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: 2px;
       color: #ffd600;
-      background: rgba(0, 0, 0, 0.7);
-      padding: 4px 9px;
-      border-radius: 8px;
-      border: 1px solid rgba(255, 214, 0, 0.45);
-      display: flex;
-      align-items: center;
-      gap: 5px;
+      text-shadow: 0 0 12px rgba(255, 214, 0, 0.6);
+      margin-bottom: 2px;
+    }
+
+    .tarot-card-sub {
+      font-size: 10px;
+      color: #7dd3fc;
+      font-weight: 600;
     }
 
     .welcome-speech-bubble {
@@ -1131,8 +1161,8 @@
         <button id="btn-sound" class="btn-audio" onclick="toggleSound()">
           <span id="sound-icon">🔊</span> <span id="sound-text">효과음 ON</span>
         </button>
-        <button id="btn-bgm" class="btn-audio" onclick="cycleBGM()" title="클릭 시 BGM 선택 (기본 무음)">
-          <span id="bgm-icon">🔇</span> <span id="bgm-text">BGM OFF</span>
+        <button id="btn-bgm" class="btn-audio" onclick="cycleBGM()" title="클릭 시 음악 변경/무음">
+          <span id="bgm-icon">🎵</span> <span id="bgm-text">감성 BGM</span>
         </button>
       </div>
 
@@ -1258,56 +1288,62 @@
     </div>
   </div>
 
-  <!-- 👑 첫 3초 시선강탈! VIP 럭셔리 인트로 웰컴 스크린 -->
+  <!-- 🔮 첫 3초 시선강탈! 운명의 타로 테트리스 VIP 오프닝 웰컴 스크린 -->
   <div id="welcome-modal" class="welcome-modal">
     <div class="welcome-card">
-      <div class="welcome-thumb-wrap">
-        <img src="assets/splash_duo.jpg" alt="VIP 테트리스 라운지 파트너" class="welcome-thumb-img" onerror="this.style.display='none'">
+      <div style="font-size: 11px; font-weight: 900; letter-spacing: 3px; color: #ffd600; text-transform: uppercase; margin-bottom: 8px;">
+        ✦ THE MYSTICAL DESTINY TAROT ✦
+      </div>
+
+      <!-- 신비로운 3D 타로 카드 프레임 -->
+      <div class="welcome-thumb-wrap" onclick="handleTarotCardTap()" title="타로 카드를 터치하면 신비로운 마법이 일어납니다!">
+        <div class="tarot-badge-top" id="tarot-card-num">Ⅹ · THE DESTINY</div>
+        <img id="tarot-main-img" src="assets/tarot_card.jpg" alt="운명의 타로 테트리스 파트너" class="welcome-thumb-img" onerror="this.src='assets/splash_duo.jpg'">
         <div class="welcome-thumb-overlay">
-          <div class="partner-badge-duo">👑 VIP 파트너 루이 & 세라</div>
-          <div style="font-size: 10px; color: #00f2fe; font-weight: 700;">★ 3,000점 스타벅스 커피 도전</div>
+          <div class="tarot-card-name" id="tarot-card-title">Ⅹ. THE DESTINY DUO</div>
+          <div class="tarot-card-sub" id="tarot-card-subtitle">운명의 파트너 듀오 & 스타벅스 커피의 가호</div>
         </div>
       </div>
 
       <div class="welcome-speech-bubble">
         <div class="welcome-speech-title">
-          <span>✨</span> <span id="welcome-speech-name">파트너 루이 & 세라의 환영 인사</span> <span>✨</span>
+          <span>🔮</span> <span id="welcome-speech-name">운명의 타로 점괘 & 파트너 환영사</span> <span>✨</span>
         </div>
         <div class="welcome-speech-text" id="welcome-speech-body">
-          "안녕하세요! 만나서 정말 반가워요~ 오늘 테트리스 신기록 세우시고 <strong>스타벅스 커피 선물</strong> 꼭 받아가세요! 저희가 끝까지 열심히 응원해 드릴게요! ✨"
+          "오늘 당신의 운명은 <strong>최고의 행운</strong>이 깃들어 있습니다! 저희와 함께 3,000점을 돌파하고 <strong>스타벅스 커피 선물</strong>을 쟁취할 운명입니다! ✨"
         </div>
       </div>
 
-      <div style="font-size: 11px; color: var(--text-dim); margin-bottom: 8px; font-weight: 600;">
-        나를 응원해 줄 파트너를 선택해 보세요:
+      <div style="font-size: 11px; color: #cbd5e1; margin-bottom: 8px; font-weight: 700;">
+        나를 지켜줄 운명의 타로 카드를 선택하세요:
       </div>
       <div class="welcome-partner-tabs">
         <div class="partner-tab active" id="tab-duo" onclick="selectPartner('duo')">
-          👫 환상의 듀오
+          🃏 Ⅹ. 운명 듀오
         </div>
         <div class="partner-tab" id="tab-louis" onclick="selectPartner('louis')">
-          👨‍💼 젠틀 루이
+          👑 Ⅳ. 황제 루이
         </div>
         <div class="partner-tab" id="tab-sarah" onclick="selectPartner('sarah')">
-          👩‍💼 상큼 세라
+          💖 Ⅲ. 여황제 세라
         </div>
       </div>
 
       <button class="welcome-btn-start" onclick="handleWelcomeEnter()">
-        <span>✨</span> <span id="welcome-enter-btn-text">파트너와 함께 게임 입장하기</span> <span>▶</span>
+        <span>🔮</span> <span id="welcome-enter-btn-text">운명의 카드 확정 & 게임 시작하기</span> <span>▶</span>
       </button>
     </div>
   </div>
 
   <script>
     /* ========================================================
-       1. 효과음 중심 사운드 엔진 (기본 BGM OFF, 시원한 타격감 효과음 특화)
+       1. 감성 타로 & 마법 효과음 사운드 엔진
        ======================================================== */
     class SoundEngine {
       constructor() {
         this.ctx = null;
         this.muted = false;
-        this.bgmTheme = 0; // 0: 끔 (기본 무음), 1: 레트로 아케이드, 2: 감성 카페, 3: 경쾌 팝
+        this.bgmTheme = 2; // 2: 감성 카페/타로 라운지 앰비언트 (기본 은은한 볼륨으로 적막함 해소!)
         this.bgmPlaying = false;
         this.bgmTimer = null;
         this.bgmIndex = 0;
@@ -1321,7 +1357,7 @@
           { n: 'C5', d: 2 }, { n: 'A4', d: 2 }, { n: 'A4', d: 3 }, { n: 'R', d: 2 }
         ];
 
-        // 테마 2: 편안하고 감미로운 카페풍 캐논 멜로디
+        // 테마 2: 편안하고 감미로운 카페/타로풍 캐논 멜로디 (초저음량 힐링 사운드)
         this.theme2 = [
           { n: 'C5', d: 3 }, { n: 'G4', d: 3 }, { n: 'A4', d: 3 }, { n: 'E4', d: 3 },
           { n: 'F4', d: 3 }, { n: 'C4', d: 3 }, { n: 'F4', d: 2 }, { n: 'G4', d: 2 },
@@ -1349,6 +1385,55 @@
         if (this.ctx.state === 'suspended') {
           this.ctx.resume();
         }
+      }
+
+      /* 🔮 신비로운 타로 마법 챠라랑 효과음 */
+      playTarotMagic() {
+        if (this.muted) return;
+        this.init();
+        const magicNotes = [523.25, 659.25, 783.99, 1046.50, 1318.51, 1567.98];
+        magicNotes.forEach((f, idx) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          const startTime = this.ctx.currentTime + idx * 0.045;
+          osc.frequency.setValueAtTime(f, startTime);
+          gain.gain.setValueAtTime(0.12, startTime);
+          gain.gain.exponentialRampToValueAtTime(0.0001, startTime + 0.4);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(startTime);
+          osc.stop(startTime + 0.4);
+        });
+      }
+
+      /* 🃏 타로 카드 착! 플립 효과음 */
+      playCardFlip() {
+        if (this.muted) return;
+        this.init();
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(320, this.ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(90, this.ctx.currentTime + 0.08);
+        gain.gain.setValueAtTime(0.14, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.08);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(this.ctx.currentTime + 0.08);
+
+        // 살짝 반짝이는 차임
+        const hOsc = this.ctx.createOscillator();
+        const hGain = this.ctx.createGain();
+        hOsc.type = 'sine';
+        hOsc.frequency.setValueAtTime(1046.5, this.ctx.currentTime + 0.02);
+        hGain.gain.setValueAtTime(0.08, this.ctx.currentTime + 0.02);
+        hGain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.12);
+        hOsc.connect(hGain);
+        hGain.connect(this.ctx.destination);
+        hOsc.start(this.ctx.currentTime + 0.02);
+        hOsc.stop(this.ctx.currentTime + 0.12);
       }
 
       playMove() {
@@ -1764,10 +1849,13 @@
     const PARTNER_DATA = {
       duo: {
         name: '👫 파트너 루이 & 세라',
-        welcomeTitle: '파트너 루이 & 세라의 환영 인사',
-        welcomeMsg: '"안녕하세요! 만나서 정말 반가워요~ 오늘 테트리스 신기록 세우시고 <strong>스타벅스 커피 선물</strong> 꼭 챙겨가세요! 저희가 끝까지 열심히 응원해 드릴게요! ✨"',
+        tarotNum: 'Ⅹ · THE DESTINY',
+        tarotTitle: 'Ⅹ. THE DESTINY DUO',
+        tarotSub: '운명의 파트너 듀오 & 스타벅스 커피의 가호',
+        welcomeTitle: '운명의 타로 점괘 & 듀오 환영사',
+        welcomeMsg: '"오늘 당신의 운명 카드에는 <strong>최고의 행운</strong>이 깃들어 있습니다! 저희와 함께 3,000점을 돌파하고 <strong>스타벅스 커피 선물</strong>을 쟁취할 운명입니다! ✨"',
         enterMsg: '안녕하세요! 반가워요! 신나게 달려봐요~!',
-        buttonText: '루이 & 세라와 함께 게임 입장하기',
+        buttonText: '운명의 듀오와 함께 게임 시작하기',
         idleQuotes: [
           '"와 최고입니다! 센스가 정말 대단하세요!"',
           '"오~ 완벽한 배치예요! 손끝 감각이 살아있어요!"',
@@ -1785,10 +1873,13 @@
       },
       louis: {
         name: '👨‍💼 젠틀 멘토 루이',
-        welcomeTitle: '젠틀 멘토 루이의 환영 인사',
-        welcomeMsg: '"안녕하세요! 만나서 반갑습니다. 오늘 침착하고 정밀한 플레이로 <strong>스타벅스 커피</strong>까지 완벽하게 안내해 드리겠습니다. 화이팅!"',
+        tarotNum: 'Ⅳ · THE EMPEROR',
+        tarotTitle: 'Ⅳ. THE EMPEROR LOUIS',
+        tarotSub: '지혜의 멘토 루이 & 완벽한 승리의 가호',
+        welcomeTitle: '황제 루이의 타로 점괘 & 조언',
+        welcomeMsg: '"오늘 당신에게는 <strong>흔들리지 않는 황제의 집중력</strong>이 함께합니다. 정밀한 플레이로 <strong>스타벅스 커피</strong>까지 완벽하게 안내해 드리겠습니다. 화이팅!"',
         enterMsg: '안녕하세요! 반갑습니다. 오늘 최고 기록 가보시죠!',
-        buttonText: '루이와 함께 게임 입장하기',
+        buttonText: '황제 루이와 함께 게임 시작하기',
         idleQuotes: [
           '"와 최고입니다! 아주 스마트한 한 수였어요."',
           '"완벽한 균형입니다. 이 흐름을 유지하세요."',
@@ -1806,10 +1897,13 @@
       },
       sarah: {
         name: '👩‍💼 상큼 치어 세라',
-        welcomeTitle: '상큼 치어 세라의 환영 인사',
-        welcomeMsg: '"안녕하세요! 너무너무 반가워요~ 오늘 <strong>스타벅스 커피 쿠폰</strong>은 무조건 플레이어님 거예요! 제가 비타민처럼 팍팍 응원할게요! 💖"',
+        tarotNum: 'Ⅲ · THE EMPRESS',
+        tarotTitle: 'Ⅲ. THE EMPRESS SARAH',
+        tarotSub: '행운의 여신 세라 & 황금 보석의 가호',
+        welcomeTitle: '여황제 세라의 타로 점괘 & 응원',
+        welcomeMsg: '"오늘 당신에게는 <strong>끝없는 황금빛 행운</strong>이 쏟아집니다! <strong>스타벅스 커피 쿠폰</strong>은 무조건 플레이어님 거예요! 제가 비타민처럼 팍팍 응원할게요! 💖"',
         enterMsg: '안녕하세요! 반가워요~ 신나게 팡팡 터뜨려봐요!',
-        buttonText: '세라와 함께 게임 입장하기',
+        buttonText: '여황제 세라와 함께 게임 시작하기',
         idleQuotes: [
           '"와 최고입니다!! 손끝이 날아다녀요~!"',
           '"우와 감각 짱이에요! 보는 제가 다 신나요!"',
@@ -1828,7 +1922,8 @@
     };
 
     function selectPartner(partnerKey) {
-      sound.playClick();
+      sound.playCardFlip();
+      sound.playTarotMagic();
       selectedPartner = partnerKey;
       ['duo', 'louis', 'sarah'].forEach(k => {
         const tab = document.getElementById(`tab-${k}`);
@@ -1836,17 +1931,38 @@
       });
 
       const p = PARTNER_DATA[partnerKey];
+      const cardNum = document.getElementById('tarot-card-num');
+      const cardTitle = document.getElementById('tarot-card-title');
+      const cardSubtitle = document.getElementById('tarot-card-subtitle');
       const titleEl = document.getElementById('welcome-speech-name');
       const bodyEl = document.getElementById('welcome-speech-body');
       const btnEl = document.getElementById('welcome-enter-btn-text');
       const nameLabel = document.getElementById('partner-name-label');
       const bubbleEl = document.getElementById('partner-bubble-text');
 
+      if (cardNum) cardNum.innerText = p.tarotNum;
+      if (cardTitle) cardTitle.innerText = p.tarotTitle;
+      if (cardSubtitle) cardSubtitle.innerText = p.tarotSub;
       if (titleEl) titleEl.innerText = p.welcomeTitle;
       if (bodyEl) bodyEl.innerHTML = p.welcomeMsg;
       if (btnEl) btnEl.innerText = p.buttonText;
       if (nameLabel) nameLabel.innerText = p.name;
       if (bubbleEl) bubbleEl.innerText = p.enterMsg;
+    }
+
+    function handleTarotCardTap() {
+      sound.playCardFlip();
+      sound.playTarotMagic();
+      const wrap = document.querySelector('.welcome-thumb-wrap');
+      if (wrap) {
+        wrap.style.transform = 'translateY(-12px) scale(1.05) rotate(1.2deg)';
+        setTimeout(() => wrap.style.transform = '', 350);
+      }
+      const p = PARTNER_DATA[selectedPartner];
+      const bodyEl = document.getElementById('welcome-speech-body');
+      if (bodyEl) {
+        bodyEl.innerHTML = `✨ <strong>타로 카드의 신비로운 영감</strong>: "오늘 3,000점 돌파의 운명이 활짝 열렸습니다! 망설이지 말고 도전하세요!"`;
+      }
     }
 
     function setPartnerQuote(text, isHighlight = false, speak = false) {
@@ -1865,22 +1981,24 @@
 
     function handlePartnerPoke() {
       sound.playClick();
+      sound.playTarotMagic();
       const p = PARTNER_DATA[selectedPartner];
       setPartnerQuote(p.poke, true, true);
     }
 
     function handleWelcomeEnter() {
       sound.init();
+      sound.playTarotMagic();
       sound.playFanfare();
       if (welcomeModal) welcomeModal.classList.add('hidden');
 
       const p = PARTNER_DATA[selectedPartner];
       setPartnerQuote(p.enterMsg, true, true);
 
-      // 환영 인사 후 게임 바로 시작
+      // 환영 인사 후 게임 바로 시작 & 은은한 칠링 멜로디 배경음 재생
       setTimeout(() => {
         handleStartOrResume();
-      }, 450);
+      }, 500);
     }
 
     function createMatrix(w, h) {
