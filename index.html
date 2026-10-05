@@ -1045,6 +1045,110 @@
     .m-diff-btn.active#m-diff-normal { background: rgba(255, 214, 0, 0.2); border-color: #ffd600; color: #ffd600; font-weight: 800; }
     .m-diff-btn.active#m-diff-hard { background: rgba(255, 42, 133, 0.2); border-color: #ff2a85; color: #ff2a85; font-weight: 800; }
 
+    /* 🎯 상단 미션 목표 상태 바 (무얼 위해 하는지 한눈에!) */
+    .mission-status-bar {
+      width: 100%;
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(30, 41, 59, 0.9));
+      border: 1.5px solid rgba(0, 242, 254, 0.4);
+      border-radius: 12px;
+      padding: 9px 12px;
+      margin-bottom: 8px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4), 0 0 10px rgba(0, 242, 254, 0.15);
+    }
+    .mission-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 5px;
+    }
+    .m-badge {
+      font-size: 10px;
+      font-weight: 800;
+      color: #ffd600;
+      background: rgba(255, 214, 0, 0.15);
+      padding: 2px 7px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 214, 0, 0.4);
+    }
+    .m-target-text {
+      font-size: 11px;
+      font-weight: 800;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .m-pct {
+      font-size: 12px;
+      font-weight: 900;
+      color: #00ff88;
+      font-family: 'Orbitron', monospace;
+    }
+    .mission-track {
+      width: 100%;
+      height: 9px;
+      background: rgba(0, 0, 0, 0.6);
+      border-radius: 5px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      position: relative;
+    }
+    .mission-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #00f2fe, #00ff88, #ffd600);
+      border-radius: 5px;
+      transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 0 8px rgba(0, 255, 136, 0.7);
+    }
+    .mission-remain-desc {
+      font-size: 11px;
+      font-weight: 700;
+      color: #cbd5e1;
+      text-align: right;
+      margin-top: 5px;
+    }
+    .mission-remain-desc strong {
+      color: #ffd600;
+      font-size: 13px;
+      font-family: 'Orbitron', monospace;
+    }
+
+    /* 📜 황금 타로 운세 부적 결과물 카드 */
+    .amulet-card {
+      background: linear-gradient(135deg, rgba(30, 20, 50, 0.95), rgba(15, 10, 30, 0.98));
+      border: 1.5px solid #ffd600;
+      border-radius: 12px;
+      padding: 12px;
+      margin-top: 12px;
+      margin-bottom: 12px;
+      text-align: center;
+      box-shadow: 0 0 15px rgba(255, 214, 0, 0.35);
+      position: relative;
+    }
+    .amulet-badge {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 900;
+      color: #000;
+      background: #ffd600;
+      padding: 2px 8px;
+      border-radius: 12px;
+      margin-bottom: 6px;
+      letter-spacing: 1px;
+    }
+    .amulet-title {
+      font-size: 14px;
+      font-weight: 800;
+      color: #ffd600;
+      margin-bottom: 4px;
+    }
+    .amulet-desc {
+      font-size: 12px;
+      line-height: 1.5;
+      color: #e2e8f0;
+    }
+
     /* 선물 모달 */
     .gift-modal {
       position: fixed;
@@ -1249,6 +1353,21 @@
         <button type="button" class="m-diff-btn" id="m-diff-hard" onclick="selectDifficulty('hard')">🔴 고급 (2.5x)</button>
       </div>
 
+      <!-- 🎯 실시간 미션 목표 상태 바 (무얼 위해 달리는지 한눈에!) -->
+      <div class="mission-status-bar">
+        <div class="mission-title-row">
+          <span class="m-badge">🎯 최종 미션</span>
+          <span class="m-target-text">☕ 스타벅스 커피 쿠폰 쟁취</span>
+          <span id="mission-percent" class="m-pct">0%</span>
+        </div>
+        <div class="mission-track">
+          <div id="mission-bar-fill" class="mission-fill"></div>
+        </div>
+        <div class="mission-remain-desc" id="mission-remain-desc">
+          목표까지 <strong id="mission-remain-pts">3,000</strong>점 남음!
+        </div>
+      </div>
+
       <div class="board-wrapper" id="board-box">
         <canvas id="tetris" width="280" height="560"></canvas>
         <div id="floating-layer" class="floating-text-layer"></div>
@@ -1432,11 +1551,20 @@
         </div>
       </div>
 
+      <!-- 📜 오늘의 황금 타로 운세 부적 결과물 -->
+      <div class="amulet-card">
+        <div class="amulet-badge">✦ 오늘 획득한 황금 타로 부적 ✦</div>
+        <div class="amulet-title">✨ 【대길(大吉)】 황금 커피의 축복 ✨</div>
+        <div class="amulet-desc">
+          "오늘 당신의 집중력과 직관은 최상위 1%! 손끝에서 일어난 기적처럼, 오늘 시작하시는 모든 일과 대인관계에서 큰 행운과 승리가 함께할 것입니다."
+        </div>
+      </div>
+
       <div style="background: rgba(0, 242, 254, 0.08); border: 1px dashed rgba(0, 242, 254, 0.4); border-radius: 12px; padding: 12px; margin-bottom: 14px; text-align: left; font-size: 12px; line-height: 1.6; color: #cbd5e1;">
         <strong style="color: #00f2fe;">💡 커피 선물 받는 방법 (지인 친목 룰):</strong><br>
-        1. <strong>이 화면을 스마트폰으로 캡처(화면 캡처)</strong>하세요.<br>
+        1. <strong>지금 이 화면을 캡처</strong>하거나 아래 <strong>[카카오톡 인증글 복사]</strong>를 누르세요.<br>
         2. 이 게임 링크를 보내준 <strong>친구(방장)에게 카카오톡으로 인증샷</strong>을 보내세요!<br>
-        3. <em>"나 3,000점 깼다! 커피 사줘~"</em> 하고 인증하면 친구가 시원한 커피를 쏩니다! 🎁
+        3. <em>"나 3,000점 미션 성공했어! 약속한 스타벅스 커피 보내줘~ ☕"</em> 하고 자랑스럽게 선물 받으세요! 🎁
       </div>
 
       <div id="custom-gift-preview" style="display: none; margin-bottom: 14px;">
@@ -1444,9 +1572,12 @@
         <img id="custom-gift-img" src="" alt="등록된 기프티콘" style="max-width: 100%; max-height: 200px; border-radius: 10px; border: 2px solid #ffd600;">
       </div>
 
-      <div class="gift-actions">
-        <button class="gift-btn primary" onclick="handleRealGiftClaim()">
-          <span>📸</span> 인증샷 캡처 완료 & 확인
+      <div class="gift-actions" style="display: flex; flex-direction: column; gap: 8px;">
+        <button class="gift-btn primary" onclick="handleCopyKakaoShare()" style="width: 100%;">
+          <span>📲</span> 카카오톡 인증글 복사하기 (친구에게 전송)
+        </button>
+        <button class="gift-btn" onclick="handleNewGameFromVictory()" style="width: 100%; background: rgba(255, 214, 0, 0.18); border-color: #ffd600; color: #ffd600;">
+          <span>🔄</span> 다른 난이도로 또 도전하기
         </button>
         <label class="custom-gift-upload-btn">
           <span>📷</span> (방장 전용) 내가 소장한 실제 기프티콘 이미지 등록하기
@@ -1967,7 +2098,8 @@
       IDLE: 'IDLE',
       PLAYING: 'PLAYING',
       PAUSED: 'PAUSED',
-      GAMEOVER: 'GAMEOVER'
+      GAMEOVER: 'GAMEOVER',
+      VICTORY: 'VICTORY'
     };
 
     let gameState = STATE.IDLE;
@@ -1992,6 +2124,7 @@
     let animationId = null;
 
     let particles = [];
+    let missionMilestones = { 1000: false, 2000: false, 2500: false, 2800: false };
 
     const TROPHIES = [
       { id: 'trophy-1', targetScore: 500, name: '사탕 선물', type: 'candy', unlocked: false },
@@ -2021,6 +2154,11 @@
     const btnStart = document.getElementById('btn-start');
     const btnPause = document.getElementById('btn-pause');
     const btnEnd = document.getElementById('btn-end');
+
+    const missionPercentEl = document.getElementById('mission-percent');
+    const missionBarFill = document.getElementById('mission-bar-fill');
+    const missionRemainPts = document.getElementById('mission-remain-pts');
+    const missionRemainDesc = document.getElementById('mission-remain-desc');
 
     const scoreProgText = document.getElementById('score-progress-text');
     const scoreProgBar = document.getElementById('score-progress-bar');
@@ -2609,9 +2747,73 @@
           dropInterval = Math.max(conf.minInterval, conf.baseInterval - (level - conf.startLevel) * conf.intervalStep);
         }
 
+        checkMissionMilestones();
         checkTrophies();
         updateUI();
+
+        // 🏆 3,000점 커피 최종 미션 달성 체크 (게임 승리 종료!)
+        if (score >= 3000 && gameState === STATE.PLAYING) {
+          triggerVictoryCelebration();
+        }
       }
+    }
+
+    /* 🎯 실시간 마일스톤 브리핑 & 열렬한 응원 */
+    function checkMissionMilestones() {
+      const p = PARTNER_DATA[selectedPartner];
+      if (!missionMilestones[1000] && score >= 1000 && score < 2000) {
+        missionMilestones[1000] = true;
+        setPartnerQuote('"벌써 1,000점 돌파! 3분의 1 왔어요! 이 페이스면 커피 금방이에요! ☕"', true, true);
+        showFloatingText('🎯 1,000점 돌파! 순항 중!', '#00ff88');
+      } else if (!missionMilestones[2000] && score >= 2000 && score < 2500) {
+        missionMilestones[2000] = true;
+        setPartnerQuote('"2,000점 돌파! 앞으로 딱 1,000점 남았어요! 커피 향이 솔솔 나네요~ ☕"', true, true);
+        showFloatingText('🎯 2,000점 돌파! 거의 다 왔다!', '#ffd600');
+      } else if (!missionMilestones[2500] && score >= 2500 && score < 2800) {
+        missionMilestones[2500] = true;
+        setPartnerQuote('"앞으로 딱 500점!! 심장이 두근두근! 손끝에 집중하세요!! ⚡"', true, true);
+        showFloatingText('🔥 2,500점 돌파! 앞으로 500점!', '#ff2a85');
+      } else if (!missionMilestones[2800] && score >= 2800 && score < 3000) {
+        missionMilestones[2800] = true;
+        setPartnerQuote('"앞으로 200점! 마지막 한 방이면 커피 쟁취 확정!! 끝까지 화이팅!! 🎆"', true, true);
+        showFloatingText('⚡ 마지막 200점! 커피 코앞!', '#00f2fe');
+      }
+    }
+
+    /* 👑 3,000점 최종 미션 달성 축하 연출 (게임 승리 종료!) */
+    function triggerVictoryCelebration() {
+      if (gameState === STATE.VICTORY) return;
+      gameState = STATE.VICTORY;
+      cancelAnimationFrame(animationId);
+      sound.stopBGM();
+      sound.playFanfare();
+
+      // 화려한 승리 꽃가루 파티클 대량 분사
+      for (let i = 0; i < 90; i++) {
+        particles.push({
+          x: Math.random() * (COLS * BLOCK_SIZE),
+          y: Math.random() * (ROWS * BLOCK_SIZE),
+          vx: (Math.random() - 0.5) * 12,
+          vy: (Math.random() - 0.8) * 10,
+          color: ['#ffd600', '#00ff88', '#ff2a85', '#00f2fe', '#fff'][Math.floor(Math.random() * 5)],
+          size: Math.random() * 5 + 3,
+          alpha: 1,
+          decay: 0.012
+        });
+      }
+
+      showFloatingText('👑 3,000점 최종 미션 대성공!! ☕', '#ffd600');
+      const p = PARTNER_DATA[selectedPartner];
+      setPartnerQuote('"🎉 와아아아!! 해내셨어요!! 스타벅스 커피 미션 최종 대성공!! 축하합니다!! ☕"', true, true);
+
+      btnStart.innerHTML = '<span>🏆</span> 미션 완료!';
+      btnStart.disabled = false;
+      btnPause.disabled = true;
+      btnEnd.disabled = true;
+
+      setTimeout(() => {
+        openGiftModal('coffee');
+      }, 700);
     }
 
     function checkTrophies() {
@@ -2625,12 +2827,6 @@
             item.querySelector('.trophy-badge').innerText = '선물받기!';
           }
           showFloatingText(`🎁 [${t.name}] 달성! 🎁`, '#ffd600');
-
-          if (t.type === 'coffee') {
-            const p = PARTNER_DATA[selectedPartner];
-            setPartnerQuote(p.coffee, true, true);
-            setTimeout(() => openGiftModal('coffee'), 600);
-          }
         }
       });
     }
@@ -2652,7 +2848,23 @@
       levelProgBar.style.width = `${levelPercent}%`;
       linesProgText.innerText = `${linesRemaining}줄 남음`;
 
+      // 🎯 상단 미션 바 실시간 업데이트
       const coffeeTarget = 3000;
+      const pct = Math.min(100, Math.floor((score / coffeeTarget) * 100));
+      if (missionPercentEl) missionPercentEl.innerText = `${pct}%`;
+      if (missionBarFill) {
+        missionBarFill.style.width = `${pct}%`;
+        if (pct >= 100) missionBarFill.style.background = '#00ff88';
+      }
+      if (missionRemainDesc) {
+        if (score < coffeeTarget) {
+          const rem = coffeeTarget - score;
+          missionRemainDesc.innerHTML = `목표까지 <strong id="mission-remain-pts">${rem.toLocaleString()}</strong>점 남음!`;
+        } else {
+          missionRemainDesc.innerHTML = `<strong style="color:#00ff88;">🏆 3,000점 미션 대성공! 커피 획득 완료! ☕</strong>`;
+        }
+      }
+
       if (score < coffeeTarget) {
         const remaining = coffeeTarget - score;
         scoreProgText.innerText = `${remaining.toLocaleString()}점 남음`;
@@ -2885,6 +3097,7 @@
       dropInterval = conf.baseInterval;
       dropCounter = 0;
       blockDropCount = 0;
+      missionMilestones = { 1000: false, 2000: false, 2500: false, 2800: false };
       pieceBag = [];
       particles = [];
       holdPiece = null;
@@ -2997,6 +3210,30 @@
     }
 
     function closeGiftModal() { giftModal.classList.add('hidden'); }
+
+    function handleCopyKakaoShare() {
+      sound.playClick();
+      const shareText = `🎉 [스타벅스 커피 미션 대성공 인증!]\n\n나 테트리스 3,000점 미션 달성했어!\n약속한 스타벅스 카페 아메리카노 기프티콘 보내줘~ ☕✨\n\n- 인증코드: TETRIS-STARBUCKS-WINNER-2026\n- 달성일시: ${new Date().toLocaleDateString('ko-KR')}\n\n어서 시원한 커피 쏴주세요~! 🎁`;
+      
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(shareText).then(() => {
+          alert('✔ 카카오톡 전송용 인증글이 클립보드에 복사되었습니다!\n\n카카오톡 친구(방장) 채팅방에 [붙여넣기]해서 바로 보내보세요! ☕✨');
+        }).catch(() => {
+          fallbackCopyText(shareText);
+        });
+      } else {
+        fallbackCopyText(shareText);
+      }
+    }
+
+    function fallbackCopyText(text) {
+      prompt('아래 텍스트를 복사(Ctrl+C)하여 친구에게 보내보세요!', text);
+    }
+
+    function handleNewGameFromVictory() {
+      closeGiftModal();
+      handleStartOrResume();
+    }
 
     function handleRealGiftClaim() {
       sound.playClick();
