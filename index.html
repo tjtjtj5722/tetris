@@ -1761,49 +1761,49 @@
     </div>
   </div>
 
-  <!-- 🔮 첫 3초 시선강탈! 운명의 타로 테트리스 VIP 오프닝 웰컴 스크린 -->
+  <!-- 🎮 첫 3초 시선강탈! 테트리스 VIP 럭셔리 오프닝 웰컴 스크린 -->
   <div id="welcome-modal" class="welcome-modal">
     <div class="welcome-card">
-      <div style="font-size: 11px; font-weight: 900; letter-spacing: 3px; color: #ffd600; text-transform: uppercase; margin-bottom: 8px;">
-        ✦ THE MYSTICAL DESTINY TAROT ✦
+      <div style="font-size: 11px; font-weight: 900; letter-spacing: 2px; color: #ffd600; text-transform: uppercase; margin-bottom: 8px;">
+        ✦ TETRIS VIP LOUNGE · 테트리스 파트너 라운지 ✦
       </div>
 
-      <!-- 신비로운 3D 타로 카드 프레임 -->
-      <div class="welcome-thumb-wrap" onclick="handleTarotCardTap()" title="타로 카드를 터치하면 신비로운 마법이 일어납니다!">
-        <div class="tarot-badge-top" id="tarot-card-num">Ⅹ · THE DESTINY</div>
-        <img id="tarot-main-img" src="assets/tarot_card.jpg" alt="운명의 타로 테트리스 파트너" class="welcome-thumb-img" onerror="this.src='assets/splash_duo.jpg'">
+      <!-- 럭셔리 골드 테트리스 파트너 카드 프레임 -->
+      <div class="welcome-thumb-wrap" onclick="handleTarotCardTap()" title="파트너 카드를 터치하면 힘찬 응원 메시지가 나타납니다!">
+        <div class="tarot-badge-top" id="tarot-card-num">Ⅹ · TETRIS DESTINY</div>
+        <img id="tarot-main-img" src="assets/tarot_card.jpg" alt="테트리스 VIP 파트너" class="welcome-thumb-img" onerror="this.src='assets/splash_duo.jpg'">
         <div class="welcome-thumb-overlay">
-          <div class="tarot-card-name" id="tarot-card-title">Ⅹ. THE DESTINY DUO</div>
-          <div class="tarot-card-sub" id="tarot-card-subtitle">운명의 파트너 듀오 & 스타벅스 커피의 가호</div>
+          <div class="tarot-card-name" id="tarot-card-title">Ⅹ. TETRIS MASTER DUO</div>
+          <div class="tarot-card-sub" id="tarot-card-subtitle">테트리스 특급 파트너 듀오 & 스타벅스 커피 도전</div>
         </div>
       </div>
 
       <div class="welcome-speech-bubble">
         <div class="welcome-speech-title">
-          <span>🔮</span> <span id="welcome-speech-name">운명의 타로 점괘 & 파트너 환영사</span> <span>✨</span>
+          <span>🎮</span> <span id="welcome-speech-name">테트리스 파트너 환영사 & 작전 브리핑</span> <span>✨</span>
         </div>
         <div class="welcome-speech-text" id="welcome-speech-body">
-          "오늘 당신의 운명은 <strong>최고의 행운</strong>이 깃들어 있습니다! 저희와 함께 3,000점을 돌파하고 <strong>스타벅스 커피 선물</strong>을 쟁취할 운명입니다! ✨"
+          "환영합니다! 오늘 <strong>테트리스 3,000점 돌파</strong>와 <strong>스타벅스 커피 선물</strong>을 위해 저희가 최고의 서포트를 해드릴게요! 신나게 블록을 맞춰봐요! ✨"
         </div>
       </div>
 
       <div style="font-size: 11px; color: #cbd5e1; margin-bottom: 8px; font-weight: 700;">
-        나를 지켜줄 운명의 타로 카드를 선택하세요:
+        함께 플레이할 테트리스 파트너를 선택하세요:
       </div>
       <div class="welcome-partner-tabs">
         <div class="partner-tab active" id="tab-duo" onclick="selectPartner('duo')">
-          🃏 Ⅹ. 운명 듀오
+          👫 Ⅹ. 테트리스 듀오
         </div>
         <div class="partner-tab" id="tab-louis" onclick="selectPartner('louis')">
-          👑 Ⅳ. 황제 루이
+          👨‍💼 Ⅳ. 멘토 루이
         </div>
         <div class="partner-tab" id="tab-sarah" onclick="selectPartner('sarah')">
-          💖 Ⅲ. 여황제 세라
+          👩‍💼 Ⅲ. 치어 세라
         </div>
       </div>
 
       <button class="welcome-btn-start" onclick="handleWelcomeEnter()">
-        <span>🔮</span> <span id="welcome-enter-btn-text">운명의 카드 확정 & 게임 시작하기</span> <span>▶</span>
+        <span>🎮</span> <span id="welcome-enter-btn-text">테트리스 입장 & 게임 시작하기</span> <span>▶</span>
       </button>
     </div>
   </div>
@@ -2652,13 +2652,13 @@
     const PARTNER_DATA = {
       duo: {
         name: '👫 파트너 루이 & 세라',
-        tarotNum: 'Ⅹ · THE DESTINY',
-        tarotTitle: 'Ⅹ. THE DESTINY DUO',
-        tarotSub: '운명의 파트너 듀오 & 스타벅스 커피의 가호',
-        welcomeTitle: '운명의 타로 점괘 & 듀오 환영사',
-        welcomeMsg: '"오늘 당신의 운명 카드에는 <strong>최고의 행운</strong>이 깃들어 있습니다! 저희와 함께 3,000점을 돌파하고 <strong>스타벅스 커피 선물</strong>을 쟁취할 운명입니다! ✨"',
+        tarotNum: 'Ⅹ · TETRIS DESTINY',
+        tarotTitle: 'Ⅹ. TETRIS MASTER DUO',
+        tarotSub: '테트리스 특급 파트너 듀오 & 커피 미션',
+        welcomeTitle: '테트리스 파트너 환영사 & 작전 브리핑',
+        welcomeMsg: '"환영합니다! 오늘 <strong>테트리스 3,000점 돌파</strong>와 <strong>스타벅스 커피 선물</strong>을 위해 저희가 최고의 서포트를 해드릴게요! 신나게 블록을 맞춰봐요! ✨"',
         enterMsg: '안녕하세요! 반가워요! 신나게 달려봐요~!',
-        buttonText: '운명의 듀오와 함께 게임 시작하기',
+        buttonText: '테트리스 듀오와 함께 게임 시작하기',
         // 블록 놓을 때마다 퐁퐁 솟는 실시간 피드백
         frequentQuotes: [
           '"오! 완벽한 자리에 쏙 들어갔어요!"',
@@ -2686,13 +2686,13 @@
       },
       louis: {
         name: '👨‍💼 젠틀 멘토 루이',
-        tarotNum: 'Ⅳ · THE EMPEROR',
-        tarotTitle: 'Ⅳ. THE EMPEROR LOUIS',
-        tarotSub: '지혜의 멘토 루이 & 완벽한 승리의 가호',
-        welcomeTitle: '황제 루이의 타로 점괘 & 조언',
-        welcomeMsg: '"오늘 당신에게는 <strong>흔들리지 않는 황제의 집중력</strong>이 함께합니다. 정밀한 플레이로 <strong>스타벅스 커피</strong>까지 완벽하게 안내해 드리겠습니다. 화이팅!"',
+        tarotNum: 'Ⅳ · TETRIS MENTOR',
+        tarotTitle: 'Ⅳ. TETRIS MENTOR LOUIS',
+        tarotSub: '정밀 전략 멘토 루이 & 완벽한 승리',
+        welcomeTitle: '멘토 루이의 테트리스 공략 브리핑',
+        welcomeMsg: '"환영합니다. 정밀한 블록 배치와 침착한 판단으로 <strong>테트리스 3,000점 돌파</strong> 및 <strong>스타벅스 커피 획득</strong>까지 확실하게 리드해 드리겠습니다."',
         enterMsg: '안녕하세요! 반갑습니다. 오늘 최고 기록 가보시죠!',
-        buttonText: '황제 루이와 함께 게임 시작하기',
+        buttonText: '멘토 루이와 함께 테트리스 시작하기',
         frequentQuotes: [
           '"완벽한 균형입니다. 이 흐름을 유지하세요."',
           '"스마트한 한 수였습니다. 감탄스럽군요."',
@@ -2715,13 +2715,13 @@
       },
       sarah: {
         name: '👩‍💼 상큼 치어 세라',
-        tarotNum: 'Ⅲ · THE EMPRESS',
-        tarotTitle: 'Ⅲ. THE EMPRESS SARAH',
-        tarotSub: '행운의 여신 세라 & 황금 보석의 가호',
-        welcomeTitle: '여황제 세라의 타로 점괘 & 응원',
-        welcomeMsg: '"오늘 당신에게는 <strong>끝없는 황금빛 행운</strong>이 쏟아집니다! <strong>스타벅스 커피 쿠폰</strong>은 무조건 플레이어님 거예요! 제가 비타민처럼 팍팍 응원할게요! 💖"',
+        tarotNum: 'Ⅲ · TETRIS CHEER',
+        tarotTitle: 'Ⅲ. TETRIS CHEER SARAH',
+        tarotSub: '비타민 응원 세라 & 신나는 콤보',
+        welcomeTitle: '치어 세라의 테트리스 응원 메시지',
+        welcomeMsg: '"환영해요! 팡팡 터지는 테트리스 쾌감과 함께 <strong>스타벅스 커피 쿠폰</strong>까지 신나게 달려봐요! 제가 1호 팬이 되어 팍팍 응원할게요! 💖"',
         enterMsg: '안녕하세요! 반가워요~ 신나게 팡팡 터뜨려봐요!',
-        buttonText: '여황제 세라와 함께 게임 시작하기',
+        buttonText: '치어 세라와 함께 테트리스 시작하기',
         frequentQuotes: [
           '"우와 감각 짱이에요! 보는 제가 다 신나요!"',
           '"대박 대박! 너무 잘 맞추시는데요?! 짱!"',
@@ -2784,7 +2784,7 @@
       const p = PARTNER_DATA[selectedPartner];
       const bodyEl = document.getElementById('welcome-speech-body');
       if (bodyEl) {
-        bodyEl.innerHTML = `✨ <strong>타로 카드의 신비로운 영감</strong>: "오늘 3,000점 돌파의 운명이 활짝 열렸습니다! 망설이지 말고 도전하세요!"`;
+        bodyEl.innerHTML = `✨ <strong>테트리스 파트너의 응원</strong>: "빈틈을 쏙쏙 채우다 보면 3,000점 돌파는 금방이에요! 자신 있게 도전해 보세요!"`;
       }
     }
 
