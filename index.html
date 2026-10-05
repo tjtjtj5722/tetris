@@ -6,7 +6,7 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>TETRIS - 럭셔리 모바일 & 웹 에디션</title>
+  <title>TETRIS & BLOCK BLAST - 명품 모바일 & 웹 에디션</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700;800;900&family=Pretendard:wght@400;500;600;700;800;900&display=swap');
 
@@ -1173,10 +1173,10 @@
 
     .blast-slot {
       flex: 1;
-      height: 90px;
-      background: rgba(5, 7, 13, 0.6);
-      border: 1.5px dashed rgba(255, 255, 255, 0.15);
-      border-radius: 12px;
+      height: 104px;
+      background: radial-gradient(circle at 50% 50%, rgba(20, 28, 50, 0.9) 0%, rgba(8, 12, 22, 0.95) 100%);
+      border: 2px solid rgba(0, 242, 254, 0.35);
+      border-radius: 14px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -1184,6 +1184,25 @@
       position: relative;
       transition: all 0.2s ease;
       touch-action: none;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5), inset 0 0 10px rgba(0, 242, 254, 0.1);
+    }
+
+    .blast-slot:hover {
+      border-color: #00f2fe;
+      box-shadow: 0 0 18px rgba(0, 242, 254, 0.35);
+    }
+
+    .blast-slot.selected {
+      border-color: #ffd600;
+      background: radial-gradient(circle at 50% 50%, rgba(255, 214, 0, 0.2) 0%, rgba(20, 28, 50, 0.95) 100%);
+      box-shadow: 0 0 20px rgba(255, 214, 0, 0.5);
+      transform: translateY(-3px) scale(1.03);
+    }
+
+    .blast-slot-canvas {
+      pointer-events: none;
+      width: 90px;
+      height: 90px;
     }
 
     .blast-slot:active { cursor: grabbing; }
@@ -1484,15 +1503,20 @@
         </div>
 
         <!-- 하단 3개 블록 선택 트레이 -->
+        <div style="width: 100%; text-align: center; margin-top: 10px;">
+          <div style="font-size: 11px; font-weight: 800; color: #ffd600; letter-spacing: 1px; margin-bottom: 6px;">
+            👇 아래 3개 블록을 터치하거나 위 판으로 끌어올리세요!
+          </div>
+        </div>
         <div class="blast-tray-container" id="blast-tray">
-          <div class="blast-slot" id="blast-slot-0">
-            <canvas class="blast-slot-canvas" id="slot-canvas-0" width="80" height="80"></canvas>
+          <div class="blast-slot" id="blast-slot-0" title="터치하거나 드래그하여 판에 놓으세요!">
+            <canvas class="blast-slot-canvas" id="slot-canvas-0" width="96" height="96"></canvas>
           </div>
-          <div class="blast-slot" id="blast-slot-1">
-            <canvas class="blast-slot-canvas" id="slot-canvas-1" width="80" height="80"></canvas>
+          <div class="blast-slot" id="blast-slot-1" title="터치하거나 드래그하여 판에 놓으세요!">
+            <canvas class="blast-slot-canvas" id="slot-canvas-1" width="96" height="96"></canvas>
           </div>
-          <div class="blast-slot" id="blast-slot-2">
-            <canvas class="blast-slot-canvas" id="slot-canvas-2" width="80" height="80"></canvas>
+          <div class="blast-slot" id="blast-slot-2" title="터치하거나 드래그하여 판에 놓으세요!">
+            <canvas class="blast-slot-canvas" id="slot-canvas-2" width="96" height="96"></canvas>
           </div>
         </div>
 
@@ -3467,7 +3491,7 @@
           const m = block.matrix;
           const rows = m.length;
           const cols = m[0].length;
-          const slotCell = Math.min(22, Math.floor(66 / Math.max(rows, cols)));
+          const slotCell = Math.min(26, Math.floor(78 / Math.max(rows, cols)));
           const offX = Math.floor((canvas.width - cols * slotCell) / 2);
           const offY = Math.floor((canvas.height - rows * slotCell) / 2);
 
@@ -3554,18 +3578,32 @@
         if (!this.canvas || !this.ctx) return;
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-        // 8x8 바닥판 그리드
+        // 8x8 바닥판 그리드 - 선명하고 고급스러운 네온 타일
         for (let r = 0; r < 8; r++) {
           for (let c = 0; c < 8; c++) {
             const x = c * this.cellSize;
             const y = r * this.cellSize;
-            this.ctx.fillStyle = 'rgba(14, 20, 36, 0.85)';
-            this.roundRect(this.ctx, x + 1.5, y + 1.5, this.cellSize - 3, this.cellSize - 3, 5);
+            
+            // 빈 타일 배경
+            const tileGrad = this.ctx.createLinearGradient(x, y, x + this.cellSize, y + this.cellSize);
+            tileGrad.addColorStop(0, 'rgba(24, 34, 60, 0.95)');
+            tileGrad.addColorStop(1, 'rgba(10, 16, 30, 0.98)');
+            this.ctx.fillStyle = tileGrad;
+            this.roundRect(this.ctx, x + 2, y + 2, this.cellSize - 4, this.cellSize - 4, 6);
             this.ctx.fill();
-            this.ctx.strokeStyle = 'rgba(0, 242, 254, 0.15)';
-            this.ctx.lineWidth = 1;
+
+            // 네온 테두리선 (선명하게!)
+            this.ctx.strokeStyle = 'rgba(0, 242, 254, 0.35)';
+            this.ctx.lineWidth = 1.2;
             this.ctx.stroke();
 
+            // 타일 정중앙의 미세한 보석 가이드 점
+            this.ctx.fillStyle = 'rgba(0, 242, 254, 0.25)';
+            this.ctx.beginPath();
+            this.ctx.arc(x + this.cellSize / 2, y + this.cellSize / 2, 2, 0, Math.PI * 2);
+            this.ctx.fill();
+
+            // 채워진 블록 렌더링
             const cellColor = this.grid[r][c];
             if (cellColor) {
               this.drawCell(this.ctx, x, y, this.cellSize, cellColor);
